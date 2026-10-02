@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "check": "ultracite check",
+    "fix": "ultracite fix"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
+    "ultracite": "^7.12.2"
+  }
+}
