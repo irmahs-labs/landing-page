@@ -458,7 +458,10 @@
         </section>
       </main>
 
-      <section class="window player" aria-label="Music player">
+      <section
+        class="window player is-paused"
+        aria-label="Now playing on Spotify"
+      >
         <div class="titlebar small">
           <span class="dots"><i></i><i></i><i></i></span>
           <span class="titlebar-text">now_playing.mp3</span>
@@ -469,10 +472,16 @@
             <span class="eq"></span><span class="eq"></span
             ><span class="eq"></span><span class="eq"></span>
           </div>
-          <div class="track">
+          <a
+            class="track"
+            id="trackLink"
+            target="_blank"
+            rel="noopener"
+            title="Open in Spotify"
+          >
             <span class="track-title" id="trackTitle"></span>
             <span class="track-artist" id="trackArtist"></span>
-          </div>
+          </a>
           <div class="progress">
             <span id="elapsed">0:00</span>
             <div class="bar">

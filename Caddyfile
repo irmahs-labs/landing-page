@@ -1,6 +1,7 @@
 irmahs.dev {
 	root * /srv
 	encode zstd gzip
+	reverse_proxy /api/* api:3000
 	file_server
 	header {
 		Strict-Transport-Security "max-age=31536000"

@@ -987,32 +987,45 @@ const burst = (tile) => {
 };
 
 /* ------------------------------------------------------------------
- * Music player (visual only)
+ * Music player: what's playing on Spotify right now (via /api/now-playing)
  * ------------------------------------------------------------------ */
-const TRACKS = [
-  { artist: "[Artist]", dur: 204, title: "[Track title 1]" },
-  { artist: "[Artist]", dur: 178, title: "[Track title 2]" },
-  { artist: "[Artist]", dur: 245, title: "[Track title 3]" },
-];
-let track = 0;
-let pos = 0;
+let nowPlaying = null;
+let fetchedAt = 0;
 
-const renderTrack = () => {
-  const t = TRACKS[track];
-  $("#trackTitle").textContent = t.title;
-  $("#trackArtist").textContent = t.artist;
-  $("#elapsed").textContent = fmtS(pos);
-  $("#duration").textContent = fmtS(t.dur);
-  $("#barFill").style.width = `${((pos / t.dur) * 100).toFixed(1)}%`;
+const loadNowPlaying = async () => {
+  try {
+    const res = await fetch("/api/now-playing", { cache: "no-store" });
+    nowPlaying = res.ok ? await res.json() : null;
+  } catch {
+    nowPlaying = null;
+  }
+  fetchedAt = Date.now();
+  renderTrack();
 };
 
-const stepTrack = () => {
-  pos += 1;
-  if (pos >= TRACKS[track].dur) {
-    track = (track + 1) % TRACKS.length;
-    pos = 0;
+const renderTrack = () => {
+  const player = $(".player");
+  const link = $("#trackLink");
+  const t = nowPlaying?.title ? nowPlaying : null;
+  player.classList.toggle("is-paused", !t?.playing);
+  if (!t) {
+    link.removeAttribute("href");
+    $("#trackTitle").textContent = "Nothing playing";
+    $("#trackArtist").textContent = "Spotify is quiet";
+    $("#elapsed").textContent = fmtS(0);
+    $("#duration").textContent = fmtS(0);
+    $("#barFill").style.width = "0%";
+    return;
   }
-  renderTrack();
+  link.href = t.url ?? "https://open.spotify.com";
+  $("#trackTitle").textContent = t.title;
+  $("#trackArtist").textContent = t.artist ?? "";
+  const dur = Math.floor(t.durationMs / 1000);
+  const elapsedMs = t.progressMs + (t.playing ? Date.now() - fetchedAt : 0);
+  const pos = Math.min(dur, Math.floor(elapsedMs / 1000));
+  $("#elapsed").textContent = fmtS(pos);
+  $("#duration").textContent = fmtS(dur);
+  $("#barFill").style.width = `${((pos / dur) * 100).toFixed(1)}%`;
 };
 
 /* ------------------------------------------------------------------
@@ -1026,7 +1039,7 @@ buildSwatches();
 critters.start();
 setTheme(themeId, false);
 setCity(cityId);
-renderTrack();
+loadNowPlaying();
 
 for (const b of document.querySelectorAll(".seg")) {
   b.addEventListener("click", () => setCity(b.dataset.city));
@@ -1039,7 +1052,8 @@ for (const t of document.querySelectorAll(".tile")) {
 
 setInterval(() => {
   updateSky();
-  stepTrack();
+  renderTrack();
 }, 1000);
+setInterval(loadNowPlaying, 15 * 1000);
 setInterval(() => loadWeather(cityId), 15 * 60 * 1000);
 window.addEventListener("resize", updateSky);
