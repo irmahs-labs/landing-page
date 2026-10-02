@@ -1,34 +1,520 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Irma Houver Sing</title>
-  <meta name="description" content="Irma Houver Sing, fullstack developer based in Paris.">
-  <style>
-    :root { --bg:#faf8f5; --fg:#1d1b19; --muted:#6b655e; --accent:#c2410c; }
-    @media (prefers-color-scheme: dark) { :root { --bg:#151413; --fg:#f2efea; --muted:#a39d95; --accent:#fb923c; } }
-    * { box-sizing:border-box; margin:0; }
-    body { min-height:100vh; display:grid; place-items:center; padding:24px;
-           background:var(--bg); color:var(--fg);
-           font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
-    main { max-width:560px; }
-    .tag { color:var(--accent); font-weight:600; font-size:.85rem; letter-spacing:.08em; text-transform:uppercase; }
-    h1 { font-size:clamp(2rem,6vw,3.2rem); line-height:1.1; margin:.4em 0 .3em; }
-    p { color:var(--muted); }
-    nav { margin-top:1.6em; display:flex; gap:1.2em; flex-wrap:wrap; }
-    a { color:var(--fg); text-decoration-color:var(--accent); text-underline-offset:4px; }
-  </style>
-</head>
-<body>
-  <main>
-    <div class="tag">Coming soon · Bientôt</div>
-    <h1>Irma Houver Sing</h1>
-    <p>Fullstack developer based in Paris. The new site is on its way.</p>
-    <nav>
-      <a href="https://github.com/irmahs">GitHub</a>
-      <a href="https://www.linkedin.com/in/irmahs">LinkedIn</a>
-    </nav>
-  </main>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Irma Houver Sing</title>
+    <meta
+      name="description"
+      content="Irma Houver Sing, fullstack developer based in Paris. Pick an app to try."
+    />
+    <meta name="theme-color" content="#c3d4ba" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Kantumruy+Pro:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Decorative scenery: patterns, sky, weather, falling flowers -->
+    <div class="scene" aria-hidden="true">
+      <div class="patterns" id="patterns"></div>
+      <div class="sky-tint" id="skyTint"></div>
+      <div class="stars" id="stars" hidden></div>
+      <div class="sky-body" id="skyBody">
+        <div class="bob">
+          <svg class="sun" id="sun" viewBox="0 0 100 100">
+            <g class="rays" stroke-width="5" stroke-linecap="round">
+              <path
+                d="M50 4 V16 M50 84 V96 M4 50 H16 M84 50 H96 M17.5 17.5 L26 26 M74 74 L82.5 82.5 M17.5 82.5 L26 74 M74 26 L82.5 17.5"
+              />
+            </g>
+            <circle cx="50" cy="50" r="24" />
+          </svg>
+          <svg class="moon" id="moon" viewBox="0 0 100 100" hidden>
+            <path
+              d="M62 16 A34 34 0 1 0 86 66 A27 27 0 1 1 62 16 Z"
+              fill="#fff3cf"
+            />
+            <circle cx="40" cy="56" r="4" fill="#efe2b0" />
+            <circle cx="52" cy="74" r="3" fill="#efe2b0" />
+          </svg>
+        </div>
+      </div>
+      <div class="clouds" id="clouds"></div>
+      <div class="boba-scene" id="bobaScene" hidden></div>
+      <div class="flowers" id="flowers"></div>
+      <div class="rain" id="rain" hidden></div>
+      <div class="sky-dim" id="skyDim"></div>
+    </div>
+
+    <!-- Little animals wandering around; one follows the pointer -->
+    <div class="critters" id="critters" aria-hidden="true"></div>
+
+    <div class="page">
+      <header class="top">
+        <div class="theme-col">
+          <div class="panel theme-panel" role="group" aria-label="Colour theme">
+            <span class="panel-label">Theme</span>
+            <div class="swatches" id="swatches"></div>
+          </div>
+          <span class="pill" id="themeName">Amélie · green</span>
+        </div>
+
+        <div class="center-col">
+          <div class="panel segmented" role="group" aria-label="City">
+            <button
+              class="btn seg"
+              type="button"
+              data-city="paris"
+              aria-pressed="true"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                aria-hidden="true"
+              >
+                <g
+                  fill="#d9786a"
+                  stroke="#2f3b34"
+                  stroke-width="1"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 2 C15 6 15 10 12 13 C9 10 9 6 12 2 Z" />
+                  <path
+                    d="M11 13 C7 13 3 11 4 7 C6 9 8 9 9 8 C9 10 10 12 11 13 Z"
+                  />
+                  <path
+                    d="M13 13 C17 13 21 11 20 7 C18 9 16 9 15 8 C15 10 14 12 13 13 Z"
+                  />
+                  <rect x="7" y="13" width="10" height="2.5" rx="1" />
+                  <path d="M10 15.5 L9 21 L12 19 L15 21 L14 15.5 Z" />
+                </g>
+              </svg>
+              Paris
+            </button>
+            <button
+              class="btn seg"
+              type="button"
+              data-city="phnom-penh"
+              aria-pressed="false"
+            >
+              <svg
+                viewBox="-12 -12 24 24"
+                width="24"
+                height="24"
+                aria-hidden="true"
+              >
+                <g
+                  fill="#fff3cf"
+                  stroke="#2f3b34"
+                  stroke-width="0.9"
+                  stroke-linejoin="round"
+                >
+                  <path d="M0 0 C 5 -3, 7 -9, 0 -11 C -7 -9, -5 -3, 0 0 Z" />
+                  <path
+                    transform="rotate(120)"
+                    d="M0 0 C 5 -3, 7 -9, 0 -11 C -7 -9, -5 -3, 0 0 Z"
+                  />
+                  <path
+                    transform="rotate(240)"
+                    d="M0 0 C 5 -3, 7 -9, 0 -11 C -7 -9, -5 -3, 0 0 Z"
+                  />
+                </g>
+                <circle
+                  r="4.2"
+                  fill="#f2d27a"
+                  stroke="#2f3b34"
+                  stroke-width="0.9"
+                />
+                <path
+                  d="M0 -4 V0 M0 0 L3.6 2.1 M0 0 L-3.6 2.1"
+                  stroke="#2f3b34"
+                  stroke-width="0.6"
+                  fill="none"
+                />
+              </svg>
+              Phnom Penh
+            </button>
+          </div>
+
+          <section class="window clock-window" aria-label="Date and weather">
+            <div class="titlebar small">
+              <span class="dots"><i></i><i></i><i></i></span>
+              <span class="titlebar-text"
+                ><span id="cityHost">paris.local</span
+                ><span class="km" id="cityKhmer" hidden> · ភ្នំពេញ</span></span
+              >
+              <span class="spacer"></span>
+            </div>
+            <div class="clock-body">
+              <div class="clock-text">
+                <span class="clock-time" id="time">--:--</span>
+                <span class="clock-date" id="date"></span>
+                <span class="clock-sun" id="sunLine"></span>
+              </div>
+              <div class="weather">
+                <svg
+                  class="wx"
+                  id="wxDay"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  stroke="#2f3b34"
+                  stroke-width="1.2"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="9" cy="9" r="4.5" fill="#f2d27a" />
+                  <path
+                    d="M7 20 H17 A4 4 0 0 0 16.5 12 A5.5 5.5 0 0 0 6 13.5 A3.3 3.3 0 0 0 7 20 Z"
+                    fill="#f7f8de"
+                  />
+                </svg>
+                <svg
+                  class="wx"
+                  id="wxNight"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  stroke="#2f3b34"
+                  stroke-width="1.2"
+                  stroke-linejoin="round"
+                  hidden
+                >
+                  <path
+                    d="M10 3.5 A5.5 5.5 0 1 0 15 10.5 A4.4 4.4 0 1 1 10 3.5 Z"
+                    fill="#fff3cf"
+                  />
+                  <path
+                    d="M7 20 H17 A4 4 0 0 0 16.5 12 A5.5 5.5 0 0 0 6 13.5 A3.3 3.3 0 0 0 7 20 Z"
+                    fill="#f7f8de"
+                  />
+                </svg>
+                <svg
+                  class="wx"
+                  id="wxRain"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  stroke="#2f3b34"
+                  stroke-width="1.2"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  hidden
+                >
+                  <path
+                    d="M6 14 H17 A4 4 0 0 0 16.5 6 A5.5 5.5 0 0 0 6 7.5 A3.3 3.3 0 0 0 6 14 Z"
+                    fill="#f7f8de"
+                  />
+                  <path
+                    d="M8 17 L7 20 M12 17 L11 20 M16 17 L15 20"
+                    stroke="#4a7fc0"
+                    stroke-width="1.8"
+                  />
+                  <path
+                    d="M12.5 9 L10.5 12 H13 L11.5 14.5"
+                    stroke="#e0574b"
+                    stroke-width="1.2"
+                    fill="none"
+                  />
+                </svg>
+                <div class="weather-text">
+                  <span class="temp" id="temp">--°</span>
+                  <span class="cond" id="cond">&nbsp;</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="surprise-col">
+          <button
+            class="btn panel surprise"
+            id="surprise"
+            type="button"
+            aria-pressed="false"
+          >
+            <span class="surprise-icon"
+              ><svg
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="none"
+                stroke="#fff3cf"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4.5 11 H19.5 V20.5 H4.5 Z M3 7.5 H21 V11 H3 Z M12 7.5 V20.5 M12 7.5 C10.5 3.5 6.5 4 7.5 6.5 C8.3 7.6 12 7.5 12 7.5 Z M12 7.5 C13.5 3.5 17.5 4 16.5 6.5 C15.7 7.6 12 7.5 12 7.5 Z"
+                /></svg
+            ></span>
+            surprise me
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="window apps-window" aria-label="My apps">
+          <div class="titlebar">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="titlebar-text">my_apps</span>
+            <span class="titlebar-text titlebar-meta">6 items</span>
+          </div>
+          <div class="apps-body">
+            <div class="intro">
+              <div class="avatar">
+                <svg
+                  viewBox="-12 -12 24 24"
+                  width="38"
+                  height="38"
+                  aria-hidden="true"
+                >
+                  <g
+                    fill="#fff3cf"
+                    stroke="#2f3b34"
+                    stroke-width="0.9"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M0 0 C 5 -3, 7 -9, 0 -11 C -7 -9, -5 -3, 0 0 Z" />
+                    <path
+                      transform="rotate(120)"
+                      d="M0 0 C 5 -3, 7 -9, 0 -11 C -7 -9, -5 -3, 0 0 Z"
+                    />
+                    <path
+                      transform="rotate(240)"
+                      d="M0 0 C 5 -3, 7 -9, 0 -11 C -7 -9, -5 -3, 0 0 Z"
+                    />
+                  </g>
+                  <circle
+                    r="4.2"
+                    fill="#f2d27a"
+                    stroke="#2f3b34"
+                    stroke-width="0.9"
+                  />
+                  <path
+                    d="M0 -4 V0 M0 0 L3.6 2.1 M0 0 L-3.6 2.1"
+                    stroke="#2f3b34"
+                    stroke-width="0.6"
+                    fill="none"
+                  />
+                </svg>
+              </div>
+              <div class="intro-name">
+                <h1>Irma Houver Sing</h1>
+                <span class="role">Fullstack developer</span>
+              </div>
+              <div class="bubble">hello! pick an app to try</div>
+            </div>
+
+            <ul class="apps" role="list">
+              <li>
+                <a class="tile" href="https://github.com/irmahs">
+                  <span class="tile-head">
+                    <span
+                      class="app-icon"
+                      style="--ic-bg: #4a7fc0; --ic-fg: #fff3cf"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M8 7 L3 12 L8 17 M16 7 L21 12 L16 17 M14 5 L10 19"
+                        /></svg
+                    ></span>
+                    <span class="status">code</span>
+                  </span>
+                  <span class="app-name">GitHub</span>
+                  <span class="app-desc"
+                    >Repos, side projects and experiments</span
+                  >
+                  <span class="open"
+                    >open<svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12 H19 M13 6 L19 12 L13 18" /></svg
+                  ></span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="tile"
+                  href="https://slot-machine-meal-planner.vercel.app"
+                >
+                  <span class="tile-head">
+                    <span
+                      class="app-icon"
+                      style="--ic-bg: #3b4a42; --ic-fg: #fff3cf"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M6 9 H18 A4 4 0 0 1 18 17 H16 L14 15 H10 L8 17 H6 A4 4 0 0 1 6 9 Z M8 11 V15 M6 13 H10"
+                        /></svg
+                    ></span>
+                    <span class="status">live</span>
+                  </span>
+                  <span class="app-name">Slot Machine Meal Planner</span>
+                  <span class="app-desc"
+                    >Pull the lever and let it pick what's for dinner</span
+                  >
+                  <span class="open"
+                    >open<svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12 H19 M13 6 L19 12 L13 18" /></svg
+                  ></span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="tile"
+                  href="https://alsace-arena-spike-tournament.vercel.app/"
+                >
+                  <span class="tile-head">
+                    <span
+                      class="app-icon"
+                      style="--ic-bg: #e0574b; --ic-fg: #fff3cf"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M8 4 H16 V10 A4 4 0 0 1 8 10 Z M8 6 H5 A3 3 0 0 0 8 11 M16 6 H19 A3 3 0 0 1 16 11 M12 14 V18 M8 20 H16"
+                        /></svg
+                    ></span>
+                    <span class="status">live</span>
+                  </span>
+                  <span class="app-name">Alsace Arena</span>
+                  <span class="app-desc"
+                    >Seasons, matches and standings for a spike tournament</span
+                  >
+                  <span class="open"
+                    >open<svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12 H19 M13 6 L19 12 L13 18" /></svg
+                  ></span>
+                </a>
+              </li>
+              <li>
+                <a class="tile" href="https://www.linkedin.com/in/irma-hs/">
+                  <span class="tile-head">
+                    <span
+                      class="app-icon"
+                      style="--ic-bg: #f2d27a; --ic-fg: #2f3b34"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M3 8 H21 V20 H3 Z M9 8 V5 H15 V8 M3 13 H21 M11 13 V15 H13 V13"
+                        /></svg
+                    ></span>
+                    <span class="status">profile</span>
+                  </span>
+                  <span class="app-name">LinkedIn</span>
+                  <span class="app-desc"
+                    >Experience, background and how to reach me</span
+                  >
+                  <span class="open"
+                    >open<svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12 H19 M13 6 L19 12 L13 18" /></svg
+                  ></span>
+                </a>
+              </li>
+              <li>
+                <a class="tile" href="https://irmahs.github.io/Portfolio/">
+                  <span class="tile-head">
+                    <span
+                      class="app-icon"
+                      style="--ic-bg: #5c8f48; --ic-fg: #fff3cf"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M4 5 A2 2 0 0 1 6 3 H20 V19 H6 A2 2 0 0 0 4 21 Z M4 19 A2 2 0 0 1 6 17 H20"
+                        /></svg
+                    ></span>
+                    <span class="status">site</span>
+                  </span>
+                  <span class="app-name">Portfolio</span>
+                  <span class="app-desc"
+                    >Selected projects, all in one place</span
+                  >
+                  <span class="open"
+                    >open<svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12 H19 M13 6 L19 12 L13 18" /></svg
+                  ></span>
+                </a>
+              </li>
+              <li>
+                <a class="tile" href="https://www.lipsum.com">
+                  <span class="tile-head">
+                    <span
+                      class="app-icon"
+                      style="--ic-bg: #d9786a; --ic-fg: #2f3b34"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M12 3 L14 10 L21 12 L14 14 L12 21 L10 14 L3 12 L10 10 Z"
+                        /></svg
+                    ></span>
+                    <span class="status">tool</span>
+                  </span>
+                  <span class="app-name">Lorem Ipsum</span>
+                  <span class="app-desc"
+                    >Placeholder text for when the words aren't ready</span
+                  >
+                  <span class="open"
+                    >open<svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12 H19 M13 6 L19 12 L13 18" /></svg
+                  ></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </main>
+
+      <section class="window player" aria-label="Music player">
+        <div class="titlebar small">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="titlebar-text">now_playing.mp3</span>
+          <span class="spacer"></span>
+        </div>
+        <div class="player-body">
+          <div class="eq-box" aria-hidden="true">
+            <span class="eq"></span><span class="eq"></span
+            ><span class="eq"></span><span class="eq"></span>
+          </div>
+          <div class="track">
+            <span class="track-title" id="trackTitle"></span>
+            <span class="track-artist" id="trackArtist"></span>
+          </div>
+          <div class="progress">
+            <span id="elapsed">0:00</span>
+            <div class="bar">
+              <div class="bar-fill stripes" id="barFill"></div>
+            </div>
+            <span id="duration">0:00</span>
+          </div>
+          <label class="volume">
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 9 H8 L13 5 V19 L8 15 H4 Z M16 9 C17.5 10.5 17.5 13.5 16 15 M18.5 6.5 C21.5 9.5 21.5 14.5 18.5 17.5"
+              />
+            </svg>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value="70"
+              aria-label="Volume"
+            />
+          </label>
+        </div>
+      </section>
+
+      <footer class="credits">
+        <a href="https://www.flaticon.com">icons from flaticons</a>
+      </footer>
+    </div>
+
+    <!-- "surprise me": a wave of milk tea pours over the screen -->
+    <div class="milk-layer" id="milkLayer" aria-hidden="true" hidden></div>
+
+    <script type="module" src="app.js"></script>
+  </body>
 </html>
