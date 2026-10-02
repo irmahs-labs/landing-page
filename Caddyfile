@@ -1,0 +1,15 @@
+irmahs.dev {
+	root * /srv
+	encode zstd gzip
+	file_server
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}
+
+www.irmahs.dev {
+	redir https://irmahs.dev{uri} permanent
+}
