@@ -5,15 +5,6 @@ import { fmtSeconds } from "@/lib/format";
 
 import { WindowDots } from "./icons";
 
-const Eq = () => (
-  <div aria-hidden="true" className="eq-box">
-    <span className="eq" />
-    <span className="eq" />
-    <span className="eq" />
-    <span className="eq" />
-  </div>
-);
-
 /** What's playing on Spotify right now; `now` drives the progress between polls */
 export const Player = ({ now }: { now: Date | null }) => {
   const { data, fetchedAt } = useNowPlaying();
@@ -44,7 +35,6 @@ export const Player = ({ now }: { now: Date | null }) => {
       </div>
       {track ? (
         <div className="player-body">
-          <Eq />
           <a
             className="track"
             href={track.url ?? "https://open.spotify.com"}
@@ -70,7 +60,6 @@ export const Player = ({ now }: { now: Date | null }) => {
         </div>
       ) : (
         <div className="player-body">
-          <Eq />
           <div className="track">
             <span className="track-title">Nothing playing</span>
             <span className="track-artist">Spotify is quiet</span>

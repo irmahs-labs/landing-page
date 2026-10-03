@@ -736,44 +736,8 @@ h1 {
   gap: 14px;
   padding: 10px 16px;
 }
-.eq-box {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border-radius: 6px;
-  background-color: var(--alt);
-  border: 1.5px solid var(--line);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 3px;
-  padding-bottom: 8px;
-}
-.eq {
-  width: 4px;
-  height: 22px;
-  border-radius: 2px;
-  background-color: var(--text);
-  animation: eq 0.9s ease-in-out infinite;
-  transform-origin: bottom;
-}
-.eq:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.eq:nth-child(3) {
-  animation-delay: -0.6s;
-}
-.eq:nth-child(4) {
-  animation-delay: -0.15s;
-}
-.is-paused .eq,
 .is-paused .stripes {
   animation-play-state: paused;
-}
-/* Flat bars: nothing is playing */
-.is-idle .eq {
-  animation: none;
-  transform: scaleY(0.3);
 }
 .track {
   width: 170px;
@@ -1418,13 +1382,8 @@ h1 {
 
   .player-body {
     display: grid;
-    grid-template-columns: 44px minmax(0, 1fr);
-    column-gap: 12px;
     row-gap: 6px;
     padding: 12px 14px;
-  }
-  .eq-box {
-    grid-row: span 2;
   }
   .track {
     width: auto;
@@ -1458,7 +1417,6 @@ h1 {
   .flower > span,
   .hop,
   .flap,
-  .eq,
   .stripes,
   .drop,
   .flash,
