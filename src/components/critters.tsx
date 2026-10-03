@@ -7,10 +7,8 @@ import { rand } from "@/lib/format";
 import type { Theme } from "@/lib/themes";
 
 interface Critter {
-  bob: number;
   el: HTMLDivElement;
   face: 1 | -1;
-  follower: boolean;
   img: HTMLImageElement;
   s: number;
   sp: number;
@@ -38,7 +36,7 @@ const roam = (a: Critter, W: number, H: number) => {
 };
 
 /**
- * Little animals wandering around; one follows the pointer.
+ * A single animal that follows the pointer, roaming when the pointer is away.
  * Runs as a requestAnimationFrame loop outside React for smooth motion.
  */
 export const Critters = ({ theme }: { theme: Theme }) => {
@@ -47,7 +45,7 @@ export const Critters = ({ theme }: { theme: Theme }) => {
   const list = useRef<Critter[]>([]);
   const reduceMotion = useReducedMotion();
 
-  // Swap every animal's sprite when the theme changes, or clear them
+  // Swap the animal's sprite when the theme changes, or clear it
   useEffect(() => {
     themeRef.current = theme;
     if (!(theme.animal && theme.cls)) {
@@ -70,17 +68,14 @@ export const Critters = ({ theme }: { theme: Theme }) => {
     }
     let mouse: { x: number; y: number } | null = null;
     let prev = performance.now();
-    let nextSpawn = 0;
     let frame = 0;
 
-    const spawn = (follower: boolean, th: Theme) => {
+    const spawn = (th: Theme) => {
       const W = window.innerWidth;
       const H = window.innerHeight;
-      const s = follower ? 120 : rand(50, 120);
+      const s = 120;
       const fromLeft = Math.random() < 0.5;
-      const sp = follower
-        ? (th.cfg?.speed ?? 90) * 1.2
-        : rand(40, 190) * (85 / s) ** 0.3;
+      const sp = (th.cfg?.speed ?? 90) * 1.2;
       const el = document.createElement("div");
       el.className = "critter";
       el.style.width = `${Math.round(s)}px`;
@@ -93,19 +88,15 @@ export const Critters = ({ theme }: { theme: Theme }) => {
       el.append(img);
       root.append(el);
       list.current.push({
-        bob: Math.random() * 6.28,
         el,
         face: fromLeft ? 1 : -1,
-        follower,
         img,
         s,
         sp,
         vx: fromLeft ? sp : -sp,
         vy: 0,
         x: fromLeft ? -s - 10 : W + 10,
-        y: follower
-          ? rand(H * 0.22, H * 0.67)
-          : rand(60, Math.max(80, H - s - 20)),
+        y: rand(H * 0.22, H * 0.67),
       });
     };
 
@@ -122,41 +113,21 @@ export const Critters = ({ theme }: { theme: Theme }) => {
       }
     };
 
-    const step = (dt: number, now: number, th: Theme) => {
+    const step = (dt: number, th: Theme) => {
       const W = window.innerWidth;
       const H = window.innerHeight;
-      if (!list.current.some((a) => a.follower)) {
-        spawn(true, th);
+      if (list.current.length === 0) {
+        spawn(th);
       }
-      if (list.current.length < 10 && now > nextSpawn) {
-        spawn(false, th);
-        nextSpawn = now + rand(900, 2600);
-      }
-      const keep: Critter[] = [];
-      for (const a of list.current) {
-        if (a.follower) {
-          if (mouse) {
-            chase(a, mouse);
-          } else {
-            roam(a, W, H);
-          }
-          a.x += a.vx * dt;
-          a.y += a.vy * dt;
-          keep.push(a);
-        } else {
-          a.bob += dt * 3;
-          a.x += a.vx * dt;
-          a.y += Math.sin(a.bob) * 0.3;
-          if (a.x > -a.s - 40 && a.x < W + 40) {
-            keep.push(a);
-          } else {
-            a.el.remove();
-          }
-        }
-      }
-      list.current = keep;
       const native = th.cfg?.native ?? 1;
-      for (const a of keep) {
+      for (const a of list.current) {
+        if (mouse) {
+          chase(a, mouse);
+        } else {
+          roam(a, W, H);
+        }
+        a.x += a.vx * dt;
+        a.y += a.vy * dt;
         a.el.style.transform = `translate(${a.x.toFixed(1)}px, ${a.y.toFixed(1)}px) scaleX(${a.face * native})`;
       }
     };
@@ -166,7 +137,7 @@ export const Critters = ({ theme }: { theme: Theme }) => {
       prev = now;
       const th = themeRef.current;
       if (th.animal) {
-        step(dt, now, th);
+        step(dt, th);
       }
       frame = requestAnimationFrame(tick);
     };
