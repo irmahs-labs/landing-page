@@ -717,6 +717,63 @@ h1 {
 .player-body {
   padding: 8px;
 }
+.player-idle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+}
+.eq-box {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background-color: var(--alt);
+  border: 1.5px solid var(--line);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  padding-bottom: 8px;
+}
+/* Flat bars: nothing is playing */
+.eq {
+  width: 4px;
+  height: 6px;
+  border-radius: 2px;
+  background-color: var(--text);
+}
+.track {
+  width: 170px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+}
+.track-title {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track-artist {
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loader {
+  flex-grow: 1;
+  height: 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--stripes);
+  background-size: 28px 100%;
+  animation: stripes 0.8s linear infinite;
+}
 .spotify-embed iframe {
   display: block;
   width: 100%;
@@ -807,6 +864,14 @@ h1 {
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+@keyframes stripes {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 28px 0;
   }
 }
 @keyframes hop {
@@ -1291,6 +1356,20 @@ h1 {
     font-size: 13px;
   }
 
+  .player-idle {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 6px;
+    padding: 12px 14px;
+  }
+  .eq-box {
+    grid-row: span 2;
+  }
+  .track {
+    width: auto;
+  }
+
   .sky-body .bob {
     scale: 0.7;
   }
@@ -1316,6 +1395,7 @@ h1 {
   .flower > span,
   .hop,
   .flap,
+  .loader,
   .drop,
   .flash,
   .tiny-pearl,
