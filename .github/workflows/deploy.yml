@@ -35,7 +35,8 @@ jobs:
             git fetch --depth 1 origin main
             git reset --hard origin/main
             (umask 077 && cat > .env)
-            docker compose pull --quiet
-            docker compose up -d --remove-orphans
+            docker compose pull --quiet --ignore-buildable
+            docker compose up -d --build --remove-orphans
             docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
-            docker image prune -f'
+            docker image prune -f
+            docker builder prune -f --filter until=168h'

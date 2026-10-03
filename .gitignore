@@ -3,3 +3,6 @@ node_modules/
 .env
 *.pem
 *_ed25519*
+.next/
+next-env.d.ts
+*.tsbuildinfo

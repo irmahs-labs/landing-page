@@ -15,7 +15,7 @@
     #9cc58a 0 10px,
     #cfe5c2 10px 20px
   );
-  --font: "Fredoka", "Nunito", system-ui, sans-serif;
+  --font: var(--font-fredoka), "Nunito", system-ui, sans-serif;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -46,8 +46,13 @@ button {
 [hidden] {
   display: none !important;
 }
+fieldset {
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
 .km {
-  font-family: "Kantumruy Pro", "Fredoka", sans-serif;
+  font-family: var(--font-kantumruy), var(--font-fredoka), sans-serif;
 }
 
 /* ---------- scenery ---------- */

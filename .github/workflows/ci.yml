@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint and format (Ultracite)
+        run: npm run check
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke test
+        env:
+          SPOTIFY_CLIENT_ID: dummy
+          SPOTIFY_CLIENT_SECRET: dummy
+          SPOTIFY_REFRESH_TOKEN: dummy
+          PORT: 3000
+        run: |
+          cp -r public .next/standalone/
+          cp -r .next/static .next/standalone/.next/
+          node .next/standalone/server.js &
+          for _ in $(seq 30); do curl -s localhost:3000 >/dev/null && break; sleep 0.5; done
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/)" = 200
+          curl -s localhost:3000/ | grep -q "Irma Houver Sing"
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/assets/flowers/amelie.png)" = 200
+          # dummy credentials can't reach Spotify, so expect the 502 fallback
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
+          test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'
+
+      - name: Validate compose and Caddyfile
+        run: |
+          printf 'SPOTIFY_CLIENT_ID=x\nSPOTIFY_CLIENT_SECRET=x\nSPOTIFY_REFRESH_TOKEN=x\n' > .env
+          docker compose config --quiet
+          docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2-alpine \
+            caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+
+      - name: Docker build
+        run: docker build -t landing-page-web .
