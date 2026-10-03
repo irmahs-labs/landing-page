@@ -33,6 +33,12 @@ const HEIGHT = 80;
 
 let api: Promise<IFrameApi> | null = null;
 
+// Set once the visitor's music has started, so we only start it for them once
+let autoStarted = false;
+
+// Browsers only allow sound after the visitor has tapped, clicked or typed
+const hasInteracted = () => navigator.userActivation?.hasBeenActive ?? false;
+
 /** Loads Spotify's iFrame API once per page */
 const loadApi = () => {
   // oxlint-disable-next-line promise/avoid-new -- the API only announces itself through a global callback
@@ -47,8 +53,9 @@ const loadApi = () => {
 };
 
 /**
- * Spotify's embed player for `uri`. When the track changes it loads the new
- * one, and keeps playing if the visitor was already listening.
+ * Spotify's embed player for `uri`. It starts on the visitor's first tap,
+ * click or key press anywhere on the page. When the track changes it loads
+ * the new one, and keeps playing if the visitor was already listening.
  */
 export const SpotifyEmbed = ({ uri }: { uri: string }) => {
   const host = useRef<HTMLDivElement>(null);
@@ -57,6 +64,7 @@ export const SpotifyEmbed = ({ uri }: { uri: string }) => {
   const loadedUri = useRef<string | null>(null);
   const listening = useRef(false);
   const playWhenReady = useRef(false);
+  const ready = useRef(false);
 
   useEffect(() => {
     const el = host.current;
@@ -86,15 +94,20 @@ export const SpotifyEmbed = ({ uri }: { uri: string }) => {
           loadedUri.current = first;
           c.addListener("playback_update", (e) => {
             listening.current = e.data?.isPaused === false;
+            if (listening.current) {
+              autoStarted = true;
+            }
           });
           c.addListener("ready", () => {
-            if (playWhenReady.current) {
+            ready.current = true;
+            if (playWhenReady.current || (!autoStarted && hasInteracted())) {
               playWhenReady.current = false;
               c.play();
             }
           });
           // The track may have changed while the player was loading
           if (latestUri.current !== first) {
+            ready.current = false;
             loadedUri.current = latestUri.current;
             c.loadUri(latestUri.current);
           }
@@ -108,6 +121,7 @@ export const SpotifyEmbed = ({ uri }: { uri: string }) => {
       controller.current?.destroy();
       controller.current = null;
       loadedUri.current = null;
+      ready.current = false;
       el.replaceChildren();
     };
   }, []);
@@ -120,9 +134,25 @@ export const SpotifyEmbed = ({ uri }: { uri: string }) => {
       return;
     }
     playWhenReady.current = listening.current;
+    ready.current = false;
     loadedUri.current = uri;
     c.loadUri(uri);
   }, [uri]);
+
+  // Start the music on the visitor's first tap, click or key press
+  useEffect(() => {
+    const start = () => {
+      if (!autoStarted && ready.current) {
+        controller.current?.play();
+      }
+    };
+    window.addEventListener("click", start);
+    window.addEventListener("keydown", start);
+    return () => {
+      window.removeEventListener("click", start);
+      window.removeEventListener("keydown", start);
+    };
+  }, []);
 
   return <div className="spotify-embed" ref={host} />;
 };
