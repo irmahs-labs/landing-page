@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Lint and format (Ultracite)
+        run: |
+          npm ci
+          npm run check
+
+      - name: API smoke test
+        env:
+          SPOTIFY_CLIENT_ID: dummy
+          SPOTIFY_CLIENT_SECRET: dummy
+          SPOTIFY_REFRESH_TOKEN: dummy
+        run: |
+          node --check api/server.mjs
+          node api/server.mjs &
+          for _ in $(seq 20); do curl -s localhost:3000 >/dev/null && break; sleep 0.5; done
+          # dummy credentials can't reach Spotify, so expect the 502 fallback
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
+          test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/nope)" = 404
+
+      - name: Validate compose and Caddyfile
+        run: |
+          printf 'SPOTIFY_CLIENT_ID=x\nSPOTIFY_CLIENT_SECRET=x\nSPOTIFY_REFRESH_TOKEN=x\n' > .env
+          docker compose config --quiet
+          docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2-alpine \
+            caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
