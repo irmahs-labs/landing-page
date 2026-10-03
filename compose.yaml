@@ -8,21 +8,16 @@ services:
       - "443:443/udp"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./site:/srv:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - api
+      - web
 
-  api:
-    image: node:22-alpine
+  web:
+    build: .
+    image: landing-page-web
     restart: unless-stopped
-    command: ["node", "/app/server.mjs"]
-    working_dir: /app
-    user: node
     env_file: .env
-    volumes:
-      - ./api:/app:ro
 
 volumes:
   caddy_data:
