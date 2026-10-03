@@ -5,10 +5,7 @@ import { useEffect, useState } from "react";
 // Matches the opening animation in globals.css
 const OPEN_MS = 1600;
 
-/**
- * Theme-coloured stage curtains over the page. Tapping them draws them apart,
- * and that tap is also what lets the browser start the music.
- */
+/** Theme-coloured stage curtains over the page; tapping draws them apart */
 export const Curtain = ({ onOpen }: { onOpen: () => void }) => {
   const [opening, setOpening] = useState(false);
   const [gone, setGone] = useState(false);

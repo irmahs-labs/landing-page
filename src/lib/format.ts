@@ -2,6 +2,10 @@
 export const fmtMinutes = (x: number) =>
   `${String(Math.floor(x / 60)).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`;
 
+/** Seconds as M:SS */
+export const fmtSeconds = (s: number) =>
+  `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
 // The design's reference canvas, used to turn its px positions into %
 export const W0 = 1440;
 export const H0 = 900;

@@ -10,8 +10,6 @@ export type NowPlaying =
       playing: boolean;
       progressMs: number;
       title: string;
-      /** spotify:track:… or spotify:episode:…, for the embed player */
-      uri: string;
       url: string | null;
     };
 
@@ -29,7 +27,6 @@ interface CurrentlyPlaying {
         external_urls?: { spotify?: string };
         name: string;
         type: "track";
-        uri: string;
       }
     | {
         duration_ms: number;
@@ -38,7 +35,6 @@ interface CurrentlyPlaying {
         name: string;
         show?: { name: string };
         type: "episode";
-        uri: string;
       }
     | null;
   progress_ms: number;
@@ -125,7 +121,6 @@ const fetchNowPlaying = async (): Promise<NowPlaying> => {
     playing: data.is_playing,
     progressMs: data.progress_ms,
     title: item.name,
-    uri: item.uri,
     url: item.external_urls?.spotify ?? null,
   };
 };
