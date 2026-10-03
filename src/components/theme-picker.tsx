@@ -9,7 +9,10 @@ interface ThemePickerProps {
 export const ThemePicker = ({ current, onPick }: ThemePickerProps) => (
   <div className="theme-col">
     <fieldset aria-label="Colour theme" className="panel theme-panel">
-      <span className="panel-label">Theme</span>
+      <div className="panel-head">
+        <span className="panel-label">Theme</span>
+        <span className="panel-name">{current.label}</span>
+      </div>
       <div className="swatches">
         {THEME_ORDER.map((id) => {
           const th = THEMES[id];
