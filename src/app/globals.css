@@ -78,6 +78,11 @@ fieldset {
   opacity: 0.2;
   transition: opacity 1.2s ease;
 }
+/* The theme's CSS pattern and its image tile, each filling the screen */
+.patterns > div > div {
+  position: absolute;
+  inset: 0;
+}
 /* Light lines on the dark night sky */
 .patterns.is-night {
   filter: invert(1) hue-rotate(180deg);
