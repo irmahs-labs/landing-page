@@ -283,8 +283,7 @@ main {
 .bubble,
 .avatar,
 .status,
-.seg,
-.bar {
+.seg {
   transition:
     background-color 0.8s var(--ease),
     border-color 0.8s var(--ease),
@@ -716,6 +715,9 @@ h1 {
   max-width: 100%;
 }
 .player-body {
+  padding: 8px;
+}
+.player-idle {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -734,22 +736,12 @@ h1 {
   gap: 3px;
   padding-bottom: 8px;
 }
+/* Flat bars: nothing is playing */
 .eq {
   width: 4px;
-  height: 22px;
+  height: 6px;
   border-radius: 2px;
   background-color: var(--text);
-  animation: eq 0.9s ease-in-out infinite;
-  transform-origin: bottom;
-}
-.eq:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.eq:nth-child(3) {
-  animation-delay: -0.6s;
-}
-.eq:nth-child(4) {
-  animation-delay: -0.15s;
 }
 .track {
   width: 170px;
@@ -758,18 +750,6 @@ h1 {
   flex-direction: column;
   gap: 1px;
   overflow: hidden;
-}
-.track,
-.track:hover {
-  color: inherit;
-  text-decoration: none;
-}
-.track[href]:hover .track-title {
-  text-decoration: underline;
-}
-.is-paused .eq,
-.is-paused .stripes {
-  animation-play-state: paused;
 }
 .track-title {
   font-size: 16px;
@@ -785,43 +765,21 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.progress {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-.bar {
+.loader {
   flex-grow: 1;
   height: 10px;
   border-radius: 999px;
   border: 1.5px solid var(--line);
-  background-color: var(--panel);
-  overflow: hidden;
-}
-.bar-fill {
-  height: 100%;
-  width: 0;
   background: var(--stripes);
   background-size: 28px 100%;
-  border-right: 1.5px solid var(--line);
-  transition: width 1s linear;
-}
-.stripes {
   animation: stripes 0.8s linear infinite;
 }
-.volume {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.volume input {
-  width: 84px;
-  accent-color: #3b4a42;
+.spotify-embed iframe {
+  display: block;
+  width: 100%;
+  height: 80px;
+  border: 0;
+  border-radius: 12px;
 }
 
 /* ---------- credits ---------- */
@@ -908,13 +866,12 @@ h1 {
     transform: translateY(-10px);
   }
 }
-@keyframes eq {
-  0%,
-  100% {
-    transform: scaleY(0.3);
+@keyframes stripes {
+  from {
+    background-position: 0 0;
   }
-  50% {
-    transform: scaleY(1);
+  to {
+    background-position: 28px 0;
   }
 }
 @keyframes hop {
@@ -931,14 +888,6 @@ h1 {
   }
   to {
     transform: translateY(8px) rotate(4deg);
-  }
-}
-@keyframes stripes {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 28px 0;
   }
 }
 @keyframes rainfall {
@@ -1407,7 +1356,7 @@ h1 {
     font-size: 13px;
   }
 
-  .player-body {
+  .player-idle {
     display: grid;
     grid-template-columns: 44px minmax(0, 1fr);
     column-gap: 12px;
@@ -1419,12 +1368,6 @@ h1 {
   }
   .track {
     width: auto;
-  }
-  .progress {
-    font-size: 12px;
-  }
-  .volume {
-    display: none;
   }
 
   .sky-body .bob {
@@ -1448,12 +1391,11 @@ h1 {
   .star,
   .rays,
   .bob,
-  .eq,
   .flower,
   .flower > span,
   .hop,
   .flap,
-  .stripes,
+  .loader,
   .drop,
   .flash,
   .tiny-pearl,
@@ -1468,8 +1410,7 @@ h1 {
   .flowers {
     display: none !important;
   }
-  .tile,
-  .bar-fill {
+  .tile {
     transition: none;
   }
 }
