@@ -17,6 +17,7 @@ import { AppsWindow } from "./apps-window";
 import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
 import { Critters } from "./critters";
+import { Curtain } from "./curtain";
 import { MilkLayer } from "./milk-layer";
 import { Player } from "./player";
 import { Scene } from "./scene";
@@ -45,6 +46,8 @@ export const Landing = () => {
   // Mirrors `weather` so the fetch effect can check freshness without depending on it
   const weatherCache = useRef(weather);
   const [milk, setMilk] = useState(false);
+  // The page sits behind the curtain until the visitor opens it
+  const [curtainOpen, setCurtainOpen] = useState(false);
   const milkTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const themeId: ThemeId = boba ? "boba" : savedTheme;
@@ -146,7 +149,7 @@ export const Landing = () => {
       />
       <Critters theme={th} />
 
-      <div className="page">
+      <div className="page" inert={!curtainOpen}>
         <header className="top">
           <ThemePicker current={th} onPick={pickTheme} />
           <div className="center-col">
@@ -168,6 +171,7 @@ export const Landing = () => {
       </div>
 
       {milk && <MilkLayer />}
+      <Curtain onOpen={() => setCurtainOpen(true)} />
     </>
   );
 };

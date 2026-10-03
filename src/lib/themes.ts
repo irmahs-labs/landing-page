@@ -229,4 +229,5 @@ export const themeVars = (th: Theme) => ({
   "--muted": th.c.muted,
   "--panel": th.c.panel,
   "--stripes": th.stripes,
+  "--swatch": th.swatch,
 });
