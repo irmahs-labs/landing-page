@@ -72,8 +72,17 @@ interface PatternLayer {
   theme: Theme;
 }
 
-/** Background pattern; crossfades to the new theme's when `animate` is set */
-const Patterns = ({ animate, theme }: { animate: boolean; theme: Theme }) => {
+interface PatternsProps {
+  animate: boolean;
+  night: boolean;
+  theme: Theme;
+}
+
+/**
+ * Background pattern; crossfades to the new theme's when `animate` is set.
+ * At night it turns to light lines so it still shows against the dark sky.
+ */
+const Patterns = ({ animate, night, theme }: PatternsProps) => {
   const [layers, setLayers] = useState<PatternLayer[]>([
     { id: 0, state: "still", theme },
   ]);
@@ -107,7 +116,7 @@ const Patterns = ({ animate, theme }: { animate: boolean; theme: Theme }) => {
   }, [fading]);
 
   return (
-    <div className="patterns">
+    <div className={`patterns${night ? " is-night" : ""}`}>
       {layers.map(({ id, state, theme: th }) => {
         const img = th.patternImg ? PATTERN_IMG[th.patternImg] : null;
         return (
@@ -232,7 +241,6 @@ export const Scene = ({ animatePattern, phase, rainy, theme }: SceneProps) => {
 
   return (
     <div aria-hidden="true" className="scene">
-      <Patterns animate={animatePattern} theme={theme} />
       <div
         className="sky-tint"
         style={{
@@ -240,6 +248,8 @@ export const Scene = ({ animatePattern, phase, rainy, theme }: SceneProps) => {
           opacity: tintOpacity.toFixed(2),
         }}
       />
+      {/* Above the tint, so the night sky doesn't hide it */}
+      <Patterns animate={animatePattern} night={!isDay} theme={theme} />
       <div
         className="stars"
         hidden={isDay}

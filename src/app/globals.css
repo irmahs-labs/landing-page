@@ -69,10 +69,21 @@ fieldset {
   position: absolute;
   inset: 0;
 }
+.patterns {
+  transition: filter 1.2s ease;
+}
 .patterns > div {
   position: absolute;
   inset: 0;
   opacity: 0.2;
+  transition: opacity 1.2s ease;
+}
+/* Light lines on the dark night sky */
+.patterns.is-night {
+  filter: invert(1) hue-rotate(180deg);
+}
+.patterns.is-night > div {
+  opacity: 0.28;
 }
 .pattern-in {
   animation: xIn 0.8s var(--ease) both;
