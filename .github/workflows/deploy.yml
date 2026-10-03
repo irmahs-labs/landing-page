@@ -37,6 +37,5 @@ jobs:
             (umask 077 && cat > .env)
             docker compose pull --quiet --ignore-buildable
             docker compose up -d --build --remove-orphans
-            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
             docker image prune -f
             docker builder prune -f --filter until=168h'

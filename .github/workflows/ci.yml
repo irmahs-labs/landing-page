@@ -50,12 +50,10 @@ jobs:
           test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
           test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'
 
-      - name: Validate compose and Caddyfile
+      - name: Validate compose
         run: |
           printf 'SPOTIFY_CLIENT_ID=x\nSPOTIFY_CLIENT_SECRET=x\nSPOTIFY_REFRESH_TOKEN=x\n' > .env
           docker compose config --quiet
-          docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2-alpine \
-            caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 
       - name: Docker build
         run: docker build -t landing-page-web .
