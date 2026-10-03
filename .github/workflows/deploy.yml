@@ -21,12 +21,20 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
 
       - name: Deploy on server
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
         run: |
+          # .env is sent over stdin so the secrets never appear in a command line
+          printf 'SPOTIFY_CLIENT_ID=%s\nSPOTIFY_CLIENT_SECRET=%s\nSPOTIFY_REFRESH_TOKEN=%s\n' \
+            "$SPOTIFY_CLIENT_ID" "$SPOTIFY_CLIENT_SECRET" "$SPOTIFY_REFRESH_TOKEN" |
           ssh deploy@${{ secrets.DEPLOY_HOST }} 'set -e
             cd /srv/landing-page
             [ -d .git ] || git clone https://github.com/${{ github.repository }}.git .
             git fetch --depth 1 origin main
             git reset --hard origin/main
+            (umask 077 && cat > .env)
             docker compose pull --quiet
             docker compose up -d --remove-orphans
             docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
