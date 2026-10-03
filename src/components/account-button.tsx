@@ -62,10 +62,10 @@ export const AccountButton = () => {
           // oxlint-disable-next-line next/no-img-element -- remote avatar, sized by CSS
           <img
             alt=""
-            height={30}
+            height={38}
             referrerPolicy="no-referrer"
             src={user.image}
-            width={30}
+            width={38}
           />
         ) : (
           <span aria-hidden="true">{firstName.charAt(0).toUpperCase()}</span>
