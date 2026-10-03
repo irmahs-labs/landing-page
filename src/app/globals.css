@@ -398,6 +398,9 @@ input:focus-visible {
   color: var(--muted);
   padding-left: 10px;
 }
+.panel-name {
+  display: none;
+}
 .swatches {
   display: grid;
   grid-template-columns: repeat(6, 44px);
@@ -1256,56 +1259,187 @@ h1 {
     margin-left: 0;
   }
 }
+/* Phone layout: city + surprise on one row, then theme, clock, apps, player */
 @media (max-width: 600px) {
+  .page {
+    gap: 12px;
+    padding: 16px 16px 10px;
+  }
   .top {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "center" "theme" "surprise";
-    justify-items: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "city surprise" "theme theme" "clock clock";
+    align-items: center;
+    gap: 12px;
   }
   .center-col {
+    display: contents;
+  }
+  .segmented {
+    grid-area: city;
+    justify-self: start;
+    gap: 2px;
+    padding: 3px;
+  }
+  .seg {
+    padding: 0 14px 0 10px;
+    font-size: 15px;
+  }
+  .clock-window {
+    grid-area: clock;
     width: 100%;
   }
-  .theme-col {
-    align-items: center;
-  }
-  .pill {
-    margin-left: 0;
-  }
   .surprise-col {
-    justify-self: center;
     padding-top: 0;
   }
-  .clock-body {
-    flex-wrap: wrap;
-    padding: 12px 16px 14px;
+
+  .theme-col {
+    align-items: stretch;
+    padding-top: 0;
   }
+  .theme-panel {
+    padding: 8px 10px 6px;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+  }
+  .panel-label {
+    padding-left: 0;
+  }
+  .panel-name {
+    display: inline;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .pill {
+    display: none;
+  }
+  .swatches {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    justify-items: center;
+  }
+
+  .surprise {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    justify-content: center;
+  }
+  .surprise-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .clock-body {
+    gap: 10px;
+    padding: 12px 14px 14px;
+  }
+  .clock-time {
+    font-size: 36px;
+  }
+  .clock-date {
+    font-size: 14px;
+  }
+  .clock-sun {
+    font-size: 12px;
+  }
+  .weather {
+    padding: 6px 10px 6px 8px;
+  }
+  .wx {
+    width: 36px;
+    height: 36px;
+  }
+  .temp {
+    font-size: 26px;
+  }
+  .cond {
+    font-size: 12px;
+  }
+
   .apps-body {
     padding: 14px 14px 16px;
   }
-  .apps {
-    grid-template-columns: 1fr;
+  .avatar {
+    width: 46px;
+    height: 46px;
+  }
+  .avatar svg {
+    width: 32px;
+    height: 32px;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  .role {
+    font-size: 12px;
+  }
+  .bubble {
+    display: none;
   }
   .tile {
-    min-height: 0;
+    min-height: 160px;
+    gap: 6px;
+    padding: 12px;
   }
+  .app-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .app-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .status {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  .app-name {
+    font-size: 17px;
+  }
+  .app-desc {
+    font-size: 13px;
+  }
+
   .player-body {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 6px;
+    padding: 12px 14px;
+  }
+  .eq-box {
+    grid-row: span 2;
   }
   .track {
-    flex: 1 1 0;
     width: auto;
   }
   .progress {
-    flex-basis: 100%;
-    order: 3;
+    font-size: 12px;
   }
   .volume {
     display: none;
   }
+
+  .sky-body .bob {
+    scale: 0.7;
+  }
 }
 @media (max-width: 360px) {
-  .swatches {
-    grid-template-columns: repeat(4, 44px);
+  .seg {
+    padding: 0 10px 0 8px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 340px) {
+  .seg svg {
+    display: none;
   }
 }
 

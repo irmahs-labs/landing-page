@@ -73,7 +73,8 @@ export const Critters = ({ theme }: { theme: Theme }) => {
     const spawn = (th: Theme) => {
       const W = window.innerWidth;
       const H = window.innerHeight;
-      const s = 120;
+      // Smaller on phones, as in the mobile design
+      const s = W <= 600 ? 84 : 120;
       const fromLeft = Math.random() < 0.5;
       const sp = (th.cfg?.speed ?? 90) * 1.2;
       const el = document.createElement("div");
