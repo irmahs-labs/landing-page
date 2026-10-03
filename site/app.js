@@ -992,17 +992,6 @@ const burst = (tile) => {
 let nowPlaying = null;
 let fetchedAt = 0;
 
-const loadNowPlaying = async () => {
-  try {
-    const res = await fetch("/api/now-playing", { cache: "no-store" });
-    nowPlaying = res.ok ? await res.json() : null;
-  } catch {
-    nowPlaying = null;
-  }
-  fetchedAt = Date.now();
-  renderTrack();
-};
-
 const renderTrack = () => {
   const player = $(".player");
   const link = $("#trackLink");
@@ -1026,6 +1015,17 @@ const renderTrack = () => {
   $("#elapsed").textContent = fmtS(pos);
   $("#duration").textContent = fmtS(dur);
   $("#barFill").style.width = `${((pos / dur) * 100).toFixed(1)}%`;
+};
+
+const loadNowPlaying = async () => {
+  try {
+    const res = await fetch("/api/now-playing", { cache: "no-store" });
+    nowPlaying = res.ok ? await res.json() : null;
+  } catch {
+    nowPlaying = null;
+  }
+  fetchedAt = Date.now();
+  renderTrack();
 };
 
 /* ------------------------------------------------------------------
