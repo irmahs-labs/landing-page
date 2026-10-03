@@ -13,6 +13,7 @@ import type { ThemeId } from "@/lib/themes";
 import { fetchWeather } from "@/lib/weather";
 import type { Weather } from "@/lib/weather";
 
+import { AccountButton } from "./account-button";
 import { AppsWindow } from "./apps-window";
 import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
@@ -153,7 +154,10 @@ export const Landing = () => {
             <CityToggle current={cityId} onPick={saveCity} />
             <ClockWindow cityId={cityId} now={now} phase={phase} weather={wx} />
           </div>
-          <SurpriseButton active={boba} onClick={pourBoba} />
+          <div className="surprise-col">
+            <AccountButton />
+            <SurpriseButton active={boba} onClick={pourBoba} />
+          </div>
         </header>
 
         <main>

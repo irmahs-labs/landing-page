@@ -285,6 +285,11 @@ fieldset {
   grid-area: surprise;
   justify-self: end;
   padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  /* Both buttons as wide as the wider one, so they read as a pair */
+  align-items: stretch;
+  gap: 10px;
 }
 main {
   width: 100%;
@@ -553,6 +558,38 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ---------- account ---------- */
+/* Sized exactly like .surprise below it */
+.account {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 0 7px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 500;
+  color: inherit;
+  text-decoration: none;
+}
+.account-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #fff;
+  border: 1.5px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+.account-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ---------- apps ---------- */
@@ -1263,6 +1300,9 @@ h1 {
   }
   .surprise-col {
     padding-top: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
   }
 
   .theme-col {
@@ -1300,6 +1340,13 @@ h1 {
     padding: 0;
     justify-content: center;
   }
+  .account {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    justify-content: center;
+  }
+  .account-text,
   .surprise-text {
     position: absolute;
     width: 1px;
