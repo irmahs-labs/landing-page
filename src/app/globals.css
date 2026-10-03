@@ -68,10 +68,26 @@ fieldset {
   position: absolute;
   inset: 0;
 }
+.patterns {
+  transition: filter 1.2s ease;
+}
 .patterns > div {
   position: absolute;
   inset: 0;
   opacity: 0.2;
+  transition: opacity 1.2s ease;
+}
+/* The theme's CSS pattern and its image tile, each filling the screen */
+.patterns > div > div {
+  position: absolute;
+  inset: 0;
+}
+/* Light lines on the dark night sky */
+.patterns.is-night {
+  filter: invert(1) hue-rotate(180deg);
+}
+.patterns.is-night > div {
+  opacity: 0.28;
 }
 .pattern-in {
   animation: xIn 0.8s var(--ease) both;
@@ -715,33 +731,13 @@ h1 {
   max-width: 100%;
 }
 .player-body {
-  padding: 8px;
-}
-.player-idle {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 10px 16px;
 }
-.eq-box {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border-radius: 6px;
-  background-color: var(--alt);
-  border: 1.5px solid var(--line);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 3px;
-  padding-bottom: 8px;
-}
-/* Flat bars: nothing is playing */
-.eq {
-  width: 4px;
-  height: 6px;
-  border-radius: 2px;
-  background-color: var(--text);
+.is-paused .stripes {
+  animation-play-state: paused;
 }
 .track {
   width: 170px;
@@ -750,6 +746,14 @@ h1 {
   flex-direction: column;
   gap: 1px;
   overflow: hidden;
+}
+.track,
+.track:hover {
+  color: inherit;
+  text-decoration: none;
+}
+.track[href]:hover .track-title {
+  text-decoration: underline;
 }
 .track-title {
   font-size: 16px;
@@ -765,21 +769,41 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.loader {
+.progress {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.bar {
   flex-grow: 1;
   height: 10px;
   border-radius: 999px;
   border: 1.5px solid var(--line);
+  background-color: var(--panel);
+  overflow: hidden;
+  transition:
+    background-color 0.8s var(--ease),
+    border-color 0.8s var(--ease);
+}
+.bar-fill {
+  height: 100%;
+  width: 0;
   background: var(--stripes);
   background-size: 28px 100%;
-  animation: stripes 0.8s linear infinite;
+  border-right: 1.5px solid var(--line);
+  transition: width 1s linear;
 }
-.spotify-embed iframe {
-  display: block;
+/* Nothing playing: a full bar whose stripes keep moving */
+.is-idle .bar-fill {
   width: 100%;
-  height: 80px;
-  border: 0;
-  border-radius: 12px;
+  border-right: 0;
+}
+.stripes {
+  animation: stripes 0.8s linear infinite;
 }
 
 /* ---------- credits ---------- */
@@ -1356,18 +1380,16 @@ h1 {
     font-size: 13px;
   }
 
-  .player-idle {
+  .player-body {
     display: grid;
-    grid-template-columns: 44px minmax(0, 1fr);
-    column-gap: 12px;
     row-gap: 6px;
     padding: 12px 14px;
   }
-  .eq-box {
-    grid-row: span 2;
-  }
   .track {
     width: auto;
+  }
+  .progress {
+    font-size: 12px;
   }
 
   .sky-body .bob {
@@ -1395,7 +1417,7 @@ h1 {
   .flower > span,
   .hop,
   .flap,
-  .loader,
+  .stripes,
   .drop,
   .flash,
   .tiny-pearl,
@@ -1410,7 +1432,8 @@ h1 {
   .flowers {
     display: none !important;
   }
-  .tile {
+  .tile,
+  .bar-fill {
     transition: none;
   }
 }

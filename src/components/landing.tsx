@@ -160,7 +160,7 @@ export const Landing = () => {
           <AppsWindow theme={th} />
         </main>
 
-        <Player />
+        <Player now={now} />
 
         <footer className="credits">
           <a href="https://www.flaticon.com">icons from flaticons</a>
