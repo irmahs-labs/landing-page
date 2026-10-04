@@ -21,7 +21,7 @@ export const APPS: readonly AppLink[] = [
   },
   {
     desc: "Pull the lever and let it pick what's for dinner",
-    href: "https://slot-machine-meal-planner.vercel.app",
+    href: "https://sleepy-spinner.irmahs.dev",
     icon: {
       bg: "#3b4a42",
       fg: "#fff3cf",
