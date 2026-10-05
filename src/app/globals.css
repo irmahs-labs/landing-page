@@ -424,6 +424,8 @@ input:focus-visible {
   text-transform: uppercase;
   color: var(--muted);
   padding-left: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .panel-head {
   display: flex;
@@ -1335,9 +1337,14 @@ input:focus-visible {
   .panel-label {
     padding-left: 0;
   }
+  /* A long name ("The Cailleach Bheur · black") ends in "…" before the switch */
   .panel-name {
     display: inline;
+    min-width: 0;
     margin-left: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 13px;
     font-weight: 500;
   }

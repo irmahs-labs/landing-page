@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { APPS } from "@/lib/apps";
 import type { AppLink } from "@/lib/apps";
+import { BASE_THEME } from "@/lib/themes";
 import type { Theme } from "@/lib/themes";
 
 import { WindowDots } from "./icons";
@@ -55,8 +56,9 @@ const Tile = ({ app, theme }: { app: AppLink; theme: Theme }) => {
     return () => clearTimeout(t);
   }, [burst]);
 
+  // Cute Matcha has no flower or animal to throw, so its tiles don't burst
   const start = () => {
-    if (!reduceMotion) {
+    if (!reduceMotion && theme.id !== BASE_THEME) {
       setBurst(Date.now());
     }
   };
