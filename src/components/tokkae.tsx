@@ -1,25 +1,26 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { CHANGELOG } from "@/lib/changelog";
-import { BUG, FRAME_NAMES, FRAMES, runsOf } from "@/lib/tokkae";
+import { FRAMES, runsOf } from "@/lib/tokkae";
 import { Brain } from "@/lib/tokkae-brain";
 import type { Action, Pointer, World } from "@/lib/tokkae-brain";
 
 import { Window } from "./window";
 
 const Sprite = ({
-  className,
+  hidden,
   rows,
 }: {
-  className?: string;
+  hidden?: boolean;
   rows: readonly string[];
 }) => (
   <svg
     aria-hidden="true"
-    className={className}
+    className={hidden ? "is-off" : undefined}
     viewBox={`0 0 ${rows[0]?.length ?? 0} ${rows.length}`}
   >
     {runsOf(rows).map((r) => (
@@ -72,12 +73,14 @@ const PatchNotes = ({ onClose }: { onClose: () => void }) => {
  * Tokkae, the pixel gecko. It walks in from one side when someone arrives
  * and announces the latest changes, then wanders: eating bugs, napping,
  * waving, typing, jumping onto windows, and running after the cursor.
+ * Click it, or pick it up and drop it, and it gets angry and chases you.
  * With reduced motion it stands still in the corner and just announces.
  */
 export const Tokkae = () => {
   const reduceMotion = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
-  const bugRef = useRef<HTMLDivElement>(null);
+  const brainRef = useRef<Brain | null>(null);
+  const pointerRef = useRef<Pointer | null>(null);
   const [action, setAction] = useState<Action>("enter");
   const [notesOpen, setNotesOpen] = useState(true);
   const notesOpenRef = useRef(true);
@@ -89,20 +92,29 @@ export const Tokkae = () => {
 
   useEffect(() => {
     const el = root.current;
-    const bug = bugRef.current;
-    if (!(el && bug)) {
+    if (!el) {
       return;
     }
+    const frames = [...el.querySelectorAll(".tokkae-sprite > svg")];
+    let shownFrame = 0;
+    const showFrame = (i: number) => {
+      if (i === shownFrame) {
+        return;
+      }
+      frames[shownFrame]?.classList.add("is-off");
+      frames[i]?.classList.remove("is-off");
+      shownFrame = i;
+    };
+
     if (reduceMotion) {
       const world = measure(el);
       el.style.transform = `translate(16px, ${world.vh - world.h - 4}px)`;
-      el.dataset.frame = "idle";
       el.dataset.side = "left";
       return;
     }
 
     const brain = new Brain(measure(el), Math.random() < 0.5, setAction);
-    let pointer: Pointer | null = null;
+    brainRef.current = brain;
     let prev = performance.now();
     let frame = 0;
 
@@ -113,27 +125,27 @@ export const Tokkae = () => {
         now,
         dt,
         measure(el),
-        pointer,
+        pointerRef.current,
         notesOpenRef.current
       );
       if (pose.closeNotes) {
         notesOpenRef.current = false;
         setNotesOpen(false);
       }
-      el.dataset.frame = pose.frame;
+      showFrame(pose.frame);
       el.dataset.flip = pose.flip ? "1" : "0";
       el.dataset.side = pose.side;
       el.style.transform = `translate(${pose.x.toFixed(1)}px, ${pose.y.toFixed(1)}px)`;
-      bug.hidden = !pose.bug;
-      if (pose.bug) {
-        bug.style.transform = `translate(${(pose.bug.x - bug.offsetWidth / 2).toFixed(1)}px, ${(pose.bug.y - bug.offsetHeight).toFixed(1)}px)`;
-      }
       frame = requestAnimationFrame(tick);
     };
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === "mouse") {
-        pointer = { at: performance.now(), x: e.clientX, y: e.clientY };
+        pointerRef.current = {
+          at: performance.now(),
+          x: e.clientX,
+          y: e.clientY,
+        };
       }
     };
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -141,35 +153,77 @@ export const Tokkae = () => {
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
+      brainRef.current = null;
     };
   }, [reduceMotion]);
+
+  // A click makes it angry; a drag picks it up, and dropping it does too
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const brain = brainRef.current;
+    const el = root.current;
+    const onNotes =
+      e.target instanceof Element && e.target.closest(".patch-notes");
+    if (!(brain && el) || onNotes || e.button !== 0) {
+      return;
+    }
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    const start = { x: e.clientX, y: e.clientY };
+    let held = false;
+
+    const move = (ev: PointerEvent) => {
+      pointerRef.current = {
+        at: performance.now(),
+        x: ev.clientX,
+        y: ev.clientY,
+      };
+      const far = Math.hypot(ev.clientX - start.x, ev.clientY - start.y) > 6;
+      if (!held && far) {
+        held = true;
+        brain.grab(performance.now());
+        el.classList.add("is-held");
+      }
+      if (held) {
+        brain.holdAt(ev.clientX, ev.clientY, measure(el));
+      }
+    };
+    const up = (ev: PointerEvent) => {
+      pointerRef.current = {
+        at: performance.now(),
+        x: ev.clientX,
+        y: ev.clientY,
+      };
+      if (held) {
+        brain.release(performance.now());
+      } else {
+        brain.poke(performance.now());
+      }
+      el.classList.remove("is-held");
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+      el.removeEventListener("pointercancel", up);
+    };
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+  };
 
   // With reduced motion Tokkae only ever announces
   const shown = reduceMotion ? "announce" : action;
 
   return (
     <div className="tokkae-layer">
-      <div className="tokkae-bug" hidden ref={bugRef}>
-        <Sprite rows={BUG} />
-      </div>
-      <div className="tokkae" data-frame="walk1" ref={root}>
+      <div
+        className="tokkae"
+        onPointerDown={onPointerDown}
+        ref={root}
+        title="tokkae"
+      >
         <div className="tokkae-sprite">
-          {FRAME_NAMES.map((name) => (
-            <Sprite
-              className={`frame frame-${name}`}
-              key={name}
-              rows={FRAMES[name]}
-            />
+          {FRAMES.map((rows, i) => (
+            <Sprite hidden={i !== 0} key={rows.join("/")} rows={rows} />
           ))}
         </div>
-        {shown === "type" && <span className="tokkae-keyboard" />}
-        {shown === "sleep" && (
-          <span aria-hidden="true" className="tokkae-zzz">
-            <i>z</i>
-            <i>z</i>
-            <i>Z</i>
-          </span>
-        )}
         {shown === "announce" && notesOpen && (
           <PatchNotes onClose={closeNotes} />
         )}

@@ -119,17 +119,17 @@ fieldset {
   transition: opacity 1.2s ease;
 }
 
+/* Sized and placed by the scene, in proportion to the screen */
 .sky-body {
   inset: auto;
-  width: 100px;
-  height: 100px;
   transition:
     top 1.2s ease,
     left 1.2s ease;
 }
+.sky-body .bob,
 .sky-body svg {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 .sun {
@@ -295,17 +295,17 @@ fieldset {
   justify-self: end;
   padding-top: 10px;
   display: flex;
-  flex-direction: column;
-  /* Both buttons as wide as the wider one, so they read as a pair */
-  align-items: stretch;
+  align-items: center;
   gap: 10px;
 }
 
 /* ---------- desk: the windows ----------
-   Weather and profile side by side over the apps, the player and socials in
+   Weather and profile side by side over the apps, the player in
    a column beside them. Windows keep their own sizes, so resizing one moves
    its neighbours rather than squeezing them. */
 .desk {
+  /* Dragged windows stack among themselves, under Tokkae and the milk */
+  isolation: isolate;
   width: 100%;
   max-width: 1080px;
   display: flex;
@@ -350,7 +350,7 @@ fieldset {
 }
 .btn:focus-visible,
 .tile:focus-visible,
-.credits a:focus-visible,
+.credit:focus-visible,
 input:focus-visible {
   outline: 3px solid #4a7fc0;
   outline-offset: 3px;
@@ -379,6 +379,12 @@ input:focus-visible {
   min-height: 90px;
 }
 /* What doesn't fit a window resized small scrolls inside it */
+.window.is-dragging {
+  box-shadow: 6px 6px 0 var(--line);
+}
+.window.is-dragging .titlebar {
+  cursor: grabbing;
+}
 .window-body {
   flex: 1;
   min-height: 0;
@@ -388,6 +394,8 @@ input:focus-visible {
 }
 .titlebar {
   flex: none;
+  cursor: grab;
+  touch-action: none;
   height: 26px;
   display: flex;
   align-items: center;
@@ -427,12 +435,13 @@ input:focus-visible {
 }
 
 /* ---------- theme picker ---------- */
+/* Just the label and the switch; the swatches open below, on the page */
 .theme-panel {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 8px 6px;
-  border-radius: 14px;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px 0 6px;
+  border-radius: 999px;
 }
 .panel-label {
   font-size: 12px;
@@ -443,15 +452,6 @@ input:focus-visible {
   padding-left: 10px;
   white-space: nowrap;
   flex-shrink: 0;
-}
-.panel-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.panel-name {
-  display: none;
 }
 /* Themes on/off: a small outlined switch, dark like a selected pill when on */
 .theme-switch {
@@ -492,9 +492,25 @@ input:focus-visible {
   background-color: var(--bar-text);
   transform: translateX(16px);
 }
+/* Floats under the panel, over the page, so nothing below moves */
+.theme-col {
+  position: relative;
+  z-index: 2;
+}
+.theme-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
 .swatches {
   display: grid;
   grid-template-columns: repeat(6, 44px);
+  border: 0;
 }
 .swatch {
   width: 44px;
@@ -512,12 +528,14 @@ input:focus-visible {
   height: 26px;
   border-radius: 50%;
   border: 1.5px solid var(--line);
+  box-shadow: 2px 2px 0 var(--line);
   transition: box-shadow 0.2s ease;
 }
 .swatch[aria-pressed="true"] span {
   box-shadow:
     0 0 0 3px var(--panel),
-    0 0 0 5px var(--line);
+    0 0 0 5px var(--line),
+    4px 4px 0 var(--line);
 }
 
 /* ---------- city + clock ---------- */
@@ -1116,9 +1134,47 @@ input:focus-visible {
 .profile-line svg {
   flex: none;
 }
+.profile-foot {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-links {
+  list-style: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+  display: flex;
+  gap: 6px;
+}
+.profile-link {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #2f3b34;
+  border-radius: 7px;
+  box-shadow: 2px 2px 0 var(--line);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.profile-link:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--line);
+}
+.profile-link svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .languages {
   list-style: none;
-  margin: 4px 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   gap: 6px;
@@ -1143,66 +1199,6 @@ input:focus-visible {
   color: var(--bar-text);
 }
 
-/* ---------- socials ---------- */
-.socials-window {
-  width: 280px;
-}
-.socials {
-  list-style: none;
-  margin: 0;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.social {
-  height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px 0 6px;
-  border: 1.5px solid var(--line);
-  border-radius: 7px;
-  background-color: #fff;
-  color: inherit;
-  transition: background-color 0.15s ease;
-}
-.social:hover {
-  background-color: color-mix(in srgb, var(--alt) 40%, #fff);
-}
-.social-icon {
-  flex: none;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid #2f3b34;
-  border-radius: 7px;
-}
-.social-icon svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.social-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-}
-.social-name {
-  font-size: 15px;
-  font-weight: 600;
-}
-.social-handle {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-}
-
 /* ---------- tokkae ----------
    The pixel gecko and its props, above the windows. Only the patch notes
    take clicks; everything else lets them through to the page. */
@@ -1217,93 +1213,43 @@ input:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  width: 66px;
-  height: 78px;
+  /* The 18 × 17 frame at 4px a pixel */
+  width: 72px;
+  height: 68px;
   /* Offscreen until the first frame places it */
   transform: translate(-200px, 0);
   will-change: transform;
+  /* Click it, or pick it up */
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
-.tokkae svg,
-.tokkae-bug svg {
-  shape-rendering: crispEdges;
+.tokkae.is-held {
+  cursor: grabbing;
 }
+/* Nudged down so its feet, not the empty rows below them, touch the ground */
 .tokkae-sprite {
   position: absolute;
-  inset: 0;
+  inset: 6px 0 -6px;
 }
-/* The sprite faces left; walking right mirrors it */
+/* The sprite faces right; walking left mirrors it */
 .tokkae[data-flip="1"] .tokkae-sprite {
   transform: scaleX(-1);
 }
-.tokkae .frame {
+.tokkae-sprite svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  shape-rendering: crispEdges;
+}
+.tokkae-sprite svg.is-off {
   display: none;
-}
-.tokkae[data-frame="blink"] .frame-blink,
-.tokkae[data-frame="chomp"] .frame-chomp,
-.tokkae[data-frame="idle"] .frame-idle,
-.tokkae[data-frame="jump"] .frame-jump,
-.tokkae[data-frame="type1"] .frame-type1,
-.tokkae[data-frame="type2"] .frame-type2,
-.tokkae[data-frame="walk1"] .frame-walk1,
-.tokkae[data-frame="walk2"] .frame-walk2,
-.tokkae[data-frame="wave1"] .frame-wave1,
-.tokkae[data-frame="wave2"] .frame-wave2 {
-  display: block;
-}
-.tokkae-bug {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 25px;
-  height: 20px;
-}
-.tokkae-bug svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-/* A tiny keyboard in front of Tokkae's feet while it types */
-.tokkae-keyboard {
-  position: absolute;
-  left: 50%;
-  bottom: -2px;
-  width: 54px;
-  height: 16px;
-  translate: -50% 0;
-  border: 1.5px solid var(--line);
-  border-radius: 4px;
-  background-color: #fff;
-  background-image: radial-gradient(var(--line) 1px, transparent 1.5px);
-  background-size: 6px 5px;
-  background-position: 2px 2px;
-  box-shadow: 2px 2px 0 var(--line);
-}
-.tokkae-zzz {
-  position: absolute;
-  left: 62%;
-  top: -6px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-}
-.tokkae-zzz i {
-  position: absolute;
-  font-style: normal;
-  opacity: 0;
-  animation: zfloat 2.4s ease-out infinite;
-}
-.tokkae-zzz i:nth-child(2) {
-  animation-delay: 0.8s;
-}
-.tokkae-zzz i:nth-child(3) {
-  animation-delay: 1.6s;
 }
 .patch-notes {
   position: absolute;
+  cursor: auto;
   bottom: calc(100% + 10px);
   width: min(290px, calc(100vw - 32px));
   height: auto;
@@ -1352,17 +1298,14 @@ input:focus-visible {
   font-weight: 500;
 }
 
-/* ---------- credits ---------- */
-.credits {
-  margin-top: auto;
-  padding-top: 4px;
-  font-size: 11px;
-  color: var(--muted);
-}
-.credits a {
+/* Credit for the variations' icons, under the swatches */
+.credit {
+  margin-left: 12px;
   padding: 1px 8px;
   border-radius: 999px;
   background-color: var(--panel);
+  font-size: 11px;
+  color: var(--muted);
   text-decoration: underline;
   text-underline-offset: 2px;
   transition: background-color 0.8s var(--ease);
@@ -1443,19 +1386,6 @@ input:focus-visible {
   }
   50% {
     transform: scaleY(1);
-  }
-}
-@keyframes zfloat {
-  0% {
-    opacity: 0;
-    transform: translate(0, 0) scale(0.7);
-  }
-  25% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(14px, -26px) scale(1.1);
   }
 }
 @keyframes stripes {
@@ -1842,30 +1772,21 @@ input:focus-visible {
     padding-top: 0;
   }
   .theme-panel {
-    padding: 8px 10px 6px;
-  }
-  .panel-head {
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 6px;
+    padding: 0 4px 0 12px;
   }
   .panel-label {
     padding-left: 0;
   }
-  /* A long name ("The Cailleach Bheur · black") ends in "…" before the switch */
-  .panel-name {
-    display: inline;
-    min-width: 0;
-    margin-left: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 13px;
-    font-weight: 500;
+  /* On phones the drawer opens in place, pushing the windows down */
+  .theme-drawer {
+    position: static;
+    margin-top: 0;
+    align-items: stretch;
   }
-  .pill {
-    display: none;
+  .theme-drawer .pill,
+  .credit {
+    align-self: flex-start;
   }
   .swatches {
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1908,11 +1829,16 @@ input:focus-visible {
     flex: none;
     width: 100%;
   }
-  /* Full width at their content's height; no corner to drag on a phone */
+  /* Full width at their content's height; no dragging or resizing on a phone */
   .window {
     width: 100%;
     height: auto;
     resize: none;
+    translate: none !important;
+  }
+  .titlebar {
+    cursor: auto;
+    touch-action: auto;
   }
   .tile {
     min-height: 300px;
@@ -1951,12 +1877,9 @@ input:focus-visible {
     padding: 12px 14px;
   }
 
-  .sky-body .bob {
-    scale: 0.7;
-  }
   .tokkae {
-    width: 55px;
-    height: 65px;
+    width: 63px;
+    height: 59.5px;
   }
 }
 @media (max-width: 360px) {
@@ -1994,8 +1917,7 @@ input:focus-visible {
   .tiny-pearl,
   .swell,
   .wave,
-  .eq i,
-  .tokkae-zzz i {
+  .eq i {
     animation: none !important;
   }
   .critters,

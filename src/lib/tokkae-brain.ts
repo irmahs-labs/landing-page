@@ -1,13 +1,17 @@
-import type { TokkaeFrame } from "./tokkae";
+import { ANIMS } from "./tokkae";
+import type { Anim } from "./tokkae";
 
 export type Action =
+  | "angry"
   | "announce"
   | "eat"
   | "enter"
+  | "held"
   | "idle"
   | "jump"
   | "run"
   | "sleep"
+  | "sleepy"
   | "type"
   | "walk"
   | "wave";
@@ -27,13 +31,14 @@ export interface World {
   windows: readonly Element[];
 }
 
-/** Where to draw Tokkae and its bug this frame */
+/** Where to draw Tokkae this frame, and which frame */
 export interface Pose {
-  bug: { x: number; y: number } | null;
   /** True once the announcement should be put away */
   closeNotes: boolean;
+  /** True when facing left, so the sprite is mirrored */
   flip: boolean;
-  frame: TokkaeFrame;
+  /** Index into FRAMES */
+  frame: number;
   side: "left" | "right";
   x: number;
   y: number;
@@ -45,10 +50,13 @@ const RUN = 260;
 const ANNOUNCE_MS = 25_000;
 const CHASE_MS = 2000;
 const JUMP_GAP_MS = 1500;
+const ANGRY_MS = 5000;
+const SLEEPY_MS = 2500;
+const FRAME_MS = 200;
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-/** The other things Tokkae gets up to, and how often */
+/** The things Tokkae gets up to on its own, and how often */
 const CHOICES: readonly [Action, number][] = [
   ["walk", 34],
   ["idle", 10],
@@ -70,30 +78,40 @@ const pick = (): Action => {
   return "walk";
 };
 
-const MOVING = new Set<Action>(["eat", "enter", "run", "walk"]);
+const MOVING = new Set<Action>(["angry", "enter", "run", "walk"]);
+// Busy with something else: the moving cursor doesn't distract it
+const FOCUSED = new Set<Action>(["announce", "enter", "held", "sleepy"]);
 
-/** The steady pose for each action, two frames swapped on a beat */
-const LOOPS: Partial<Record<Action, [TokkaeFrame, TokkaeFrame, number]>> = {
-  announce: ["wave1", "wave2", 260],
-  enter: ["walk1", "walk2", 150],
-  run: ["walk1", "walk2", 80],
-  sleep: ["blink", "blink", 1000],
-  type: ["type1", "type2", 120],
-  walk: ["walk1", "walk2", 150],
-  wave: ["wave1", "wave2", 260],
+/** Which animation each action plays, and how fast (ms per frame) */
+const PLAYS: Record<Action, [Anim, number]> = {
+  angry: ["angry", FRAME_MS],
+  announce: ["wave", FRAME_MS],
+  eat: ["bug", FRAME_MS],
+  enter: ["walk", 150],
+  held: ["angry", FRAME_MS],
+  idle: ["idle", FRAME_MS],
+  jump: ["walk", FRAME_MS],
+  run: ["walk", 90],
+  sleep: ["nap", FRAME_MS],
+  sleepy: ["sleepy", 400],
+  type: ["type", FRAME_MS],
+  walk: ["walk", 150],
+  wave: ["wave", FRAME_MS],
 };
 
 /**
- * Tokkae's behaviour, free of React and the DOM's drawing: it walks in and
- * announces, then picks something to do every few seconds, falls with
- * gravity, lands on the tops of windows, and runs after the cursor.
+ * Tokkae's behaviour, free of React and drawing: it walks in and announces,
+ * then picks something to do every few seconds, falls with gravity, lands on
+ * the tops of windows and runs after the cursor. Poked or picked up, it gets
+ * angry and chases you for five seconds, then gets sleepy and carries on.
  */
 export class Brain {
   action: Action = "enter";
-  private bugX: number | null = null;
   private face: 1 | -1;
   private lastJump = 0;
+  private moving = false;
   private readonly onAction: (action: Action) => void;
+  private since = 0;
   private surface: Element | null = null;
   private target: number;
   private until = Number.POSITIVE_INFINITY;
@@ -118,6 +136,53 @@ export class Brain {
     return world.vh - world.h - 4;
   }
 
+  private static randomWindow(world: World) {
+    const reachable = world.windows.filter((win) => {
+      const r = win.getBoundingClientRect();
+      return r.top > world.h + 20 && r.top < world.vh - 40;
+    });
+    return reachable[Math.floor(Math.random() * reachable.length)] ?? null;
+  }
+
+  /** The window the cursor is near the top of, if any */
+  private static windowUnder(world: World, pointer: Pointer) {
+    return world.windows.find((win) => {
+      const r = win.getBoundingClientRect();
+      return (
+        pointer.x > r.left &&
+        pointer.x < r.right &&
+        pointer.y > r.top - 60 &&
+        pointer.y < r.top + 40
+      );
+    });
+  }
+
+  /** Clicked: angry, and after you for five seconds */
+  poke(now: number) {
+    this.become("angry", now);
+    this.until = now + ANGRY_MS;
+  }
+
+  /** Picked up: dangles from the cursor until let go */
+  grab(now: number) {
+    this.surface = null;
+    this.vx = 0;
+    this.vy = 0;
+    this.become("held", now);
+  }
+
+  /** Held at the cursor, by the scruff of its neck */
+  holdAt(x: number, y: number, world: World) {
+    this.x = x - world.w / 2;
+    this.y = y - world.h * 0.3;
+  }
+
+  /** Let go: it drops, then comes after you, angry */
+  release(now: number) {
+    this.become("angry", now);
+    this.until = now + ANGRY_MS;
+  }
+
   /** One frame of life: `dt` in seconds, `now` in ms */
   step(
     now: number,
@@ -126,6 +191,10 @@ export class Brain {
     pointer: Pointer | null,
     notesOpen: boolean
   ): Pose {
+    this.moving = false;
+    if (this.action === "held") {
+      return this.pose(now, world, false, false);
+    }
     this.followSurface(world);
     const airborne = this.isAirborne(world);
     if (airborne) {
@@ -138,10 +207,18 @@ export class Brain {
       this.walk(world, dt, now);
     }
     const closeNotes = !airborne && this.maybeMoveOn(world, now, notesOpen);
+    return this.pose(now, world, airborne, closeNotes);
+  }
+
+  private pose(
+    now: number,
+    world: World,
+    airborne: boolean,
+    closeNotes: boolean
+  ): Pose {
     return {
-      bug: this.bugPose(world, now),
       closeNotes,
-      flip: this.face > 0,
+      flip: this.face < 0,
       frame: this.frameFor(now, airborne),
       side: this.x + world.w / 2 < world.vw / 2 ? "left" : "right",
       x: this.x,
@@ -149,21 +226,26 @@ export class Brain {
     };
   }
 
-  private set(action: Action, world: World, now: number) {
+  /** Switch action, telling the page, and restart its animation */
+  private become(action: Action, now: number) {
     this.action = action;
+    this.since = now;
     this.onAction(action);
-    this.bugX = null;
+  }
+
+  private set(action: Action, world: World, now: number) {
+    this.become(action, now);
     this.until = now + rand(2500, 6000);
     const [lo, hi] = this.range(world);
     if (action === "walk") {
       this.target = rand(lo, hi);
     } else if (action === "eat") {
-      const side = Math.random() < 0.5 ? -1 : 1;
-      this.bugX = Math.min(hi, Math.max(lo, this.x + side * rand(60, 160)));
-      this.target = this.bugX;
-      this.until = now + 9000;
+      // One catch: the bug flies in, the tongue goes out
+      this.until = now + ANIMS.bug.length * FRAME_MS;
     } else if (action === "sleep") {
       this.until = now + rand(5000, 9000);
+    } else if (action === "sleepy") {
+      this.until = now + SLEEPY_MS;
     } else if (
       action === "jump" &&
       !this.jumpTo(Brain.randomWindow(world), world, now)
@@ -179,14 +261,6 @@ export class Brain {
       return [r.left, Math.max(r.left, r.right - world.w)];
     }
     return [0, Math.max(0, world.vw - world.w)];
-  }
-
-  private static randomWindow(world: World) {
-    const reachable = world.windows.filter((win) => {
-      const r = win.getBoundingClientRect();
-      return r.top > world.h + 20 && r.top < world.vh - 40;
-    });
-    return reachable[Math.floor(Math.random() * reachable.length)] ?? null;
   }
 
   /** Leap onto the top of a window, landing near `aimX` if given */
@@ -216,9 +290,11 @@ export class Brain {
     this.vx = (x - this.x) / (up + down);
     this.face = this.vx >= 0 ? 1 : -1;
     this.surface = null;
-    this.action = "jump";
-    this.onAction("jump");
     this.lastJump = now;
+    // An angry Tokkae stays angry in the air
+    if (this.action !== "angry") {
+      this.become("jump", now);
+    }
     return true;
   }
 
@@ -258,7 +334,7 @@ export class Brain {
     }
     this.vx = 0;
     this.vy = 0;
-    if (this.action === "jump" || landed) {
+    if (this.action === "jump") {
       this.set("idle", world, now);
       this.until = now + rand(600, 1500);
     }
@@ -281,36 +357,36 @@ export class Brain {
     );
   }
 
-  /** Run after the cursor, or jump up to the window it is over */
+  /**
+   * Run after the cursor, or jump up to the window it is over: normally only
+   * while it moves; when angry, wherever it last was.
+   */
   private chase(world: World, now: number, pointer: Pointer | null) {
-    const busy = this.action === "enter" || this.action === "announce";
-    if (!pointer || busy || now - pointer.at > CHASE_MS) {
+    const angry = this.action === "angry";
+    const stale = pointer && !angry && now - pointer.at > CHASE_MS;
+    if (!pointer || stale || FOCUSED.has(this.action)) {
       return;
     }
     const cx = this.x + world.w / 2;
-    const over = world.windows.find((win) => {
-      const r = win.getBoundingClientRect();
-      return (
-        pointer.x > r.left &&
-        pointer.x < r.right &&
-        pointer.y > r.top - 60 &&
-        pointer.y < r.top + 40
-      );
-    });
+    const over = Brain.windowUnder(world, pointer);
     const canJump = now - this.lastJump > JUMP_GAP_MS;
     if (over && canJump && Math.abs(pointer.x - cx) < 260) {
       this.jumpTo(over, world, now, pointer.x);
-    } else if (Math.abs(pointer.x - cx) > 90) {
-      if (this.action !== "run") {
-        this.action = "run";
-        this.onAction("run");
-      }
-      this.target = pointer.x - world.w / 2;
+      return;
+    }
+    if (!angry && Math.abs(pointer.x - cx) <= 90) {
+      return;
+    }
+    if (!angry && this.action !== "run") {
+      this.become("run", now);
+    }
+    this.target = pointer.x - world.w / 2;
+    if (!angry) {
       this.until = now + 1200;
     }
   }
 
-  /** Walking, running, coming in, or heading for a bug */
+  /** Walking, running, coming in, or stomping after the cursor */
   private walk(world: World, dt: number, now: number) {
     if (!MOVING.has(this.action)) {
       return;
@@ -322,20 +398,18 @@ export class Brain {
     const goal = Math.min(hi, Math.max(lo, this.target));
     const dx = goal - this.x;
     if (Math.abs(dx) > 4) {
-      const speed = this.action === "run" ? RUN : WALK;
+      const speed = this.action === "walk" || entering ? WALK : RUN;
       this.face = dx > 0 ? 1 : -1;
       this.x += Math.sign(dx) * Math.min(Math.abs(dx), speed * dt);
+      this.moving = true;
     } else if (entering) {
-      this.action = "announce";
-      this.onAction("announce");
+      this.become("announce", now);
       this.until = now + ANNOUNCE_MS;
-    } else if (this.action === "run" && this.surface) {
-      // The cursor is past the edge of this window: hop down after it
-      if (Math.abs(this.target - goal) > 40) {
-        this.hopDown(Math.sign(this.target - goal));
-      }
     } else if (this.action === "walk") {
       this.until = Math.min(this.until, now);
+    } else if (this.surface && Math.abs(this.target - goal) > 40) {
+      // The cursor is past the edge of this window: hop down after it
+      this.hopDown(Math.sign(this.target - goal));
     }
   }
 
@@ -355,44 +429,21 @@ export class Brain {
     if (now < this.until && !(announcing && !notesOpen)) {
       return false;
     }
-    this.set(pick(), world, now);
+    // Anger wears off into sleepiness, and sleepiness into the routine
+    this.set(this.action === "angry" ? "sleepy" : pick(), world, now);
     return announcing;
   }
 
-  private nearBug() {
-    return this.bugX !== null && Math.abs(this.bugX - this.x) < 8;
-  }
-
-  /** The bug sits where it was dropped until it gets eaten */
-  private bugPose(world: World, now: number) {
-    if (this.action !== "eat" || this.bugX === null) {
-      return null;
+  private frameFor(now: number, airborne: boolean) {
+    let [anim, ms] = PLAYS[this.action];
+    if (this.action === "angry" && (this.moving || airborne)) {
+      anim = "angryRun";
+      ms = 90;
+    } else if (airborne) {
+      anim = "walk";
     }
-    // Close enough to chomp: the bug lasts a moment longer
-    if (this.nearBug() && this.until > now + 900) {
-      this.until = now + 900;
-    }
-    const top = this.surface
-      ? this.surface.getBoundingClientRect().top
-      : world.vh - 4;
-    return { x: this.bugX + world.w / 2, y: top };
-  }
-
-  private frameFor(now: number, airborne: boolean): TokkaeFrame {
-    const beat = (ms: number) => Math.floor(now / ms) % 2 === 0;
-    if (airborne) {
-      return "jump";
-    }
-    if (this.action === "eat") {
-      if (this.nearBug()) {
-        return beat(160) ? "chomp" : "idle";
-      }
-      return beat(150) ? "walk1" : "walk2";
-    }
-    const loop = LOOPS[this.action];
-    if (loop) {
-      return beat(loop[2]) ? loop[0] : loop[1];
-    }
-    return now % 3600 < 150 ? "blink" : "idle";
+    const frames = ANIMS[anim];
+    const i = Math.floor((now - this.since) / ms) % frames.length;
+    return frames[i] ?? 0;
   }
 }

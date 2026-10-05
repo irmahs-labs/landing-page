@@ -214,18 +214,22 @@ export const Scene = ({ animatePattern, phase, rainy, theme }: SceneProps) => {
 
   let bodyStyle: CSSProperties | undefined;
   if (phase && viewport) {
-    const wide = viewport.w >= 900;
+    // The sun and moon scale with the screen: 15.5% of its short side
+    const size = Math.round(
+      Math.min(180, Math.max(60, Math.min(viewport.w, viewport.h) * 0.155))
+    );
+    const margin = viewport.w >= 900 ? size * 0.8 : 15;
     const rising = phase.prog < 0.5;
     const yFrac = rising
-      ? 0.8 - (phase.prog / 0.5) * 0.556
-      : 0.244 + ((phase.prog - 0.5) / 0.5) * 0.556;
-    let left = wide ? 110 : 15;
-    if (rising) {
-      left = viewport.w - (wide ? 210 : 115);
-    }
+      ? 0.85 - (phase.prog / 0.5) * 0.556
+      : 0.294 + ((phase.prog - 0.5) / 0.5) * 0.556;
+    const left = rising ? viewport.w - margin - size : margin;
     bodyStyle = {
-      left: `${left}px`,
-      top: `${Math.round(viewport.h * yFrac)}px`,
+      height: `${size}px`,
+      left: `${Math.round(left)}px`,
+      // yFrac places the centre, so the arc stays put whatever the size
+      top: `${Math.round(viewport.h * yFrac - size / 2)}px`,
+      width: `${size}px`,
     };
   }
 
