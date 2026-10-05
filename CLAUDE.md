@@ -2,6 +2,11 @@
 
 ## Git branches
 
+Always pull before making changes: run `git fetch origin` and start from the latest `origin/main` before the first edit.
+
+- On a branch whose PR is open, bring it up to date with `origin/main` first
+- On `main`, or on a branch whose PR is already merged, create a new branch from `origin/main` instead
+
 Always name the branch after the feature or fix it contains, never a random or generated name.
 
 - Format: `<type>/<feature-name>` in lowercase kebab-case
