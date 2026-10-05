@@ -10,6 +10,7 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "hi, i'm tokkae! i live here now: i eat bugs, nap, and chase your cursor",
       "every window has a new title bar, and you can resize it from its corner",
       "one app at a time now: flip through them with the arrows",
       "the music player got a big album cover; click the song to open it on spotify",
