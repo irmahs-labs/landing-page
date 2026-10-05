@@ -2,21 +2,17 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
-## Unreleased
+## 5 October 2026
 
-- **Draggable windows, a slimmer theme panel and a tidier header** (`feat/desktop-polish`)
+- **#25 Draggable windows, Tokkae's moods, and a README and changelog:**
   - Windows can be dragged by their title bar on desktop and tablet. The dragged window comes to the front, and its title bar can't leave the screen.
   - The sun and moon scale with the screen.
   - The theme panel is just its label and switch. Its swatches, the variation's name and the Flaticon credit (moved from the footer) float below it when it's on.
   - Sign in and surprise me sit side by side top right.
   - The socials window is replaced by GitHub and LinkedIn icon links in the profile window.
-- **Tokkae has moods** (`feat/tokkae-moods`)
   - Tokkae moves to the brand canvas's 12 × 13 sprite, with the canvas's own animations: bug hunt with its tongue, a nap lying down, typing at a PC, waving.
-  - Clicking it, or picking it up and dropping it, makes it angry: it chases you for five seconds, then gets sleepy and goes back to its routine.
-- **README and changelog** (`docs/readme-changelog`): this file, and a README for the project.
-
-## 5 October 2026
-
+  - Clicking Tokkae, or picking it up and dropping it, makes it angry: it chases you for five seconds, then gets sleepy and goes back to its routine.
+  - Adds this changelog and a README.
 - **#24 Have Tokkae introduce itself in the patch notes:** the release notes now open with "hi, i'm tokkae!".
 - **#23 Resizable windows from the canvas, and Tokkae the pixel gecko:**
   - The page becomes a desktop of windows matching the landing page canvas: a shared title bar, resizable from the corner, weather and profile side by side over the apps.
