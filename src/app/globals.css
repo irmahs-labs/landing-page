@@ -1203,6 +1203,155 @@ input:focus-visible {
   color: var(--muted);
 }
 
+/* ---------- tokkae ----------
+   The pixel gecko and its props, above the windows. Only the patch notes
+   take clicks; everything else lets them through to the page. */
+.tokkae-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  pointer-events: none;
+}
+.tokkae {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 66px;
+  height: 78px;
+  /* Offscreen until the first frame places it */
+  transform: translate(-200px, 0);
+  will-change: transform;
+}
+.tokkae svg,
+.tokkae-bug svg {
+  shape-rendering: crispEdges;
+}
+.tokkae-sprite {
+  position: absolute;
+  inset: 0;
+}
+/* The sprite faces left; walking right mirrors it */
+.tokkae[data-flip="1"] .tokkae-sprite {
+  transform: scaleX(-1);
+}
+.tokkae .frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+.tokkae[data-frame="blink"] .frame-blink,
+.tokkae[data-frame="chomp"] .frame-chomp,
+.tokkae[data-frame="idle"] .frame-idle,
+.tokkae[data-frame="jump"] .frame-jump,
+.tokkae[data-frame="type1"] .frame-type1,
+.tokkae[data-frame="type2"] .frame-type2,
+.tokkae[data-frame="walk1"] .frame-walk1,
+.tokkae[data-frame="walk2"] .frame-walk2,
+.tokkae[data-frame="wave1"] .frame-wave1,
+.tokkae[data-frame="wave2"] .frame-wave2 {
+  display: block;
+}
+.tokkae-bug {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 20px;
+}
+.tokkae-bug svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* A tiny keyboard in front of Tokkae's feet while it types */
+.tokkae-keyboard {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 54px;
+  height: 16px;
+  translate: -50% 0;
+  border: 1.5px solid var(--line);
+  border-radius: 4px;
+  background-color: #fff;
+  background-image: radial-gradient(var(--line) 1px, transparent 1.5px);
+  background-size: 6px 5px;
+  background-position: 2px 2px;
+  box-shadow: 2px 2px 0 var(--line);
+}
+.tokkae-zzz {
+  position: absolute;
+  left: 62%;
+  top: -6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.tokkae-zzz i {
+  position: absolute;
+  font-style: normal;
+  opacity: 0;
+  animation: zfloat 2.4s ease-out infinite;
+}
+.tokkae-zzz i:nth-child(2) {
+  animation-delay: 0.8s;
+}
+.tokkae-zzz i:nth-child(3) {
+  animation-delay: 1.6s;
+}
+.patch-notes {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  width: min(290px, calc(100vw - 32px));
+  height: auto;
+  resize: none;
+  pointer-events: auto;
+}
+.tokkae[data-side="left"] .patch-notes {
+  left: 0;
+}
+.tokkae[data-side="right"] .patch-notes {
+  right: 0;
+}
+.patch-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.patch-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.patch-title span {
+  color: var(--muted);
+}
+.patch-body ul {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.patch-ok {
+  align-self: flex-end;
+  height: 36px;
+  padding: 0 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background-color: var(--bar);
+  color: var(--bar-text);
+  box-shadow: 2px 2px 0 var(--line);
+  font-size: 14px;
+  font-weight: 500;
+}
+
 /* ---------- credits ---------- */
 .credits {
   margin-top: auto;
@@ -1294,6 +1443,19 @@ input:focus-visible {
   }
   50% {
     transform: scaleY(1);
+  }
+}
+@keyframes zfloat {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.7);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(14px, -26px) scale(1.1);
   }
 }
 @keyframes stripes {
@@ -1792,6 +1954,10 @@ input:focus-visible {
   .sky-body .bob {
     scale: 0.7;
   }
+  .tokkae {
+    width: 55px;
+    height: 65px;
+  }
 }
 @media (max-width: 360px) {
   .seg {
@@ -1828,7 +1994,8 @@ input:focus-visible {
   .tiny-pearl,
   .swell,
   .wave,
-  .eq i {
+  .eq i,
+  .tokkae-zzz i {
     animation: none !important;
   }
   .critters,

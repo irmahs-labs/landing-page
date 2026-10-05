@@ -32,6 +32,7 @@ import { Scene } from "./scene";
 import { SocialsWindow } from "./socials-window";
 import { SurpriseButton } from "./surprise-button";
 import { ThemePicker } from "./theme-picker";
+import { Tokkae } from "./tokkae";
 
 const WEATHER_TTL = 15 * 60 * 1000;
 const BOBA_MS = 20_000;
@@ -213,6 +214,8 @@ export const Landing = () => {
           <a href="https://www.flaticon.com">icons from flaticons</a>
         </footer>
       </div>
+
+      <Tokkae />
 
       {milk && <MilkLayer />}
     </>
