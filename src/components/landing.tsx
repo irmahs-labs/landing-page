@@ -27,9 +27,12 @@ import { ClockWindow } from "./clock-window";
 import { Critters } from "./critters";
 import { MilkLayer } from "./milk-layer";
 import { Player } from "./player";
+import { ProfileWindow } from "./profile-window";
 import { Scene } from "./scene";
+import { SocialsWindow } from "./socials-window";
 import { SurpriseButton } from "./surprise-button";
 import { ThemePicker } from "./theme-picker";
+import { Tokkae } from "./tokkae";
 
 const WEATHER_TTL = 15 * 60 * 1000;
 const BOBA_MS = 20_000;
@@ -181,7 +184,6 @@ export const Landing = () => {
           />
           <div className="center-col">
             <CityToggle current={cityId} onPick={saveCity} />
-            <ClockWindow cityId={cityId} now={now} phase={phase} weather={wx} />
           </div>
           <div className="surprise-col">
             <AccountButton />
@@ -189,16 +191,31 @@ export const Landing = () => {
           </div>
         </header>
 
-        <main>
-          <AppsWindow theme={th} />
+        <main className="desk">
+          <div className="desk-main">
+            <div className="desk-row">
+              <ClockWindow
+                cityId={cityId}
+                now={now}
+                phase={phase}
+                weather={wx}
+              />
+              <ProfileWindow />
+            </div>
+            <AppsWindow theme={th} />
+          </div>
+          <div className="desk-side">
+            <Player now={now} />
+            <SocialsWindow />
+          </div>
         </main>
-
-        <Player now={now} />
 
         <footer className="credits">
           <a href="https://www.flaticon.com">icons from flaticons</a>
         </footer>
       </div>
+
+      <Tokkae />
 
       {milk && <MilkLayer />}
     </>

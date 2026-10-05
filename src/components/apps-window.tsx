@@ -9,7 +9,7 @@ import type { AppLink } from "@/lib/apps";
 import { BASE_THEME } from "@/lib/themes";
 import type { Theme } from "@/lib/themes";
 
-import { WindowDots } from "./icons";
+import { Window } from "./window";
 
 const BURST_BITS = Array.from({ length: 12 }, (_, k) => k);
 
@@ -64,56 +64,76 @@ const Tile = ({ app, theme }: { app: AppLink; theme: Theme }) => {
   };
 
   return (
-    <li>
-      <a className="tile" href={app.href} onFocus={start} onMouseEnter={start}>
-        <span className="tile-head">
-          <span
-            className="app-icon"
-            // SAFETY: CSSProperties has no index signature for custom properties
-            style={
-              {
-                "--ic-bg": app.icon.bg,
-                "--ic-fg": app.icon.fg,
-              } as CSSProperties
-            }
-          >
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-              <path d={app.icon.path} />
-            </svg>
-          </span>
-          <span className="status">{app.status}</span>
-        </span>
-        <span className="app-text">
-          <span className="app-name">{app.name}</span>
-          <span className="app-desc">{app.desc}</span>
-        </span>
-        <span className="open">
-          open
+    <a className="tile" href={app.href} onFocus={start} onMouseEnter={start}>
+      <span
+        className="app-shot"
+        // SAFETY: CSSProperties has no index signature for custom properties
+        style={
+          {
+            "--ic-bg": app.icon.bg,
+            "--ic-fg": app.icon.fg,
+          } as CSSProperties
+        }
+      >
+        <span className="app-icon">
           <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M5 12 H19 M13 6 L19 12 L13 18" />
+            <path d={app.icon.path} />
           </svg>
         </span>
-        {burst > 0 && <Burst key={burst} theme={theme} />}
-      </a>
-    </li>
+      </span>
+      <span className="app-text">
+        <span className="app-name">{app.name}</span>
+        <span className="app-desc">{app.desc}</span>
+      </span>
+      {burst > 0 && <Burst key={burst} theme={theme} />}
+    </a>
   );
 };
 
-export const AppsWindow = ({ theme }: { theme: Theme }) => (
-  <section aria-label="My apps" className="window apps-window">
-    <div className="titlebar">
-      <WindowDots />
-      <span className="titlebar-text">my_apps</span>
-      <span className="titlebar-text titlebar-meta">{APPS.length} items</span>
-    </div>
-    <div className="apps-body">
-      {/* The page's heading, for screen readers only */}
-      <h1 className="sr-only">Irma Houver Sing</h1>
-      <ul className="apps">
-        {APPS.map((app) => (
-          <Tile app={app} key={app.href} theme={theme} />
-        ))}
-      </ul>
-    </div>
-  </section>
+const Arrow = ({ d }: { d: string }) => (
+  <svg aria-hidden="true" viewBox="0 0 24 24">
+    <path d={d} />
+  </svg>
 );
+
+/** One app at a time, paged with the arrows below it; the pages wrap around */
+export const AppsWindow = ({ theme }: { theme: Theme }) => {
+  const [page, setPage] = useState(0);
+  const app = APPS[page] ?? APPS[0];
+  const go = (step: number) =>
+    setPage((p) => (p + step + APPS.length) % APPS.length);
+
+  return (
+    <Window
+      className="apps-window"
+      label="My apps"
+      meta={`${APPS.length} items`}
+      title="my_apps"
+    >
+      <div className="apps-body">
+        {app && <Tile app={app} key={app.href} theme={theme} />}
+        <nav aria-label="More apps" className="pager">
+          <button
+            aria-label="Previous app"
+            className="btn pager-btn"
+            onClick={() => go(-1)}
+            type="button"
+          >
+            <Arrow d="M19 12 H5 M11 6 L5 12 L11 18" />
+          </button>
+          <span aria-live="polite" className="pager-label">
+            {page + 1} / {APPS.length}
+          </span>
+          <button
+            aria-label="Next app"
+            className="btn pager-btn"
+            onClick={() => go(1)}
+            type="button"
+          >
+            <Arrow d="M5 12 H19 M13 6 L19 12 L13 18" />
+          </button>
+        </nav>
+      </div>
+    </Window>
+  );
+};

@@ -4,7 +4,7 @@ import { fmtMinutes } from "@/lib/format";
 import type { SkyPhase } from "@/lib/sky";
 import type { Weather } from "@/lib/weather";
 
-import { WindowDots } from "./icons";
+import { Window } from "./window";
 
 const CLOUD =
   "M7 20 H17 A4 4 0 0 0 16.5 12 A5.5 5.5 0 0 0 6 13.5 A3.3 3.3 0 0 0 7 20 Z";
@@ -90,18 +90,19 @@ export const ClockWindow = ({
   }
 
   return (
-    <section aria-label="Date and weather" className="window clock-window">
-      <div className="titlebar small">
-        <WindowDots />
-        <span className="titlebar-text">
+    <Window
+      className="clock-window"
+      label="Date and weather"
+      title={
+        <>
           <span>{city.host}</span>
           <span className="km" hidden={cityId !== "phnom-penh"}>
             {" "}
             · ភ្នំពេញ
           </span>
-        </span>
-        <span className="spacer" />
-      </div>
+        </>
+      }
+    >
       <div className="clock-body">
         <div className="clock-text">
           <span className="clock-time">
@@ -140,6 +141,6 @@ export const ClockWindow = ({
           </div>
         </div>
       </div>
-    </section>
+    </Window>
   );
 };
