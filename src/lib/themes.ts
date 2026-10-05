@@ -17,6 +17,8 @@ interface ThemeColors {
   bar?: string;
   barGrid?: string;
   body: string;
+  /** The page background, when it isn't the body colour darkened */
+  ground?: string;
   muted: string;
   panel: string;
 }
@@ -130,6 +132,19 @@ const DEFS = {
     stripes: stripes("#b8c0c8", "#e3e7ea"),
     swatch: "#b8c0c8",
   },
+  matcha: {
+    c: {
+      alt: "#b8d970",
+      body: "#dde87e",
+      ground: "#f3f1c8",
+      muted: "#3f6b30",
+      panel: "#f7f8de",
+    },
+    label: "Cute Matcha",
+    special: true,
+    stripes: stripes("#5c8f48", "#b8d970"),
+    swatch: "#5c8f48",
+  },
   odette: {
     c: { alt: "#e995b3", body: "#f5cddb", muted: "#53484a", panel: "#fcedf3" },
     cfg: { native: 1, size: 96, speed: 90 },
@@ -208,7 +223,14 @@ export const THEME_ORDER: readonly ThemeId[] = [
   "manasa",
 ];
 
+// The first swatch picked once themes are turned on
 export const DEFAULT_THEME: ThemeId = "amelie";
+
+// Cute Matcha's own palette, shown while themes are off
+export const BASE_THEME: ThemeId = "matcha";
+
+// Whether the visitor has turned colour themes on; they start off
+export const THEMES_SWITCH = ["off", "on"] as const;
 
 const darken = (hex: string, k: number) =>
   `#${[1, 3, 5]
@@ -225,7 +247,7 @@ export const themeVars = (th: Theme) => ({
   "--bar": th.c.bar ?? "#3b4a42",
   "--bar-grid": th.c.barGrid ?? "#4e6152",
   "--body": th.c.body,
-  "--ground": darken(th.c.body, 0.92),
+  "--ground": th.c.ground ?? darken(th.c.body, 0.92),
   "--muted": th.c.muted,
   "--panel": th.c.panel,
   "--stripes": th.stripes,

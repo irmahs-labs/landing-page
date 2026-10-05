@@ -8,7 +8,14 @@ import { useStoredChoice } from "@/hooks/use-stored-choice";
 import { CITIES, CITY_IDS, DEFAULT_CITY } from "@/lib/cities";
 import type { CityId } from "@/lib/cities";
 import { skyPhase } from "@/lib/sky";
-import { DEFAULT_THEME, THEME_ORDER, THEMES, themeVars } from "@/lib/themes";
+import {
+  BASE_THEME,
+  DEFAULT_THEME,
+  THEME_ORDER,
+  THEMES,
+  THEMES_SWITCH,
+  themeVars,
+} from "@/lib/themes";
 import type { ThemeId } from "@/lib/themes";
 import { fetchWeather } from "@/lib/weather";
 import type { Weather } from "@/lib/weather";
@@ -38,6 +45,13 @@ export const Landing = () => {
     THEME_ORDER,
     DEFAULT_THEME
   );
+  // Colour themes are opt-in: until turned on, the page is Cute Matcha
+  const [themesSwitch, saveThemesSwitch] = useStoredChoice(
+    "themes",
+    THEMES_SWITCH,
+    "off"
+  );
+  const themesOn = themesSwitch === "on";
   const [cityId, saveCity] = useStoredChoice("city", CITY_IDS, DEFAULT_CITY);
   // Boba is never saved: it's a temporary override from "surprise me"
   const [boba, setBoba] = useState(false);
@@ -48,7 +62,10 @@ export const Landing = () => {
   const [milk, setMilk] = useState(false);
   const milkTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  const themeId: ThemeId = boba ? "boba" : savedTheme;
+  let themeId: ThemeId = themesOn ? savedTheme : BASE_THEME;
+  if (boba) {
+    themeId = "boba";
+  }
   const th = THEMES[themeId];
   const city = CITIES[cityId];
   const phase = now ? skyPhase(city, now) : null;
@@ -117,6 +134,13 @@ export const Landing = () => {
     saveTheme(id);
   };
 
+  const toggleThemes = () => {
+    cancelMilk();
+    setBoba(false);
+    setAnimatePattern(true);
+    saveThemesSwitch(themesOn ? "off" : "on");
+  };
+
   // "surprise me": milk tea pour, 20 s of boba, then back
   const pourBoba = () => {
     cancelMilk();
@@ -149,7 +173,12 @@ export const Landing = () => {
 
       <div className="page">
         <header className="top">
-          <ThemePicker current={th} onPick={pickTheme} />
+          <ThemePicker
+            current={th}
+            enabled={themesOn}
+            onPick={pickTheme}
+            onToggle={toggleThemes}
+          />
           <div className="center-col">
             <CityToggle current={cityId} onPick={saveCity} />
             <ClockWindow cityId={cityId} now={now} phase={phase} weather={wx} />

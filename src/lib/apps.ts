@@ -27,7 +27,7 @@ export const APPS: readonly AppLink[] = [
       fg: "#fff3cf",
       path: "M6 9 H18 A4 4 0 0 1 18 17 H16 L14 15 H10 L8 17 H6 A4 4 0 0 1 6 9 Z M8 11 V15 M6 13 H10",
     },
-    name: "Slot Machine Meal Planner",
+    name: "Sleepy Spinner",
     status: "live",
   },
   {
@@ -62,16 +62,5 @@ export const APPS: readonly AppLink[] = [
     },
     name: "Portfolio",
     status: "site",
-  },
-  {
-    desc: "Placeholder text for when the words aren't ready",
-    href: "https://www.lipsum.com",
-    icon: {
-      bg: "#d9786a",
-      fg: "#2f3b34",
-      path: "M12 3 L14 10 L21 12 L14 14 L12 21 L10 14 L3 12 L10 10 Z",
-    },
-    name: "Lorem Ipsum",
-    status: "tool",
   },
 ];

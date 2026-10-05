@@ -4,16 +4,17 @@
   --bar: #3b4a42;
   --bar-grid: #4e6152;
   --bar-text: #fff3cf;
-  --body: #d4e7cb;
-  --alt: #abcf9b;
-  --panel: #ecf5e7;
-  --muted: #455745;
-  --ground: #c3d4ba;
-  --cloud-fill: #ecf5e7;
+  /* Cute Matcha, the page's colours while themes are off */
+  --body: #dde87e;
+  --alt: #b8d970;
+  --panel: #f7f8de;
+  --muted: #3f6b30;
+  --ground: #f3f1c8;
+  --cloud-fill: #f7f8de;
   --stripes: repeating-linear-gradient(
     -45deg,
-    #9cc58a 0 10px,
-    #cfe5c2 10px 20px
+    #5c8f48 0 10px,
+    #b8d970 10px 20px
   );
   --font: var(--font-fredoka), "Nunito", system-ui, sans-serif;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -45,6 +46,14 @@ button {
 }
 [hidden] {
   display: none !important;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 fieldset {
   margin: 0;
@@ -301,8 +310,6 @@ main {
 .window,
 .pill,
 .tile,
-.bubble,
-.avatar,
 .status,
 .seg {
   transition:
@@ -418,8 +425,53 @@ input:focus-visible {
   color: var(--muted);
   padding-left: 10px;
 }
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 .panel-name {
   display: none;
+}
+/* Themes on/off: a small outlined switch, dark like a selected pill when on */
+.theme-switch {
+  height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+}
+.theme-switch-track {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background-color: var(--body);
+  transition: background-color 0.2s ease;
+}
+.theme-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background-color: var(--line);
+  transition:
+    transform 0.2s var(--ease),
+    background-color 0.2s ease;
+}
+.theme-switch[aria-checked="true"] .theme-switch-track {
+  background-color: var(--bar);
+}
+.theme-switch[aria-checked="true"] .theme-switch-track::after {
+  background-color: var(--bar-text);
+  transform: translateX(16px);
 }
 .swatches {
   display: grid;
@@ -599,51 +651,6 @@ input:focus-visible {
   gap: 14px;
   padding: 14px 24px 18px;
 }
-.intro {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-.avatar {
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background-color: var(--alt);
-  border: 1.5px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.intro-name {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-h1 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 1.05;
-}
-.role {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.bubble {
-  margin-left: auto;
-  padding: 10px 16px;
-  font-size: 17px;
-  font-weight: 500;
-  background-color: var(--alt);
-  border: 1.5px solid var(--line);
-  border-radius: 7px;
-  box-shadow: 2px 2px 0 var(--line);
-}
 .apps {
   list-style: none;
   margin: 0;
@@ -708,6 +715,13 @@ h1 {
   border-radius: 999px;
   background-color: var(--alt);
   border: 1.5px solid var(--line);
+}
+/* Name over description, spaced like the rest of the tile */
+.app-text {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+  min-width: 0;
 }
 .app-name {
   font-size: 20px;
@@ -1268,9 +1282,6 @@ h1 {
   .apps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .bubble {
-    margin-left: 0;
-  }
 }
 /* Phone layout: city + surprise on one row, then theme, clock, apps, player */
 @media (max-width: 600px) {
@@ -1326,6 +1337,7 @@ h1 {
   }
   .panel-name {
     display: inline;
+    margin-left: auto;
     font-size: 13px;
     font-weight: 500;
   }
@@ -1388,23 +1400,6 @@ h1 {
 
   .apps-body {
     padding: 14px 14px 16px;
-  }
-  .avatar {
-    width: 46px;
-    height: 46px;
-  }
-  .avatar svg {
-    width: 32px;
-    height: 32px;
-  }
-  h1 {
-    font-size: 24px;
-  }
-  .role {
-    font-size: 12px;
-  }
-  .bubble {
-    display: none;
   }
   .tile {
     min-height: 160px;
@@ -1530,17 +1525,6 @@ h1 {
     gap: 10px;
     padding: 10px 18px 14px;
   }
-  .avatar {
-    width: 46px;
-    height: 46px;
-  }
-  .avatar svg {
-    width: 32px;
-    height: 32px;
-  }
-  h1 {
-    font-size: 26px;
-  }
 }
 @media (min-width: 900px) and (min-height: 600px) and (max-height: 760px),
   (min-width: 601px) and (min-height: 760px) and (max-height: 760px) {
@@ -1584,27 +1568,12 @@ h1 {
     width: 32px;
     height: 32px;
   }
-  .bubble {
-    display: none;
-  }
 }
 @media (min-width: 900px) and (min-height: 600px) and (max-height: 640px),
   (min-width: 601px) and (min-height: 760px) and (max-height: 640px) {
   .clock-sun,
-  .role,
   .pill {
     display: none;
-  }
-  .avatar {
-    width: 36px;
-    height: 36px;
-  }
-  .avatar svg {
-    width: 26px;
-    height: 26px;
-  }
-  h1 {
-    font-size: 22px;
   }
 }
 
@@ -1640,9 +1609,19 @@ h1 {
 /* ---------- tile sizes ----------
    Only tiles in the fitted layout are size containers, so these apply to
    desktop and tablet alone. Roomy tiles grow their type; short ones drop
-   the description and "open" (the whole tile is the link), then shrink,
-   and the shortest lay out in one row. */
-@container (min-height: 230px) and (min-width: 230px) {
+   "open" (the whole tile is the link) and cut the description to fewer
+   lines, then shrink, and the shortest lay out in one row. The description
+   stays at every size but the very smallest. */
+@container (min-height: 211px) {
+  .app-desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+}
+@container (min-height: 245px) and (min-width: 230px) {
   .tile {
     gap: 10px;
     padding: 18px 20px;
@@ -1662,14 +1641,42 @@ h1 {
     font-size: 17px;
   }
 }
-@container (max-height: 160px) {
+@container (max-height: 210px) {
   .tile {
     gap: 6px;
     padding: 12px 14px;
   }
-  .app-desc,
   .open {
     display: none;
+  }
+  .app-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .app-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  /* Sized so a two-line name and two lines of description still fit */
+  .app-name {
+    margin-top: 0;
+    font-size: 18px;
+    line-height: 1.1;
+  }
+  .app-desc {
+    font-size: 14px;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+}
+@container (max-height: 147px) {
+  .app-desc {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
   }
 }
 @container (max-height: 130px) {
@@ -1688,8 +1695,11 @@ h1 {
   .app-name {
     font-size: 16px;
   }
+  .app-desc {
+    font-size: 13px;
+  }
 }
-@container (max-height: 100px) {
+@container (max-height: 115px) {
   .tile {
     flex-direction: row;
     align-items: center;
@@ -1710,16 +1720,32 @@ h1 {
     width: 18px;
     height: 18px;
   }
-  /* Up to three lines before an ellipsis: "Slot Machine Meal Planner" stays readable. */
+  .app-text {
+    gap: 2px;
+  }
+  /* Up to two lines before an ellipsis, with one line of description under it */
   .app-name {
     margin: 0;
     font-size: 15px;
     line-height: 1.1;
     display: -webkit-box;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  .app-desc {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+}
+@container (max-height: 64px) {
+  .app-desc {
+    display: none;
+  }
+  .app-name {
     -webkit-line-clamp: 3;
     line-clamp: 3;
-    overflow: hidden;
   }
 }
 
