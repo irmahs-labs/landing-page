@@ -1,6 +1,6 @@
 const PETAL = "M0 0 C 5 -3, 7 -9, 0 -11 C -7 -9, -5 -3, 0 0 Z";
 
-/** Three-petal flower used for Phnom Penh and the avatar */
+/** Three-petal flower used for Phnom Penh */
 export const LotusIcon = ({ size }: { size: number }) => (
   <svg aria-hidden="true" height={size} viewBox="-12 -12 24 24" width={size}>
     <g fill="#fff3cf" stroke="#2f3b34" strokeLinejoin="round" strokeWidth="0.9">

@@ -8,7 +8,7 @@ import { APPS } from "@/lib/apps";
 import type { AppLink } from "@/lib/apps";
 import type { Theme } from "@/lib/themes";
 
-import { LotusIcon, WindowDots } from "./icons";
+import { WindowDots } from "./icons";
 
 const BURST_BITS = Array.from({ length: 12 }, (_, k) => k);
 
@@ -81,8 +81,10 @@ const Tile = ({ app, theme }: { app: AppLink; theme: Theme }) => {
           </span>
           <span className="status">{app.status}</span>
         </span>
-        <span className="app-name">{app.name}</span>
-        <span className="app-desc">{app.desc}</span>
+        <span className="app-text">
+          <span className="app-name">{app.name}</span>
+          <span className="app-desc">{app.desc}</span>
+        </span>
         <span className="open">
           open
           <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -103,16 +105,8 @@ export const AppsWindow = ({ theme }: { theme: Theme }) => (
       <span className="titlebar-text titlebar-meta">{APPS.length} items</span>
     </div>
     <div className="apps-body">
-      <div className="intro">
-        <div className="avatar">
-          <LotusIcon size={38} />
-        </div>
-        <div className="intro-name">
-          <h1>Irma Houver Sing</h1>
-          <span className="role">Fullstack developer</span>
-        </div>
-        <div className="bubble">hello! pick an app to try</div>
-      </div>
+      {/* The page's heading, for screen readers only */}
+      <h1 className="sr-only">Irma Houver Sing</h1>
       <ul className="apps">
         {APPS.map((app) => (
           <Tile app={app} key={app.href} theme={theme} />
