@@ -1213,93 +1213,43 @@ input:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  width: 66px;
-  height: 78px;
+  /* The 18 × 17 frame at 4px a pixel */
+  width: 72px;
+  height: 68px;
   /* Offscreen until the first frame places it */
   transform: translate(-200px, 0);
   will-change: transform;
+  /* Click it, or pick it up */
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
-.tokkae svg,
-.tokkae-bug svg {
-  shape-rendering: crispEdges;
+.tokkae.is-held {
+  cursor: grabbing;
 }
+/* Nudged down so its feet, not the empty rows below them, touch the ground */
 .tokkae-sprite {
   position: absolute;
-  inset: 0;
+  inset: 6px 0 -6px;
 }
-/* The sprite faces left; walking right mirrors it */
+/* The sprite faces right; walking left mirrors it */
 .tokkae[data-flip="1"] .tokkae-sprite {
   transform: scaleX(-1);
 }
-.tokkae .frame {
+.tokkae-sprite svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  shape-rendering: crispEdges;
+}
+.tokkae-sprite svg.is-off {
   display: none;
-}
-.tokkae[data-frame="blink"] .frame-blink,
-.tokkae[data-frame="chomp"] .frame-chomp,
-.tokkae[data-frame="idle"] .frame-idle,
-.tokkae[data-frame="jump"] .frame-jump,
-.tokkae[data-frame="type1"] .frame-type1,
-.tokkae[data-frame="type2"] .frame-type2,
-.tokkae[data-frame="walk1"] .frame-walk1,
-.tokkae[data-frame="walk2"] .frame-walk2,
-.tokkae[data-frame="wave1"] .frame-wave1,
-.tokkae[data-frame="wave2"] .frame-wave2 {
-  display: block;
-}
-.tokkae-bug {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 25px;
-  height: 20px;
-}
-.tokkae-bug svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-/* A tiny keyboard in front of Tokkae's feet while it types */
-.tokkae-keyboard {
-  position: absolute;
-  left: 50%;
-  bottom: -2px;
-  width: 54px;
-  height: 16px;
-  translate: -50% 0;
-  border: 1.5px solid var(--line);
-  border-radius: 4px;
-  background-color: #fff;
-  background-image: radial-gradient(var(--line) 1px, transparent 1.5px);
-  background-size: 6px 5px;
-  background-position: 2px 2px;
-  box-shadow: 2px 2px 0 var(--line);
-}
-.tokkae-zzz {
-  position: absolute;
-  left: 62%;
-  top: -6px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-}
-.tokkae-zzz i {
-  position: absolute;
-  font-style: normal;
-  opacity: 0;
-  animation: zfloat 2.4s ease-out infinite;
-}
-.tokkae-zzz i:nth-child(2) {
-  animation-delay: 0.8s;
-}
-.tokkae-zzz i:nth-child(3) {
-  animation-delay: 1.6s;
 }
 .patch-notes {
   position: absolute;
+  cursor: auto;
   bottom: calc(100% + 10px);
   width: min(290px, calc(100vw - 32px));
   height: auto;
@@ -1436,19 +1386,6 @@ input:focus-visible {
   }
   50% {
     transform: scaleY(1);
-  }
-}
-@keyframes zfloat {
-  0% {
-    opacity: 0;
-    transform: translate(0, 0) scale(0.7);
-  }
-  25% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(14px, -26px) scale(1.1);
   }
 }
 @keyframes stripes {
@@ -1941,8 +1878,8 @@ input:focus-visible {
   }
 
   .tokkae {
-    width: 55px;
-    height: 65px;
+    width: 63px;
+    height: 59.5px;
   }
 }
 @media (max-width: 360px) {
@@ -1980,8 +1917,7 @@ input:focus-visible {
   .tiny-pearl,
   .swell,
   .wave,
-  .eq i,
-  .tokkae-zzz i {
+  .eq i {
     animation: none !important;
   }
   .critters,

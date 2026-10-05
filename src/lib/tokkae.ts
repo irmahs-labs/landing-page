@@ -1,93 +1,387 @@
 /**
- * Tokkae, the pixel gecko, drawn from the 11 × 13 sprite in the personal
- * brand canvas. Each frame is one row of characters per pixel row; the base
- * faces left, with its tail on the right.
+ * Tokkae, the pixel gecko, from the brand canvas: a 12 × 13 sprite drawn
+ * into an 18 × 17 frame that leaves room for its props (the bug, the pc,
+ * the z's). Every frame is composed from a base sprite plus pixel edits,
+ * exactly as the canvas's Gecko component does it. The base faces right.
  */
 
 const PALETTE = {
   O: "#f2d27a",
-  Y: "#fff3cf",
-  b: "#f3f1c8",
+  W: "#ffffff",
+  b: "#fff3cf",
   d: "#5c8f48",
   g: "#b8d970",
   k: "#2f3b34",
-  p: "#d9786a",
+  p: "#ff8e7d",
   r: "#e0574b",
+  t: "#d9786a",
+  w: "#4a7fc0",
+  x: "#1b1e1c",
+  z: "#fff3cf",
 } satisfies Record<string, string>;
 
-const BASE = [
-  "..ggggY....",
-  ".ggdgYOY...",
-  "gdggggYgg..",
-  "ggkgggkgg..",
-  "ppgggggpp..",
-  ".pgggggp...",
-  "..dgggd....",
-  "dggbbbggd..",
-  "..gbbbg...g",
-  "..gbbbg..g.",
-  "..ggbgggg..",
-  "..ggggg....",
-  ".dd...dd...",
+export const GRID_W = 18;
+export const GRID_H = 17;
+
+const STAND = [
+  "..gggggbg...",
+  ".gggdgbObg..",
+  ".gdggggbgg..",
+  ".ggkgggkgg..",
+  ".ppgggggpp..",
+  "..pgggggp...",
+  "...ddOdd....",
+  ".dggbbbggd..",
+  "...gbbbg...g",
+  "...gbbbg..g.",
+  "...ggbgggg..",
+  "...ggggg....",
+  "..dd...dd...",
 ];
 
-/** The base with some rows swapped out, by row index */
-const variant = (rows: Record<number, string>) =>
-  BASE.map((row, y) => rows[y] ?? row);
+// Lying down, for naps
+const LIE = [
+  "...........g..",
+  "............g.",
+  "..gggggbg....g",
+  ".gggdgbObg...g",
+  ".gdggggbgggggg",
+  ".gkkgggkkggggg",
+  ".ppgggggppgggg",
+  "..pgggggpggggg",
+  "..ggd.dgggddg.",
+];
 
-export const FRAMES = {
-  blink: variant({ 3: "ggggggggg.." }),
-  chomp: variant({ 5: ".pgkkkgp...", 6: "..dgkgd...." }),
-  idle: BASE,
-  jump: variant({
-    12: "..d.....d..",
-    6: "d.dgggd.d..",
-    7: ".ggbbbgg...",
-  }),
-  type1: variant({ 7: ".ggbbbggd..", 8: ".dgbbbg...g" }),
-  type2: variant({ 7: "dggbbbgg...", 8: "..gbbbgd..g" }),
-  walk1: BASE,
-  walk2: variant({
-    12: "..dd.dd....",
-    7: ".ggbbbgg...",
-    8: "d.gbbbg.d.g",
-  }),
-  wave1: variant({
-    4: "ppgggggppd.",
-    5: ".pgggggp.d.",
-    6: "..dgggd.d..",
-    7: "dggbbbgg...",
-  }),
-  wave2: variant({
-    4: "ppgggggpp.d",
-    5: ".pgggggp.d.",
-    6: "..dgggd.d..",
-    7: "dggbbbgg...",
-  }),
+// Side on, facing the pc, for typing
+const SIDE = [
+  "....gbggg..",
+  "...gbObggg.",
+  "..gggbggggg",
+  "..ggggggkgg",
+  "..gggppgggg",
+  "...gggpggg.",
+  "....ddddO..",
+  "....gggbbgd",
+  "g...gggggd.",
+  ".g..gggbb..",
+  "..ggggggb..",
+  "....gggggdd",
+];
+const SIDE_B = [
+  ...SIDE.slice(0, 7),
+  "....gggggd.",
+  "g...gggbbgd",
+  ...SIDE.slice(9),
+];
+
+const HEART = ["rr.rr", "rrrrr", ".rrr.", "..r.."];
+
+/** A pixel: row, column, colour key */
+type Px = readonly [number, number, string];
+
+interface FrameSpec {
+  dx?: number;
+  dy?: number;
+  /** Pixels changed on the sprite, in sprite coordinates */
+  edits?: readonly Px[];
+  /** Props drawn over everything, in frame coordinates */
+  extra?: readonly Px[];
+  sprite?: readonly string[];
+  /** Props drawn behind the sprite, in frame coordinates */
+  under?: readonly Px[];
+}
+
+const box = (y: number, x: number, w: number, h: number, ch: string) => {
+  const out: Px[] = [];
+  for (let j = 0; j < h; j += 1) {
+    for (let i = 0; i < w; i += 1) {
+      out.push([y + j, x + i, ch]);
+    }
+  }
+  return out;
 };
 
-export type TokkaeFrame = keyof typeof FRAMES;
+const stamp = (sprite: readonly string[], x0: number, y0: number) => {
+  const out: Px[] = [];
+  for (const [y, row] of sprite.entries()) {
+    for (const [x, ch] of [...row].entries()) {
+      if (ch !== ".") {
+        out.push([y0 + y, x0 + x, ch]);
+      }
+    }
+  }
+  return out;
+};
 
-export const FRAME_NAMES: readonly TokkaeFrame[] = [
-  "blink",
-  "chomp",
-  "idle",
-  "jump",
-  "type1",
-  "type2",
-  "walk1",
-  "walk2",
-  "wave1",
-  "wave2",
+const rep = (f: FrameSpec, n: number): FrameSpec[] =>
+  Array.from({ length: n }, () => f);
+const z = (pts: readonly (readonly [number, number])[]): Px[] =>
+  pts.map(([y, x]): Px => [y, x, "z"]);
+const bubble = (y: number, x: number, n: number): Px[] => {
+  if (n === 1) {
+    return [[y, x, "W"]];
+  }
+  if (n === 2) {
+    return box(y, x, 2, 2, "W");
+  }
+  return [
+    [y, x + 1, "W"],
+    [y + 1, x, "W"],
+    [y + 1, x + 2, "W"],
+    [y + 2, x + 1, "W"],
+  ];
+};
+
+const blink: Px[] = [
+  [3, 3, "g"],
+  [3, 7, "g"],
 ];
+const shut: Px[] = [
+  [3, 2, "k"],
+  [3, 3, "k"],
+  [3, 7, "k"],
+  [3, 8, "k"],
+];
+const raisedArm: Px[] = [
+  [7, 8, "."],
+  [7, 9, "."],
+  [6, 8, "g"],
+  [5, 9, "d"],
+];
+const tailSwung: Px[] = [
+  [10, 9, "g"],
+  [9, 10, "."],
+  [8, 11, "."],
+  [10, 10, "g"],
+  [10, 11, "g"],
+];
+const stepping: Px[] = [
+  [12, 2, "."],
+  [12, 4, "d"],
+  [12, 8, "."],
+  [12, 6, "d"],
+];
+const tongue = (n: number): Px[] =>
+  Array.from({ length: n }, (_, i): Px => [5, 9 + i, "t"]);
+const bug = (y: number, x: number): Px[] => [[y, x, "x"]];
+const heart = (x: number, y: number) => stamp(HEART, x, y);
+
+// The angry emote, on the standing sprite: slanted brows, red cheeks, a mark
+const fuming: Px[] = [
+  [2, 2, "k"],
+  [3, 3, "k"],
+  [2, 8, "k"],
+  [3, 7, "k"],
+  [4, 1, "r"],
+  [4, 2, "r"],
+  [4, 8, "r"],
+  [4, 9, "r"],
+  [5, 2, "r"],
+  [5, 8, "r"],
+];
+const angerMark: Px[] = [
+  [0, 13, "r"],
+  [0, 15, "r"],
+  [1, 14, "r"],
+  [2, 13, "r"],
+  [2, 15, "r"],
+];
+
+const pc = [
+  ...box(5, 13, 5, 7, "k"),
+  ...box(6, 14, 3, 5, "w"),
+  ...box(12, 15, 1, 3, "k"),
+  ...box(15, 14, 3, 1, "k"),
+];
+const keys = box(12, 9, 4, 1, "k");
+const screen = (pts: readonly (readonly [number, number])[]): Px[] => [
+  ...pc,
+  ...z(pts),
+];
+
+const ANIM_SPECS = {
+  angry: [
+    { edits: fuming, extra: angerMark },
+    { dy: -1, edits: fuming, extra: angerMark },
+  ],
+  angryRun: [
+    { edits: fuming, extra: angerMark },
+    { edits: [...fuming, ...stepping], extra: angerMark },
+  ],
+  bug: [
+    { extra: bug(5, 17) },
+    { extra: bug(6, 17) },
+    { extra: bug(5, 16) },
+    { extra: bug(6, 16) },
+    { extra: bug(7, 16) },
+    { edits: tongue(5), extra: bug(7, 16) },
+    { edits: tongue(2) },
+    { edits: blink },
+    { edits: blink },
+    {},
+    {},
+    {},
+    {},
+  ],
+  hop: [{}, {}, { dy: -1 }, { dy: -2 }, { dy: -2 }, { dy: -1 }, {}, {}],
+  idle: [...rep({}, 14), { edits: blink }, ...rep({}, 6), { edits: blink }],
+  love: [
+    { extra: heart(13, 5) },
+    { extra: heart(13, 4) },
+    { dy: -1, edits: blink, extra: heart(13, 3) },
+    { dy: -1, edits: blink, extra: heart(13, 2) },
+    { edits: blink, extra: heart(13, 1) },
+    { extra: heart(13, 0) },
+    {},
+    {},
+  ],
+  nap: [
+    ...rep({ extra: [...z([[5, 6]]), ...bubble(13, 7, 1)], sprite: LIE }, 3),
+    ...rep({ extra: [...z([[4, 7]]), ...bubble(13, 7, 2)], sprite: LIE }, 3),
+    ...rep(
+      {
+        extra: [
+          ...z([
+            [3, 8],
+            [5, 6],
+          ]),
+          ...bubble(12, 7, 3),
+        ],
+        sprite: LIE,
+      },
+      3
+    ),
+    ...rep(
+      {
+        extra: z([
+          [2, 9],
+          [4, 7],
+        ]),
+        sprite: LIE,
+      },
+      3
+    ),
+  ],
+  sleepy: [
+    { edits: shut, extra: z([[2, 13]]) },
+    { edits: shut, extra: z([[1, 14]]) },
+  ],
+  type: [
+    { dx: -1, extra: screen([[7, 14]]), sprite: SIDE, under: keys },
+    {
+      dx: -1,
+      extra: screen([
+        [7, 14],
+        [7, 15],
+      ]),
+      sprite: SIDE_B,
+      under: keys,
+    },
+    {
+      dx: -1,
+      extra: screen([
+        [7, 14],
+        [7, 15],
+        [9, 14],
+      ]),
+      sprite: SIDE,
+      under: keys,
+    },
+    {
+      dx: -1,
+      extra: screen([
+        [7, 14],
+        [7, 15],
+        [9, 14],
+        [9, 15],
+      ]),
+      sprite: SIDE_B,
+      under: keys,
+    },
+  ],
+  wag: [{}, {}, { edits: tailSwung }, { edits: tailSwung }],
+  walk: [{}, { edits: stepping }],
+  wave: [{ edits: raisedArm }, { edits: raisedArm }, {}, {}],
+} satisfies Record<string, FrameSpec[]>;
+
+export type Anim = keyof typeof ANIM_SPECS;
+
+const inFrame = (y: number, x: number) =>
+  y >= 0 && y < GRID_H && x >= 0 && x < GRID_W;
+
+/** One frame as GRID_H rows of GRID_W colour keys ('.' is empty) */
+const compose = (f: FrameSpec) => {
+  const sprite = f.sprite ?? STAND;
+  const body = sprite.map((row) => [...row]);
+  for (const [r, c, ch] of f.edits ?? []) {
+    const row = body[r];
+    if (row) {
+      row[c] = ch;
+    }
+  }
+  const grid = Array.from({ length: GRID_H }, () =>
+    Array.from({ length: GRID_W }, () => ".")
+  );
+  const put = ([y, x, ch]: Px) => {
+    const row = grid[y];
+    if (row && inFrame(y, x)) {
+      row[x] = ch;
+    }
+  };
+  const dx = 2 + (f.dx ?? 0);
+  const dy = (f.sprite ? GRID_H - sprite.length - 1 : 2) + (f.dy ?? 0);
+  for (const px of f.under ?? []) {
+    put(px);
+  }
+  for (const [r, row] of body.entries()) {
+    for (const [c, ch] of row.entries()) {
+      if (ch !== ".") {
+        put([r + dy, c + dx, ch]);
+      }
+    }
+  }
+  for (const px of f.extra ?? []) {
+    put(px);
+  }
+  return grid.map((row) => row.join(""));
+};
+
+/** Every distinct frame, drawn once; animations point into this list */
+export const FRAMES: string[][] = [];
+const frameIds = new Map<string, number>();
+
+const idOf = (rows: string[]) => {
+  const key = rows.join("/");
+  const known = frameIds.get(key);
+  if (known !== undefined) {
+    return known;
+  }
+  FRAMES.push(rows);
+  frameIds.set(key, FRAMES.length - 1);
+  return FRAMES.length - 1;
+};
+
+const animIds = (specs: readonly FrameSpec[]) =>
+  specs.map((f) => idOf(compose(f)));
+
+/** Each animation as a list of indexes into FRAMES */
+export const ANIMS: Record<Anim, number[]> = {
+  angry: animIds(ANIM_SPECS.angry),
+  angryRun: animIds(ANIM_SPECS.angryRun),
+  bug: animIds(ANIM_SPECS.bug),
+  hop: animIds(ANIM_SPECS.hop),
+  idle: animIds(ANIM_SPECS.idle),
+  love: animIds(ANIM_SPECS.love),
+  nap: animIds(ANIM_SPECS.nap),
+  sleepy: animIds(ANIM_SPECS.sleepy),
+  type: animIds(ANIM_SPECS.type),
+  wag: animIds(ANIM_SPECS.wag),
+  walk: animIds(ANIM_SPECS.walk),
+  wave: animIds(ANIM_SPECS.wave),
+};
 
 const isPaletteKey = (ch: string): ch is keyof typeof PALETTE =>
   Object.hasOwn(PALETTE, ch);
-
-export const BUG = [".k.k.", "krrrk", ".rrr.", "k.k.k"];
-
-export const SPRITE_W = 11;
-export const SPRITE_H = 13;
 
 export interface PixelRun {
   color: string;
