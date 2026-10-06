@@ -10,6 +10,14 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "i don't follow your cursor around any more… unless you make me mad",
+      "click me or drop me and i'll chase you for 10 whole seconds",
+    ],
+    date: "2026-10-06",
+    title: "tokkae minds its own business",
+  },
+  {
+    changes: [
       "click me, or pick me up and drop me, and i'll get mad and chase you… then i get sleepy",
       "new moves: i type at my pc, catch bugs with my tongue, and nap lying down",
       "drag the windows around by their title bars",

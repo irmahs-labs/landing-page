@@ -20,8 +20,8 @@ Tokkae is a pixel gecko from the brand canvas (a 12 × 13 sprite in an 18 × 17 
 
 - **When someone arrives,** it walks in from one side, waves, and opens `patch_notes.txt` with the latest entry of the in-app changelog.
 - **On its own,** it walks around, eats bugs, naps, waves, types at a little PC, and jumps onto the tops of windows.
-- **When the cursor moves away,** it runs after it, jumping up to the window the cursor is over or hopping down off one.
-- **Click it, or pick it up and drop it,** and it gets angry and chases you for five seconds. Then it gets sleepy for a moment and goes back to its routine.
+- **It leaves your cursor alone** unless you bother it.
+- **Click it, or pick it up and drop it,** and it gets angry and chases your cursor for ten seconds, jumping up to the window it's over or hopping down off one. Then it gets sleepy for a moment and goes back to its routine.
 - **With reduced motion,** it stands still in the corner and only shows the patch notes.
 
 The sprite and its animations are in [`src/lib/tokkae.ts`](src/lib/tokkae.ts). Its behaviour is a small class with no React in it, in [`src/lib/tokkae-brain.ts`](src/lib/tokkae-brain.ts). [`src/components/tokkae.tsx`](src/components/tokkae.tsx) draws it and runs the animation loop.

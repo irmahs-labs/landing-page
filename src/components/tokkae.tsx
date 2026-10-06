@@ -72,8 +72,8 @@ const PatchNotes = ({ onClose }: { onClose: () => void }) => {
 /**
  * Tokkae, the pixel gecko. It walks in from one side when someone arrives
  * and announces the latest changes, then wanders: eating bugs, napping,
- * waving, typing, jumping onto windows, and running after the cursor.
- * Click it, or pick it up and drop it, and it gets angry and chases you.
+ * waving, typing and jumping onto windows. Click it, or pick it up and drop
+ * it, and it gets angry and chases the cursor.
  * With reduced motion it stands still in the corner and just announces.
  */
 export const Tokkae = () => {
