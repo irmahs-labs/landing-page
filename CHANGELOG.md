@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 6 October 2026
+
+- **#26 Have Tokkae chase the cursor only when angry, for ten seconds:** Tokkae no longer follows a moving cursor. It only chases you once clicked, or picked up and dropped, and stays angry for ten seconds before getting sleepy.
+
 ## 5 October 2026
 
 - **#25 Draggable windows, Tokkae's moods, and a README and changelog:**

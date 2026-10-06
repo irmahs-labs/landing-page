@@ -9,7 +9,6 @@ export type Action =
   | "held"
   | "idle"
   | "jump"
-  | "run"
   | "sleep"
   | "sleepy"
   | "type"
@@ -48,9 +47,8 @@ const GRAVITY = 2200;
 const WALK = 70;
 const RUN = 260;
 const ANNOUNCE_MS = 25_000;
-const CHASE_MS = 2000;
 const JUMP_GAP_MS = 1500;
-const ANGRY_MS = 5000;
+const ANGRY_MS = 10_000;
 const SLEEPY_MS = 2500;
 const FRAME_MS = 200;
 
@@ -78,9 +76,7 @@ const pick = (): Action => {
   return "walk";
 };
 
-const MOVING = new Set<Action>(["angry", "enter", "run", "walk"]);
-// Busy with something else: the moving cursor doesn't distract it
-const FOCUSED = new Set<Action>(["announce", "enter", "held", "sleepy"]);
+const MOVING = new Set<Action>(["angry", "enter", "walk"]);
 
 /** Which animation each action plays, and how fast (ms per frame) */
 const PLAYS: Record<Action, [Anim, number]> = {
@@ -91,7 +87,6 @@ const PLAYS: Record<Action, [Anim, number]> = {
   held: ["angry", FRAME_MS],
   idle: ["idle", FRAME_MS],
   jump: ["walk", FRAME_MS],
-  run: ["walk", 90],
   sleep: ["nap", FRAME_MS],
   sleepy: ["sleepy", 400],
   type: ["type", FRAME_MS],
@@ -101,9 +96,10 @@ const PLAYS: Record<Action, [Anim, number]> = {
 
 /**
  * Tokkae's behaviour, free of React and drawing: it walks in and announces,
- * then picks something to do every few seconds, falls with gravity, lands on
- * the tops of windows and runs after the cursor. Poked or picked up, it gets
- * angry and chases you for five seconds, then gets sleepy and carries on.
+ * then picks something to do every few seconds, falls with gravity and lands
+ * on the tops of windows. It leaves the cursor alone unless poked or picked
+ * up: then it gets angry and chases you for ten seconds, then gets sleepy
+ * and carries on.
  */
 export class Brain {
   action: Action = "enter";
@@ -157,7 +153,7 @@ export class Brain {
     });
   }
 
-  /** Clicked: angry, and after you for five seconds */
+  /** Clicked: angry, and after you for ten seconds */
   poke(now: number) {
     this.become("angry", now);
     this.until = now + ANGRY_MS;
@@ -358,13 +354,11 @@ export class Brain {
   }
 
   /**
-   * Run after the cursor, or jump up to the window it is over: normally only
-   * while it moves; when angry, wherever it last was.
+   * Only when angry: run after the cursor, wherever it last was, or jump up
+   * to the window it is over
    */
   private chase(world: World, now: number, pointer: Pointer | null) {
-    const angry = this.action === "angry";
-    const stale = pointer && !angry && now - pointer.at > CHASE_MS;
-    if (!pointer || stale || FOCUSED.has(this.action)) {
+    if (!pointer || this.action !== "angry") {
       return;
     }
     const cx = this.x + world.w / 2;
@@ -374,19 +368,10 @@ export class Brain {
       this.jumpTo(over, world, now, pointer.x);
       return;
     }
-    if (!angry && Math.abs(pointer.x - cx) <= 90) {
-      return;
-    }
-    if (!angry && this.action !== "run") {
-      this.become("run", now);
-    }
     this.target = pointer.x - world.w / 2;
-    if (!angry) {
-      this.until = now + 1200;
-    }
   }
 
-  /** Walking, running, coming in, or stomping after the cursor */
+  /** Walking, coming in, or stomping after the cursor */
   private walk(world: World, dt: number, now: number) {
     if (!MOVING.has(this.action)) {
       return;
@@ -408,7 +393,7 @@ export class Brain {
     } else if (this.action === "walk") {
       this.until = Math.min(this.until, now);
     } else if (this.surface && Math.abs(this.target - goal) > 40) {
-      // The cursor is past the edge of this window: hop down after it
+      // Angry, and the cursor is past the edge of this window: hop down
       this.hopDown(Math.sign(this.target - goal));
     }
   }
