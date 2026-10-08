@@ -4,6 +4,8 @@ export interface AppLink {
   /** Icon background and stroke colours */
   icon: { bg: string; fg: string; path: string };
   name: string;
+  /** A screenshot of the app in public/apps, when there is one to show */
+  shot?: string;
   status: string;
 }
 
@@ -17,6 +19,7 @@ export const APPS: readonly AppLink[] = [
       path: "M8 7 L3 12 L8 17 M16 7 L21 12 L16 17 M14 5 L10 19",
     },
     name: "GitHub",
+    shot: "/apps/github.jpg",
     status: "code",
   },
   {
@@ -28,6 +31,7 @@ export const APPS: readonly AppLink[] = [
       path: "M6 9 H18 A4 4 0 0 1 18 17 H16 L14 15 H10 L8 17 H6 A4 4 0 0 1 6 9 Z M8 11 V15 M6 13 H10",
     },
     name: "Sleepy Spinner",
+    shot: "/apps/sleepy-spinner.jpg",
     status: "live",
   },
   {
@@ -39,6 +43,7 @@ export const APPS: readonly AppLink[] = [
       path: "M8 4 H16 V10 A4 4 0 0 1 8 10 Z M8 6 H5 A3 3 0 0 0 8 11 M16 6 H19 A3 3 0 0 1 16 11 M12 14 V18 M8 20 H16",
     },
     name: "Alsace Arena",
+    shot: "/apps/alsace-arena.jpg",
     status: "live",
   },
   {
@@ -61,6 +66,7 @@ export const APPS: readonly AppLink[] = [
       path: "M4 5 A2 2 0 0 1 6 3 H20 V19 H6 A2 2 0 0 0 4 21 Z M4 19 A2 2 0 0 1 6 17 H20",
     },
     name: "Portfolio",
+    shot: "/apps/portfolio.jpg",
     status: "site",
   },
 ];
