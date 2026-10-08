@@ -24,13 +24,13 @@ export const APPS: readonly AppLink[] = [
   },
   {
     desc: "Pull the lever and let it pick what's for dinner",
-    href: "https://sleepy-spinner.irmahs.dev",
+    href: "https://pantry-spinner.irmahs.dev",
     icon: {
       bg: "#3b4a42",
       fg: "#fff3cf",
       path: "M6 9 H18 A4 4 0 0 1 18 17 H16 L14 15 H10 L8 17 H6 A4 4 0 0 1 6 9 Z M8 11 V15 M6 13 H10",
     },
-    name: "Sleepy Spinner",
+    name: "What's in my pantry?",
     shot: "/apps/sleepy-spinner.jpg",
     status: "live",
   },
