@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 
 import { WindowButtons } from "./icons";
@@ -15,7 +15,7 @@ interface WindowProps {
   title: ReactNode;
 }
 
-// Each drag lifts its window above the others on the desk
+// Pressing a window, to drag or resize it, lifts it above the others
 let topLayer = 1;
 
 const clamp = (v: number, lo: number, hi: number) =>
@@ -23,9 +23,9 @@ const clamp = (v: number, lo: number, hi: number) =>
 
 /**
  * An outlined desktop window: a title bar with its name on the left and the
- * three buttons on the right, over a body that scrolls if the window is
- * resized smaller than its content. On bigger screens every window can be
- * dragged by its title bar and resized from its bottom-right corner.
+ * three buttons on the right, over its body. On bigger screens every window
+ * can be dragged by its title bar; only the apps window resizes, from its
+ * bottom-right corner.
  */
 export const Window = ({
   children,
@@ -38,6 +38,21 @@ export const Window = ({
   // How far the window has been dragged from its place in the layout
   const offset = useRef({ x: 0, y: 0 });
 
+  // A native listener, so pressing anywhere in the window counts, its
+  // resize corner included
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) {
+      return;
+    }
+    const raise = () => {
+      topLayer += 1;
+      el.style.zIndex = String(topLayer);
+    };
+    el.addEventListener("pointerdown", raise);
+    return () => el.removeEventListener("pointerdown", raise);
+  }, []);
+
   const startDrag = (e: ReactPointerEvent<HTMLDivElement>) => {
     const el = ref.current;
     // Phones scroll the page with the title bar instead
@@ -48,8 +63,6 @@ export const Window = ({
     e.preventDefault();
     const bar = e.currentTarget;
     bar.setPointerCapture(e.pointerId);
-    topLayer += 1;
-    el.style.zIndex = String(topLayer);
     el.classList.add("is-dragging");
 
     const rect = el.getBoundingClientRect();

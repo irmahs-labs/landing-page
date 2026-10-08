@@ -2,6 +2,14 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 8 October 2026
+
+- **#27 An apps window that shows 1, 2, 4 or 6 apps, with screenshots:**
+  - Only the apps window resizes now. The others can still be dragged, and the window you press comes to the front.
+  - The apps window opens on one app and shows 2, 4 or 6 at once as it's resized, as many as fit at 380 × 240 px each, paging by that many.
+  - Each app shows a screenshot with its icon in the corner. LinkedIn keeps its icon alone, since it only shows visitors a sign-in wall.
+  - The player is as tall as the profile and apps windows together, its cover filling the room over a blurred copy.
+
 ## 6 October 2026
 
 - **#26 Have Tokkae chase the cursor only when angry, for ten seconds:** Tokkae no longer follows a moving cursor. It only chases you once clicked, or picked up and dropped, and stays angry for ten seconds before getting sleepy.
