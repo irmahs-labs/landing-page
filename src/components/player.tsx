@@ -83,14 +83,9 @@ const Cover = ({
   const inside = (
     <>
       {image ? (
-        // Spotify's image host is remote and the cover is small, so plain imgs:
-        // the whole cover, over a blurred copy filling the rest of the box
-        <>
-          {/* oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS */}
-          <img alt="" className="cover-blur" src={image} />
-          {/* oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS */}
-          <img alt="" src={image} />
-        </>
+        // Spotify's image host is remote and the cover is small, so a plain img
+        // oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS
+        <img alt="" src={image} />
       ) : (
         <Record />
       )}

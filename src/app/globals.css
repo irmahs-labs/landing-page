@@ -301,9 +301,8 @@ fieldset {
 
 /* ---------- desk: the windows ----------
    Weather and profile side by side over the apps, the player in
-   a column beside them, as tall as the profile and the apps together.
-   Windows keep their own sizes, so resizing the apps moves its neighbours
-   rather than squeezing them. */
+   a column beside them. Windows keep their own sizes, so resizing the apps
+   moves its neighbours rather than squeezing them. */
 .desk {
   --top-h: 172px;
   --apps-h: clamp(320px, calc(100vh - 420px), 520px);
@@ -917,11 +916,8 @@ input:focus-visible {
 /* ---------- player ---------- */
 .player-window {
   width: 280px;
-  height: calc(var(--top-h) + 20px + var(--apps-h));
 }
-/* The cover takes whatever height the controls leave */
 .player-body {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -929,7 +925,7 @@ input:focus-visible {
 }
 .cover {
   position: relative;
-  flex: 1 0 auto;
+  flex: none;
   width: 100%;
   aspect-ratio: 1 / 1;
   display: flex;
@@ -946,12 +942,7 @@ input:focus-visible {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-}
-.cover .cover-blur {
   object-fit: cover;
-  filter: blur(16px) saturate(1.1);
-  transform: scale(1.2);
 }
 .record {
   width: 64px;
@@ -1784,9 +1775,6 @@ input:focus-visible {
     flex-wrap: wrap;
     align-items: flex-start;
     justify-content: center;
-  }
-  .player-window {
-    height: auto;
   }
 }
 /* Theme panel stays top left and the buttons top right; when the three no
