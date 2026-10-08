@@ -4,11 +4,12 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 8 October 2026
 
+- **#28 Put the player back to its own size:** the player is no longer stretched to the height of the profile and apps windows together, which made it too big. Its cover is square again.
 - **#27 An apps window that shows 1, 2, 4 or 6 apps, with screenshots:**
   - Only the apps window resizes now. The others can still be dragged, and the window you press comes to the front.
   - The apps window opens on one app and shows 2, 4 or 6 at once as it's resized, as many as fit at 380 × 240 px each, paging by that many.
   - Each app shows a screenshot with its icon in the corner. LinkedIn keeps its icon alone, since it only shows visitors a sign-in wall.
-  - The player is as tall as the profile and apps windows together, its cover filling the room over a blurred copy.
+  - The player is as tall as the profile and apps windows together, its cover filling the room over a blurred copy (undone in #28).
 
 ## 6 October 2026
 
