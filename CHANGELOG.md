@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 9 October 2026
+
+- **#29 Point the pantry card at pantry-spinner.irmahs.dev under its new name:** the meal planner card is now called What's in my pantry? and links to pantry-spinner.irmahs.dev, the name its DNS records use.
+
 ## 8 October 2026
 
 - **#28 Put the player back to its own size:** the player is no longer stretched to the height of the profile and apps windows together, which made it too big. Its cover is square again.
