@@ -1965,8 +1965,9 @@ input:focus-visible {
     flex: none;
     width: 100%;
   }
-  /* Full width at their content's height; no dragging or resizing on a phone */
-  .window {
+  /* Full width at their content's height; no dragging or resizing on a phone.
+     Only the desk's windows: the patch notes popup keeps its own width */
+  .desk .window {
     width: 100%;
     min-width: 0;
     height: auto;

@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 11 October 2026
+
+- **#34 Keep the patch notes popup its own width on phones:** on screens 600px wide or less the patch notes were squeezed to Tokkae's 63px width, since the phone rule stretching every window to full width caught them too. Only the desk's windows go full width now, so the notes pop up at their usual 290px.
+
 ## 10 October 2026
 
 - **#32 Make the theme animal Tokkae's buddy instead of a cursor follower:**
