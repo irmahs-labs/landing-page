@@ -944,6 +944,26 @@ input:focus-visible {
   height: 100%;
   object-fit: cover;
 }
+/* Tokkae in the cover when nothing plays: 18 × 17 pixels, crisp at any size,
+   on cream so its green doesn't melt into the cover's */
+.is-idle .cover {
+  background-color: var(--panel);
+}
+.emote {
+  position: relative;
+  width: 62%;
+  aspect-ratio: 18 / 17;
+}
+.emote svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  shape-rendering: crispEdges;
+}
+.emote svg.is-off {
+  display: none;
+}
 .record {
   width: 64px;
   height: 64px;
