@@ -75,6 +75,8 @@ const SIDE_B = [
 ];
 
 const HEART = ["rr.rr", "rrrrr", ".rrr.", "..r.."];
+// An eighth note: flag top right, head bottom left
+const NOTE = [".kk", ".k.", ".k.", "kk."];
 
 /** A pixel: row, column, colour key */
 type Px = readonly [number, number, string];
@@ -165,6 +167,8 @@ const tongue = (n: number): Px[] =>
   Array.from({ length: n }, (_, i): Px => [5, 9 + i, "t"]);
 const bug = (y: number, x: number): Px[] => [[y, x, "x"]];
 const heart = (x: number, y: number) => stamp(HEART, x, y);
+const note = (x: number, y: number, ch: string): Px[] =>
+  stamp(NOTE, x, y).map(([py, px]): Px => [py, px, ch]);
 
 // The angry emote, on the standing sprite: slanted brows, red cheeks, a mark
 const fuming: Px[] = [
@@ -194,6 +198,31 @@ const pc = [
   ...box(15, 14, 3, 1, "k"),
 ];
 const keys = box(12, 9, 4, 1, "k");
+
+// Singing, in frame coordinates: a mic stand to the right of Tokkae's mouth
+const micStand: Px[] = [
+  ...box(6, 13, 2, 2, "x"),
+  [6, 13, "W"],
+  ...box(8, 14, 1, 7, "k"),
+  ...box(15, 12, 5, 1, "k"),
+];
+// The right arm reaching out to hold the stand, in sprite coordinates
+const holdingStand: Px[] = [
+  [7, 9, "g"],
+  [7, 10, "g"],
+  [7, 11, "d"],
+];
+const mouthOpen: Px[] = [
+  [5, 4, "k"],
+  [5, 5, "t"],
+  [5, 6, "k"],
+];
+const mouthO: Px[] = [[5, 5, "k"]];
+const singing = (mouth: readonly Px[], eyes: readonly Px[] = []): Px[] => [
+  ...holdingStand,
+  ...mouth,
+  ...eyes,
+];
 const screen = (pts: readonly (readonly [number, number])[]): Px[] => [
   ...pc,
   ...z(pts),
@@ -261,6 +290,25 @@ const ANIM_SPECS = {
       },
       3
     ),
+  ],
+  // Two notes, one after the other, float up from the mic
+  sing: [
+    { edits: singing(mouthOpen), extra: [...micStand, ...note(15, 2, "w")] },
+    { edits: singing(mouthOpen), extra: [...micStand, ...note(15, 1, "w")] },
+    { edits: singing(mouthO), extra: [...micStand, ...note(15, 0, "w")] },
+    { edits: singing(mouthOpen), extra: [...micStand, ...note(15, -1, "w")] },
+    {
+      dy: -1,
+      edits: singing(mouthOpen, shut),
+      extra: [...micStand, ...note(14, 2, "r")],
+    },
+    {
+      dy: -1,
+      edits: singing(mouthOpen, shut),
+      extra: [...micStand, ...note(14, 1, "r")],
+    },
+    { edits: singing(mouthO, shut), extra: [...micStand, ...note(14, 0, "r")] },
+    { edits: singing(mouthO), extra: [...micStand, ...note(14, -1, "r")] },
   ],
   sleepy: [
     { edits: shut, extra: z([[2, 13]]) },
@@ -373,6 +421,7 @@ export const ANIMS: Record<Anim, number[]> = {
   idle: animIds(ANIM_SPECS.idle),
   love: animIds(ANIM_SPECS.love),
   nap: animIds(ANIM_SPECS.nap),
+  sing: animIds(ANIM_SPECS.sing),
   sleepy: animIds(ANIM_SPECS.sleepy),
   type: animIds(ANIM_SPECS.type),
   wag: animIds(ANIM_SPECS.wag),

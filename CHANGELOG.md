@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 9 October 2026
 
+- **#31 Have Tokkae sing at a mic stand when nothing is playing:** the random emotes in the empty player are replaced by one new animation, Tokkae holding a mic stand and singing, with blue and red notes floating up. It loops until music plays.
 - **#30 Show Tokkae in the music player when nothing is playing:** instead of the record, the cover shows Tokkae doing a random calm emote (bug hunting, hopping, napping, typing, waving and more), a new one every eight seconds, on cream so its green stands out. With reduced motion it holds one frame.
 - **#29 Point the pantry card at pantry-spinner.irmahs.dev under its new name:** the meal planner card is now called What's in my pantry? and links to pantry-spinner.irmahs.dev, the name its DNS records use.
 
