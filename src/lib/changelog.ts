@@ -10,6 +10,14 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "when there's no music, i hang out in the player instead",
+      "i might be napping, hunting bugs, typing… you never know!",
+    ],
+    date: "2026-10-09",
+    title: "tokkae dj",
+  },
+  {
+    changes: [
       "pull the corner of my_apps and it shows 2, 4 or 6 apps at once",
       "the apps have little screenshots now!",
       "the other windows don't stretch any more, but you can still drag them around",

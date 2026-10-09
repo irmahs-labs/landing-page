@@ -3,6 +3,7 @@
 import { useNowPlaying } from "@/hooks/use-now-playing";
 import { fmtSeconds } from "@/lib/format";
 
+import { TokkaeEmote } from "./tokkae-emote";
 import { Window } from "./window";
 
 const ICONS = {
@@ -72,7 +73,10 @@ const Record = () => (
   </svg>
 );
 
-/** The album cover, or a record when there is none; links to the song if any */
+/**
+ * The album cover, a record for a song without one, or Tokkae when nothing
+ * is playing; links to the song if any
+ */
 const Cover = ({
   image,
   url,
@@ -80,15 +84,15 @@ const Cover = ({
   image: string | null;
   url: string | null;
 }) => {
+  let art = url ? <Record /> : <TokkaeEmote />;
+  if (image) {
+    // Spotify's image host is remote and the cover is small, so a plain img
+    // oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS
+    art = <img alt="" src={image} />;
+  }
   const inside = (
     <>
-      {image ? (
-        // Spotify's image host is remote and the cover is small, so a plain img
-        // oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS
-        <img alt="" src={image} />
-      ) : (
-        <Record />
-      )}
+      {art}
       <span aria-hidden="true" className="eq">
         <i />
         <i />

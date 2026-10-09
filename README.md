@@ -8,7 +8,7 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 - **Weather and clock** for Paris or Phnom Penh: local time and date, sunrise and sunset, and the current weather. The sky follows the time of day there, with the sun or moon rising and setting, stars, rain and night tint.
 - **Profile:** name, role, studies, location, languages, and links to GitHub and LinkedIn.
 - **Apps:** each with a screenshot (LinkedIn keeps its icon, since it only shows a sign-in wall to visitors), paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
-- **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. Clicking the song opens it on Spotify. The control buttons are for show for now.
+- **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sits in the cover doing a random emote, a new one every eight seconds. Clicking the song opens it on Spotify. The control buttons are for show for now.
 - **Theme variations:** off by default, so the page is Cute Matcha. Turned on, twelve colour variations appear, each with its own animal following the cursor, falling flowers and background pattern.
 - **Surprise me:** pours milk tea over the screen and turns the page into boba for 20 seconds.
 - **Sign in** with Google through the IrmaHS Labs account service ([irmahs-labs/auth](https://github.com/irmahs-labs/auth)). The session is shared by every `*.irmahs.dev` site.

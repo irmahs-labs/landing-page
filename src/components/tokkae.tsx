@@ -11,7 +11,8 @@ import type { Action, Pointer, World } from "@/lib/tokkae-brain";
 
 import { Window } from "./window";
 
-const Sprite = ({
+/** One frame of Tokkae as pixel runs; `hidden` frames wait their turn */
+export const Sprite = ({
   hidden,
   rows,
 }: {
