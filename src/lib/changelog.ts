@@ -10,6 +10,14 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "no music? i'll sing for you instead",
+      "i got a real mic stand and everything!",
+    ],
+    date: "2026-10-09",
+    title: "tokkae sings",
+  },
+  {
+    changes: [
       "when there's no music, i hang out in the player instead",
       "i might be napping, hunting bugs, typing… you never know!",
     ],
