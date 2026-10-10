@@ -66,7 +66,6 @@ fieldset {
 
 /* ---------- scenery ---------- */
 .scene,
-.critters,
 .milk-layer {
   position: fixed;
   inset: 0;
@@ -235,19 +234,7 @@ fieldset {
   bottom: 0;
 }
 
-/* ---------- critters ---------- */
-.critter {
-  position: absolute;
-  left: 0;
-  top: 0;
-  will-change: transform;
-}
-.critter img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
+/* ---------- the theme animals' own bounce ---------- */
 .hop {
   animation: hop 0.45s ease-in-out infinite alternate;
 }
@@ -1322,6 +1309,79 @@ input:focus-visible {
 .tokkae-sprite svg.is-off {
   display: none;
 }
+
+/* Tokkae's buddy, the theme's animal: moved and turned by tokkae.tsx, the
+   picture itself left as it is. In front of Tokkae, unless it's circling
+   behind it during a nap. */
+.tokkae {
+  z-index: 1;
+}
+.buddy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 120px;
+  height: 120px;
+  /* Offscreen until the first frame places it */
+  transform: translate(-300px, 0);
+  will-change: transform;
+}
+.buddy[data-behind="1"] {
+  z-index: 0;
+}
+.buddy-body {
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--face, 1));
+}
+.buddy-body img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* The pet bowl at its front feet, at a picnic */
+.buddy-bowl {
+  position: absolute;
+  bottom: 2px;
+  width: 40px;
+  height: 20px;
+}
+.buddy[data-face="right"] .buddy-bowl {
+  right: -24px;
+}
+.buddy[data-face="left"] .buddy-bowl {
+  left: -24px;
+}
+.buddy-heart {
+  position: absolute;
+  width: 20px;
+  height: 16px;
+  margin-left: -10px;
+  animation: heart-up 1.4s ease-out forwards;
+}
+.buddy-bowl svg,
+.buddy-heart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  shape-rendering: crispEdges;
+}
+.buddy-bowl.is-off,
+.buddy-heart.is-off {
+  display: none;
+}
+@keyframes heart-up {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--drift, 8px), -70px) scale(1.1);
+  }
+}
 .patch-notes {
   position: absolute;
   cursor: auto;
@@ -1958,6 +2018,10 @@ input:focus-visible {
     width: 63px;
     height: 59.5px;
   }
+  .buddy {
+    width: 84px;
+    height: 84px;
+  }
 }
 @media (max-width: 360px) {
   .seg {
@@ -1967,14 +2031,6 @@ input:focus-visible {
 }
 @media (max-width: 340px) {
   .seg svg {
-    display: none;
-  }
-}
-
-/* Phones, upright or on their side: no animal following the pointer, since
-   there is no pointer to follow and it wanders over the apps instead. */
-@media (max-width: 600px), (max-height: 520px) {
-  .critters {
     display: none;
   }
 }
@@ -1997,7 +2053,6 @@ input:focus-visible {
   .eq i {
     animation: none !important;
   }
-  .critters,
   .burst-wrap,
   .milk-layer,
   .fill-up,

@@ -9,7 +9,7 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 - **Profile:** name, role, studies, location, languages, and links to GitHub and LinkedIn.
 - **Apps:** each with a screenshot (LinkedIn keeps its icon, since it only shows a sign-in wall to visitors), paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
 - **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sings into a mic stand in the cover, on loop until music plays. Clicking the song opens it on Spotify. The control buttons are for show for now.
-- **Theme variations:** off by default, so the page is Cute Matcha. Turned on, twelve colour variations appear, each with its own animal following the cursor, falling flowers and background pattern.
+- **Theme variations:** off by default, so the page is Cute Matcha. Turned on, twelve colour variations appear, each with its own animal, falling flowers and background pattern. The animal is Tokkae's buddy (see below).
 - **Surprise me:** pours milk tea over the screen and turns the page into boba for 20 seconds.
 - **Sign in** with Google through the IrmaHS Labs account service ([irmahs-labs/auth](https://github.com/irmahs-labs/auth)). The session is shared by every `*.irmahs.dev` site.
 - **Tokkae**, described below.
@@ -22,9 +22,16 @@ Tokkae is a pixel gecko from the brand canvas (a 12 × 13 sprite in an 18 × 17 
 - **On its own,** it walks around, eats bugs, naps, waves, types at a little PC, and jumps onto the tops of windows.
 - **It leaves your cursor alone** unless you bother it.
 - **Click it, or pick it up and drop it,** and it gets angry and chases your cursor for ten seconds, jumping up to the window it's over or hopping down off one. Then it gets sleepy for a moment and goes back to its routine.
-- **With reduced motion,** it stands still in the corner and only shows the patch notes.
+- **With a theme variation on,** the theme's animal is its buddy. Every so often, instead of its own routine, Tokkae plays with it. Each of these is equally likely:
+  - **Hearts:** side by side, hearts rising from both of them.
+  - **A picnic:** the animal at its pet bowl, Tokkae catching bugs.
+  - **Tag** for ten seconds, with Tokkae or the animal as "it", 50/50.
+  - **A nap together:** Tokkae asleep, the animal circling it.
+- **Turning the theme variations on** puts a "!" over Tokkae, and it runs to say hello to the animal. **Turning them off** makes it cry for two seconds before it carries on. Both wait while it's announcing, angry or being held.
+- **The animal is only ever moved,** turned to face its way, and given hearts or a bowl. Its picture is never changed.
+- **With reduced motion,** it stands still in the corner and only shows the patch notes, and there's no buddy.
 
-The sprite and its animations are in [`src/lib/tokkae.ts`](src/lib/tokkae.ts). Its behaviour is a small class with no React in it, in [`src/lib/tokkae-brain.ts`](src/lib/tokkae-brain.ts). [`src/components/tokkae.tsx`](src/components/tokkae.tsx) draws it and runs the animation loop.
+The sprite and its animations are in [`src/lib/tokkae.ts`](src/lib/tokkae.ts). Its behaviour is a small class with no React in it, in [`src/lib/tokkae-brain.ts`](src/lib/tokkae-brain.ts), and its buddy's in [`src/lib/tokkae-buddy.ts`](src/lib/tokkae-buddy.ts). [`src/components/tokkae.tsx`](src/components/tokkae.tsx) draws it and runs the animation loop.
 
 ## Changelogs
 

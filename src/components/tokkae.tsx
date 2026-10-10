@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { PointerEvent as ReactPointerEvent } from "react";
+import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { CHANGELOG } from "@/lib/changelog";
-import { FRAMES, runsOf } from "@/lib/tokkae";
+import type { Theme } from "@/lib/themes";
+import { BOWL, FRAMES, HEART, runsOf } from "@/lib/tokkae";
 import { Brain } from "@/lib/tokkae-brain";
-import type { Action, Pointer, World } from "@/lib/tokkae-brain";
+import type { Action, Nudge, Pointer, World } from "@/lib/tokkae-brain";
+import { Buddy } from "@/lib/tokkae-buddy";
+import type { BuddyPose, Room } from "@/lib/tokkae-buddy";
 
 import { Window } from "./window";
 
@@ -46,6 +49,72 @@ const measure = (el: HTMLElement): World => ({
   windows: [...document.querySelectorAll("section.window:not(.patch-notes)")],
 });
 
+/** A theme switch by the visitor; a new object each time, for the effect */
+export interface ThemeNudge {
+  kind: Nudge;
+}
+
+/** The screen, and the buddy's size as its CSS box has it, and its pace */
+const roomFor = (box: HTMLElement, theme: Theme): Room => ({
+  size: box.offsetWidth,
+  speed: (theme.cfg?.speed ?? 90) * 1.2,
+  vh: window.innerHeight,
+  vw: window.innerWidth,
+});
+
+/** Bring the buddy in or out to match the theme's animal */
+const syncBuddy = (
+  brain: Brain,
+  buddy: RefObject<Buddy | null>,
+  box: HTMLElement | null,
+  theme: Theme,
+  now: number
+) => {
+  if (theme.animal && box && !buddy.current) {
+    buddy.current = new Buddy(roomFor(box, theme));
+    brain.setBuddy(true, now);
+  } else if (!theme.animal && buddy.current) {
+    buddy.current = null;
+    brain.setBuddy(false, now);
+  }
+};
+
+/**
+ * Move the buddy's box; its picture only ever flips to face its way. The
+ * facing and layering change rarely, so they're only written when they do.
+ */
+const placeBuddy = (el: HTMLElement, pose: BuddyPose, native: number) => {
+  el.style.transform = `translate(${pose.x.toFixed(1)}px, ${(pose.y + pose.dip).toFixed(1)}px)`;
+  const face = pose.face > 0 ? "right" : "left";
+  if (el.dataset.face !== face) {
+    el.dataset.face = face;
+    el.style.setProperty("--face", String(pose.face * native));
+  }
+  const behind = pose.behind ? "1" : "0";
+  if (el.dataset.behind !== behind) {
+    el.dataset.behind = behind;
+  }
+};
+
+/** A pixel heart floating up from the buddy's head, gone once it fades */
+const releaseHeart = (
+  template: Element,
+  layer: Element,
+  x: number,
+  y: number
+) => {
+  const heart = template.cloneNode(true);
+  if (!(heart instanceof HTMLElement)) {
+    return;
+  }
+  heart.classList.remove("is-off");
+  heart.style.left = `${x.toFixed(0)}px`;
+  heart.style.top = `${y.toFixed(0)}px`;
+  heart.addEventListener("animationend", () => heart.remove());
+  heart.addEventListener("animationcancel", () => heart.remove());
+  layer.append(heart);
+};
+
 const PatchNotes = ({ onClose }: { onClose: () => void }) => {
   const [latest] = CHANGELOG;
   if (!latest) {
@@ -75,12 +144,28 @@ const PatchNotes = ({ onClose }: { onClose: () => void }) => {
  * and announces the latest changes, then wanders: eating bugs, napping,
  * waving, typing and jumping onto windows. Click it, or pick it up and drop
  * it, and it gets angry and chases the cursor.
- * With reduced motion it stands still in the corner and just announces.
+ * With a theme variation on, the theme's animal is its buddy and they play
+ * together. Turning the variations on sends Tokkae running to say hello;
+ * turning them off makes it cry.
+ * With reduced motion it stands still in the corner and just announces, and
+ * there's no buddy.
  */
-export const Tokkae = () => {
+export const Tokkae = ({
+  nudge,
+  theme,
+}: {
+  nudge: ThemeNudge | null;
+  theme: Theme;
+}) => {
   const reduceMotion = useReducedMotion();
+  const layer = useRef<HTMLDivElement>(null);
   const root = useRef<HTMLDivElement>(null);
+  const buddyEl = useRef<HTMLDivElement>(null);
+  const bowlEl = useRef<HTMLSpanElement>(null);
+  const heartTpl = useRef<HTMLSpanElement>(null);
   const brainRef = useRef<Brain | null>(null);
+  const buddyRef = useRef<Buddy | null>(null);
+  const themeRef = useRef(theme);
   const pointerRef = useRef<Pointer | null>(null);
   const [action, setAction] = useState<Action>("enter");
   const [notesOpen, setNotesOpen] = useState(true);
@@ -90,6 +175,19 @@ export const Tokkae = () => {
     notesOpenRef.current = false;
     setNotesOpen(false);
   };
+
+  useEffect(() => {
+    themeRef.current = theme;
+  }, [theme]);
+
+  // Only the visitor's own switches; the saved choice on load is no news
+  useEffect(() => {
+    const brain = brainRef.current;
+    if (!(brain && nudge)) {
+      return;
+    }
+    brain.react(nudge.kind, performance.now());
+  }, [nudge]);
 
   useEffect(() => {
     const el = root.current;
@@ -119,16 +217,45 @@ export const Tokkae = () => {
     let prev = performance.now();
     let frame = 0;
 
+    const moveBuddy = (dt: number, world: World, x: number, y: number) => {
+      const buddy = buddyRef.current;
+      const box = buddyEl.current;
+      if (!(buddy && box)) {
+        return;
+      }
+      const { current } = themeRef;
+      const room = roomFor(box, current);
+      const pose = buddy.step(dt, room, {
+        action: brain.action,
+        h: world.h,
+        tagIt: brain.tagIt,
+        w: world.w,
+        x,
+        y,
+      });
+      placeBuddy(box, pose, current.cfg?.native ?? 1);
+      bowlEl.current?.classList.toggle("is-off", !pose.bowl);
+      if (pose.heart && heartTpl.current && layer.current) {
+        const jitter = (Math.random() - 0.5) * room.size * 0.3;
+        const hx = pose.x + room.size / 2 + jitter;
+        releaseHeart(heartTpl.current, layer.current, hx, pose.y);
+      }
+    };
+
     const tick = (now: number) => {
       const dt = Math.min(0.05, (now - prev) / 1000);
       prev = now;
+      syncBuddy(brain, buddyRef, buddyEl.current, themeRef.current, now);
+      const world = measure(el);
       const pose = brain.step(
         now,
         dt,
-        measure(el),
+        world,
         pointerRef.current,
-        notesOpenRef.current
+        notesOpenRef.current,
+        buddyRef.current?.spot() ?? null
       );
+      moveBuddy(dt, world, pose.x, pose.y);
       if (pose.closeNotes) {
         notesOpenRef.current = false;
         setNotesOpen(false);
@@ -155,6 +282,7 @@ export const Tokkae = () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
       brainRef.current = null;
+      buddyRef.current = null;
     };
   }, [reduceMotion]);
 
@@ -211,9 +339,24 @@ export const Tokkae = () => {
 
   // With reduced motion Tokkae only ever announces
   const shown = reduceMotion ? "announce" : action;
+  const showBuddy = Boolean(theme.animal) && !reduceMotion;
 
   return (
-    <div className="tokkae-layer">
+    <div className="tokkae-layer" ref={layer}>
+      {showBuddy && (
+        <div aria-hidden="true" className="buddy" ref={buddyEl}>
+          <div className="buddy-body">
+            {/* oxlint-disable-next-line next/no-img-element -- the theme's animal, as the cursor critter had it */}
+            <img alt="" className={theme.cls} src={theme.animal ?? ""} />
+          </div>
+          <span className="buddy-bowl is-off" ref={bowlEl}>
+            <Sprite rows={BOWL} />
+          </span>
+        </div>
+      )}
+      <span aria-hidden="true" className="buddy-heart is-off" ref={heartTpl}>
+        <Sprite rows={HEART} />
+      </span>
       <div
         className="tokkae"
         onPointerDown={onPointerDown}

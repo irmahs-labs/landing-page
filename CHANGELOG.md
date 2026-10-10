@@ -2,6 +2,14 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 10 October 2026
+
+- **#32 Make the theme animal Tokkae's buddy instead of a cursor follower:**
+  - The theme variations' animal no longer follows the cursor. It roams the lower half of the screen and plays with Tokkae instead, each game equally likely: trading hearts, a picnic (the animal at a pet bowl, Tokkae catching bugs), ten seconds of tag with either one as "it", or a nap together with the animal circling the sleeping Tokkae.
+  - Turning the variations on puts a "!" over Tokkae and it runs to say hello. Turning them off makes it cry for two seconds.
+  - The animal is only moved and turned; its picture is never changed. It now shows on phones too.
+  - Tokkae's singing and crying lose their mouth, to match its sprite.
+
 ## 9 October 2026
 
 - **#31 Have Tokkae sing at a mic stand when nothing is playing:** the random emotes in the empty player are replaced by one new animation, Tokkae holding a mic stand and singing, with blue and red notes floating up. It loops until music plays.

@@ -74,7 +74,15 @@ const SIDE_B = [
   ...SIDE.slice(9),
 ];
 
-const HEART = ["rr.rr", "rrrrr", ".rrr.", "..r.."];
+export const HEART = ["rr.rr", "rrrrr", ".rrr.", "..r.."];
+// The buddy's pet bowl at a picnic, full of kibble
+export const BOWL = [
+  "...OOOO...",
+  "..OOtOOO..",
+  "wwwwwwwwww",
+  ".wbwwwwww.",
+  "..wwwwww..",
+];
 // An eighth note: flag top right, head bottom left
 const NOTE = [".kk", ".k.", ".k.", "kk."];
 
@@ -117,8 +125,9 @@ const stamp = (sprite: readonly string[], x0: number, y0: number) => {
 
 const rep = (f: FrameSpec, n: number): FrameSpec[] =>
   Array.from({ length: n }, () => f);
-const z = (pts: readonly (readonly [number, number])[]): Px[] =>
-  pts.map(([y, x]): Px => [y, x, "z"]);
+const paint = (pts: readonly (readonly [number, number])[], ch: string) =>
+  pts.map(([y, x]): Px => [y, x, ch]);
+const z = (pts: readonly (readonly [number, number])[]) => paint(pts, "z");
 const bubble = (y: number, x: number, n: number): Px[] => {
   if (n === 1) {
     return [[y, x, "W"]];
@@ -199,7 +208,7 @@ const pc = [
 ];
 const keys = box(12, 9, 4, 1, "k");
 
-// Singing, in frame coordinates: a mic stand to the right of Tokkae's mouth
+// Singing, in frame coordinates: a mic stand to the right of Tokkae's face
 const micStand: Px[] = [
   ...box(6, 13, 2, 2, "x"),
   [6, 13, "W"],
@@ -212,23 +221,47 @@ const holdingStand: Px[] = [
   [7, 10, "g"],
   [7, 11, "d"],
 ];
-const mouthOpen: Px[] = [
-  [5, 4, "k"],
-  [5, 5, "t"],
-  [5, 6, "k"],
-];
-const mouthO: Px[] = [[5, 5, "k"]];
-const singing = (mouth: readonly Px[], eyes: readonly Px[] = []): Px[] => [
-  ...holdingStand,
-  ...mouth,
-  ...eyes,
-];
+const singing = (eyes: readonly Px[] = []): Px[] => [...holdingStand, ...eyes];
+
+// Surprise, in frame coordinates: a red "!" up by the top of its head
+const bang: Px[] = [...box(0, 13, 1, 3, "r"), [4, 13, "r"]];
+
+// Crying, on the standing sprite: eyes squeezed shut, tears on its cheeks
+const sobbing: Px[] = [...shut, [4, 3, "w"], [4, 7, "w"]];
+// Tears spraying out to both sides, in frame coordinates, in three stages
+const tearsA = paint(
+  [
+    [5, 2],
+    [5, 12],
+  ],
+  "w"
+);
+const tearsB = paint(
+  [
+    [5, 2],
+    [6, 1],
+    [5, 12],
+    [6, 13],
+  ],
+  "w"
+);
+const tearsC = paint(
+  [
+    [6, 1],
+    [8, 0],
+    [6, 13],
+    [8, 14],
+  ],
+  "w"
+);
 const screen = (pts: readonly (readonly [number, number])[]): Px[] => [
   ...pc,
   ...z(pts),
 ];
 
 const ANIM_SPECS = {
+  alert: [{ extra: bang }, { dy: -1, extra: bang }],
+  alertRun: [{ extra: bang }, { edits: stepping, extra: bang }],
   angry: [
     { edits: fuming, extra: angerMark },
     { dy: -1, edits: fuming, extra: angerMark },
@@ -251,6 +284,12 @@ const ANIM_SPECS = {
     {},
     {},
     {},
+  ],
+  cry: [
+    { edits: sobbing, extra: tearsA },
+    { edits: sobbing, extra: tearsB },
+    { edits: sobbing, extra: tearsC },
+    { edits: sobbing, extra: tearsB },
   ],
   hop: [{}, {}, { dy: -1 }, { dy: -2 }, { dy: -2 }, { dy: -1 }, {}, {}],
   idle: [...rep({}, 14), { edits: blink }, ...rep({}, 6), { edits: blink }],
@@ -293,22 +332,22 @@ const ANIM_SPECS = {
   ],
   // Two notes, one after the other, float up from the mic
   sing: [
-    { edits: singing(mouthOpen), extra: [...micStand, ...note(15, 2, "w")] },
-    { edits: singing(mouthOpen), extra: [...micStand, ...note(15, 1, "w")] },
-    { edits: singing(mouthO), extra: [...micStand, ...note(15, 0, "w")] },
-    { edits: singing(mouthOpen), extra: [...micStand, ...note(15, -1, "w")] },
+    { edits: singing(), extra: [...micStand, ...note(15, 2, "w")] },
+    { edits: singing(), extra: [...micStand, ...note(15, 1, "w")] },
+    { edits: singing(), extra: [...micStand, ...note(15, 0, "w")] },
+    { edits: singing(), extra: [...micStand, ...note(15, -1, "w")] },
     {
       dy: -1,
-      edits: singing(mouthOpen, shut),
+      edits: singing(shut),
       extra: [...micStand, ...note(14, 2, "r")],
     },
     {
       dy: -1,
-      edits: singing(mouthOpen, shut),
+      edits: singing(shut),
       extra: [...micStand, ...note(14, 1, "r")],
     },
-    { edits: singing(mouthO, shut), extra: [...micStand, ...note(14, 0, "r")] },
-    { edits: singing(mouthO), extra: [...micStand, ...note(14, -1, "r")] },
+    { edits: singing(shut), extra: [...micStand, ...note(14, 0, "r")] },
+    { edits: singing(), extra: [...micStand, ...note(14, -1, "r")] },
   ],
   sleepy: [
     { edits: shut, extra: z([[2, 13]]) },
@@ -414,9 +453,12 @@ const animIds = (specs: readonly FrameSpec[]) =>
 
 /** Each animation as a list of indexes into FRAMES */
 export const ANIMS: Record<Anim, number[]> = {
+  alert: animIds(ANIM_SPECS.alert),
+  alertRun: animIds(ANIM_SPECS.alertRun),
   angry: animIds(ANIM_SPECS.angry),
   angryRun: animIds(ANIM_SPECS.angryRun),
   bug: animIds(ANIM_SPECS.bug),
+  cry: animIds(ANIM_SPECS.cry),
   hop: animIds(ANIM_SPECS.hop),
   idle: animIds(ANIM_SPECS.idle),
   love: animIds(ANIM_SPECS.love),

@@ -24,7 +24,6 @@ import { AccountButton } from "./account-button";
 import { AppsWindow } from "./apps-window";
 import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
-import { Critters } from "./critters";
 import { MilkLayer } from "./milk-layer";
 import { Player } from "./player";
 import { ProfileWindow } from "./profile-window";
@@ -32,6 +31,7 @@ import { Scene } from "./scene";
 import { SurpriseButton } from "./surprise-button";
 import { ThemePicker } from "./theme-picker";
 import { Tokkae } from "./tokkae";
+import type { ThemeNudge } from "./tokkae";
 
 const WEATHER_TTL = 15 * 60 * 1000;
 const BOBA_MS = 20_000;
@@ -62,6 +62,8 @@ export const Landing = () => {
   // Mirrors `weather` so the fetch effect can check freshness without depending on it
   const weatherCache = useRef(weather);
   const [milk, setMilk] = useState(false);
+  // The visitor's own theme switches, for Tokkae to greet or mourn the animal
+  const [nudge, setNudge] = useState<ThemeNudge | null>(null);
   const milkTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   let themeId: ThemeId = themesOn ? savedTheme : BASE_THEME;
@@ -141,6 +143,7 @@ export const Landing = () => {
     setBoba(false);
     setAnimatePattern(true);
     saveThemesSwitch(themesOn ? "off" : "on");
+    setNudge({ kind: themesOn ? "cry" : "greet" });
   };
 
   // "surprise me": milk tea pour, 20 s of boba, then back
@@ -171,7 +174,6 @@ export const Landing = () => {
         rainy={rainy}
         theme={th}
       />
-      <Critters theme={th} />
 
       <div className="page">
         <header className="top">
@@ -209,7 +211,7 @@ export const Landing = () => {
         </main>
       </div>
 
-      <Tokkae />
+      <Tokkae nudge={nudge} theme={th} />
 
       {milk && <MilkLayer />}
     </>

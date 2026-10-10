@@ -10,6 +10,15 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "turn on theme variations and i'll run over to meet my new buddy!",
+      "we trade hearts, have picnics, play tag and nap together",
+      "turn them off and i'll cry a little… but i'll be ok",
+    ],
+    date: "2026-10-09",
+    title: "i made a friend",
+  },
+  {
+    changes: [
       "no music? i'll sing for you instead",
       "i got a real mic stand and everything!",
     ],
