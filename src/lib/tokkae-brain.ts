@@ -1,19 +1,67 @@
+import { rand } from "./format";
 import { ANIMS } from "./tokkae";
 import type { Anim } from "./tokkae";
 
 export type Action =
+  | "alert"
   | "angry"
   | "announce"
+  | "cry"
   | "eat"
   | "enter"
+  | "greet"
+  | "hearts"
   | "held"
+  | "hello"
   | "idle"
   | "jump"
+  | "napTogether"
+  | "picnic"
   | "sleep"
   | "sleepy"
+  | "tag"
   | "type"
   | "walk"
   | "wave";
+
+/** Who is "it" in a game of tag */
+export type Tagger = "buddy" | "tokkae";
+
+/** The visitor turning the theme variations on (greet) or off (cry) */
+export type Nudge = "cry" | "greet";
+
+/** Which way a runner in tag is heading; 0 until it picks */
+export type FleeDir = -1 | 0 | 1;
+
+/**
+ * Tag, for whoever is running away: away from the chaser at first, then
+ * edge to edge, turning back within 20px of an edge of [lo, hi]
+ */
+export const nextFleeDir = (run: {
+  cx: number;
+  dir: FleeDir;
+  from: number;
+  hi: number;
+  lo: number;
+  x: number;
+}): FleeDir => {
+  let dir: FleeDir = run.dir;
+  if (dir === 0) {
+    dir = run.cx >= run.from ? 1 : -1;
+  }
+  const edge = dir > 0 ? run.hi : run.lo;
+  if (Math.abs(edge - run.x) < 20) {
+    return dir > 0 ? -1 : 1;
+  }
+  return dir;
+};
+
+/** Where the theme's animal is, so Tokkae can run to it or from it */
+export interface BuddySpot {
+  /** Its centre */
+  cx: number;
+  w: number;
+}
 
 export interface Pointer {
   at: number;
@@ -46,13 +94,17 @@ export interface Pose {
 const GRAVITY = 2200;
 const WALK = 70;
 const RUN = 260;
+// Chasing the buddy in tag: a little slower than it runs away
+const TAG_CHASE = 210;
 const ANNOUNCE_MS = 25_000;
 const JUMP_GAP_MS = 1500;
 const ANGRY_MS = 10_000;
 const SLEEPY_MS = 2500;
 const FRAME_MS = 200;
-
-const rand = (a: number, b: number) => a + Math.random() * (b - a);
+// How often, with the theme's animal around, Tokkae picks a game over its
+// own routine; each game is then equally likely
+const PLAYTIME_ODDS = 0.4;
+const GAMES: readonly Action[] = ["hearts", "picnic", "tag", "napTogether"];
 
 /** The things Tokkae gets up to on its own, and how often */
 const CHOICES: readonly [Action, number][] = [
@@ -65,7 +117,12 @@ const CHOICES: readonly [Action, number][] = [
   ["jump", 10],
 ];
 
-const pick = (): Action => {
+/** The routine, or with the buddy around sometimes a game, never twice running */
+const pick = (buddy: boolean, last: Action): Action => {
+  if (buddy && Math.random() < PLAYTIME_ODDS) {
+    const games = GAMES.filter((game) => game !== last);
+    return games[Math.floor(Math.random() * games.length)] ?? "hearts";
+  }
   let roll = Math.random() * CHOICES.reduce((sum, [, w]) => sum + w, 0);
   for (const [action, w] of CHOICES) {
     roll -= w;
@@ -76,19 +133,53 @@ const pick = (): Action => {
   return "walk";
 };
 
-const MOVING = new Set<Action>(["angry", "enter", "walk"]);
+const MOVING = new Set<Action>(["angry", "enter", "greet", "tag", "walk"]);
+// What Tokkae won't drop to greet its buddy or cry; those wait their turn
+const BUSY = new Set<Action>(["angry", "announce", "enter", "held"]);
+// Everything done with the buddy, dropped if it leaves
+const TOGETHER = new Set<Action>([...GAMES, "alert", "greet", "hello"]);
+
+/** How long each action lasts, when it's always the same */
+const LASTS: Partial<Record<Action, number>> = {
+  alert: 700,
+  cry: 2000,
+  // One catch: the bug flies in, the tongue goes out
+  eat: ANIMS.bug.length * FRAME_MS,
+  // Gives up running to the buddy if it can't reach it
+  greet: 6000,
+  hearts: 5000,
+  hello: 1800,
+  picnic: ANIMS.bug.length * FRAME_MS * 3,
+  sleepy: SLEEPY_MS,
+  tag: 10_000,
+};
+
+/** What always comes next: anger wears off into sleepiness, and so on */
+const FOLLOWS: Partial<Record<Action, Action>> = {
+  alert: "greet",
+  angry: "sleepy",
+  greet: "hello",
+};
 
 /** Which animation each action plays, and how fast (ms per frame) */
 const PLAYS: Record<Action, [Anim, number]> = {
+  alert: ["alert", 150],
   angry: ["angry", FRAME_MS],
   announce: ["wave", FRAME_MS],
+  cry: ["cry", 250],
   eat: ["bug", FRAME_MS],
   enter: ["walk", 150],
+  greet: ["alertRun", 90],
+  hearts: ["love", FRAME_MS],
   held: ["angry", FRAME_MS],
+  hello: ["wave", FRAME_MS],
   idle: ["idle", FRAME_MS],
   jump: ["walk", FRAME_MS],
+  napTogether: ["nap", FRAME_MS],
+  picnic: ["bug", FRAME_MS],
   sleep: ["nap", FRAME_MS],
   sleepy: ["sleepy", 400],
+  tag: ["walk", 90],
   type: ["type", FRAME_MS],
   walk: ["walk", 150],
   wave: ["wave", FRAME_MS],
@@ -99,14 +190,22 @@ const PLAYS: Record<Action, [Anim, number]> = {
  * then picks something to do every few seconds, falls with gravity and lands
  * on the tops of windows. It leaves the cursor alone unless poked or picked
  * up: then it gets angry and chases you for ten seconds, then gets sleepy
- * and carries on.
+ * and carries on. With the theme's animal around, it sometimes plays with
+ * it instead: hearts, a picnic, tag or a nap together.
  */
 export class Brain {
   action: Action = "enter";
+  /** Who is chasing whom, in the current game of tag */
+  tagIt: Tagger = "tokkae";
+  private buddy = false;
   private face: 1 | -1;
+  // Running to one edge while fleeing in tag, then back to the other
+  private fleeDir: FleeDir = 0;
   private lastJump = 0;
   private moving = false;
   private readonly onAction: (action: Action) => void;
+  // A greeting or a cry waiting for Tokkae to finish what it's doing
+  private pending: Nudge | null = null;
   private since = 0;
   private surface: Element | null = null;
   private target: number;
@@ -179,13 +278,40 @@ export class Brain {
     this.until = now + ANGRY_MS;
   }
 
+  /** The theme's animal came or went, without a word from the visitor */
+  setBuddy(present: boolean, now: number) {
+    this.buddy = present;
+    if (present) {
+      return;
+    }
+    if (this.pending === "greet") {
+      this.pending = null;
+    }
+    if (TOGETHER.has(this.action)) {
+      this.until = Math.min(this.until, now);
+    }
+  }
+
+  /**
+   * The visitor turned the theme variations on, so Tokkae runs over to say
+   * hello to the animal, or off, so it cries a little. Both wait if it's
+   * busy announcing, being held or angry.
+   */
+  react(kind: Nudge, now: number) {
+    this.pending = kind;
+    if (!BUSY.has(this.action)) {
+      this.until = Math.min(this.until, now);
+    }
+  }
+
   /** One frame of life: `dt` in seconds, `now` in ms */
   step(
     now: number,
     dt: number,
     world: World,
     pointer: Pointer | null,
-    notesOpen: boolean
+    notesOpen: boolean,
+    buddy: BuddySpot | null = null
   ): Pose {
     this.moving = false;
     if (this.action === "held") {
@@ -200,6 +326,7 @@ export class Brain {
     }
     if (!airborne) {
       this.chase(world, now, pointer);
+      this.playWith(world, now, buddy);
       this.walk(world, dt, now);
     }
     const closeNotes = !airborne && this.maybeMoveOn(world, now, notesOpen);
@@ -231,17 +358,17 @@ export class Brain {
 
   private set(action: Action, world: World, now: number) {
     this.become(action, now);
-    this.until = now + rand(2500, 6000);
+    this.until = now + (LASTS[action] ?? rand(2500, 6000));
     const [lo, hi] = this.range(world);
     if (action === "walk") {
       this.target = rand(lo, hi);
-    } else if (action === "eat") {
-      // One catch: the bug flies in, the tongue goes out
-      this.until = now + ANIMS.bug.length * FRAME_MS;
     } else if (action === "sleep") {
       this.until = now + rand(5000, 9000);
-    } else if (action === "sleepy") {
-      this.until = now + SLEEPY_MS;
+    } else if (action === "napTogether") {
+      this.until = now + rand(8000, 11_000);
+    } else if (action === "tag") {
+      this.tagIt = Math.random() < 0.5 ? "tokkae" : "buddy";
+      this.fleeDir = 0;
     } else if (
       action === "jump" &&
       !this.jumpTo(Brain.randomWindow(world), world, now)
@@ -371,6 +498,41 @@ export class Brain {
     this.target = pointer.x - world.w / 2;
   }
 
+  /** Running over to say hello, or playing tag */
+  private playWith(world: World, now: number, buddy: BuddySpot | null) {
+    if (!buddy) {
+      return;
+    }
+    const cx = this.x + world.w / 2;
+    if (this.action === "greet") {
+      const reach = world.w / 2 + buddy.w / 2 + 12;
+      if (Math.abs(buddy.cx - cx) < reach) {
+        this.face = buddy.cx >= cx ? 1 : -1;
+        this.set("hello", world, now);
+      } else {
+        this.target = buddy.cx - world.w / 2;
+      }
+    } else if (this.action === "tag" && this.tagIt === "tokkae") {
+      this.target = buddy.cx - world.w / 2;
+    } else if (this.action === "tag") {
+      this.flee(world, cx, buddy.cx);
+    }
+  }
+
+  /** Away from the buddy to one edge, then dashing back past it to the other */
+  private flee(world: World, cx: number, from: number) {
+    const [lo, hi] = this.range(world);
+    this.fleeDir = nextFleeDir({
+      cx,
+      dir: this.fleeDir,
+      from,
+      hi,
+      lo,
+      x: this.x,
+    });
+    this.target = this.fleeDir > 0 ? hi : lo;
+  }
+
   /** Walking, coming in, or stomping after the cursor */
   private walk(world: World, dt: number, now: number) {
     if (!MOVING.has(this.action)) {
@@ -383,7 +545,7 @@ export class Brain {
     const goal = Math.min(hi, Math.max(lo, this.target));
     const dx = goal - this.x;
     if (Math.abs(dx) > 4) {
-      const speed = this.action === "walk" || entering ? WALK : RUN;
+      const speed = this.speedFor(entering);
       this.face = dx > 0 ? 1 : -1;
       this.x += Math.sign(dx) * Math.min(Math.abs(dx), speed * dt);
       this.moving = true;
@@ -396,6 +558,13 @@ export class Brain {
       // Angry, and the cursor is past the edge of this window: hop down
       this.hopDown(Math.sign(this.target - goal));
     }
+  }
+
+  private speedFor(entering: boolean) {
+    if (this.action === "walk" || entering) {
+      return WALK;
+    }
+    return this.action === "tag" && this.tagIt === "tokkae" ? TAG_CHASE : RUN;
   }
 
   private hopDown(dir: number) {
@@ -414,9 +583,25 @@ export class Brain {
     if (now < this.until && !(announcing && !notesOpen)) {
       return false;
     }
-    // Anger wears off into sleepiness, and sleepiness into the routine
-    this.set(this.action === "angry" ? "sleepy" : pick(), world, now);
+    this.set(this.nextAction(), world, now);
     return announcing;
+  }
+
+  /** A waiting greeting or cry first, then what follows, then the routine */
+  private nextAction(): Action {
+    const { pending } = this;
+    this.pending = null;
+    if (pending === "cry") {
+      return "cry";
+    }
+    if (pending === "greet" && this.buddy) {
+      return "alert";
+    }
+    const follows = FOLLOWS[this.action];
+    if (follows && (this.buddy || !TOGETHER.has(follows))) {
+      return follows;
+    }
+    return pick(this.buddy, this.action);
   }
 
   private frameFor(now: number, airborne: boolean) {
