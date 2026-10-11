@@ -477,6 +477,32 @@ input:focus-visible {
   background-color: var(--bar-text);
   transform: translateX(16px);
 }
+/* Hides and shows the swatches: a chevron pointing up while they're out */
+.theme-hide {
+  width: 36px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--line);
+}
+.theme-hide svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s var(--ease);
+}
+.theme-hide[aria-expanded="false"] svg {
+  transform: rotate(180deg);
+}
 /* Floats under the panel, over the page, so nothing below moves */
 .theme-col {
   position: relative;
@@ -1908,8 +1934,11 @@ input:focus-visible {
     padding-top: 0;
   }
   .theme-panel {
-    justify-content: space-between;
     padding: 0 4px 0 12px;
+  }
+  /* The label on the left, the switch and the hide button together on the right */
+  .theme-switch {
+    margin-left: auto;
   }
   .panel-label {
     padding-left: 0;

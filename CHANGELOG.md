@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 11 October 2026
+
+- **#35 Add a button to hide the theme colours:** with theme variations on, a chevron next to the switch tucks away the swatches, the variation's name and the Flaticon credit, keeping the variation on. The choice is remembered like the theme. On phones the switch and the chevron sit together on the right of the panel.
+
 ## 10 October 2026
 
 - **#32 Make the theme animal Tokkae's buddy instead of a cursor follower:**

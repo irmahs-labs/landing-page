@@ -10,6 +10,14 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "the theme colours can hide now: tap the little arrow by the switch",
+      "your theme stays on, and i'll remember you hid them",
+    ],
+    date: "2026-10-11",
+    title: "tidy colours",
+  },
+  {
+    changes: [
       "turn on theme variations and i'll run over to meet my new buddy!",
       "we trade hearts, have picnics, play tag and nap together",
       "turn them off and i'll cry a little… but i'll be ok",
