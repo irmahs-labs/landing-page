@@ -29,6 +29,9 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
+      - name: Tests (Vitest)
+        run: npm test
+
       - name: Build
         run: npm run build
 
