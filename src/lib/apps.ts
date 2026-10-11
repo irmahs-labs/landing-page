@@ -35,6 +35,19 @@ export const APPS: readonly AppLink[] = [
     status: "live",
   },
   {
+    desc: "Drop in a photo, add a title, export a 3000 × 3000 cover",
+    href: "https://album-cover-maker.irmahs.dev",
+    icon: {
+      bg: "#b8d970",
+      fg: "#2f3b34",
+      // A record in its sleeve
+      path: "M3 3 H21 V21 H3 Z M12 7 A5 5 0 1 0 12 17 A5 5 0 1 0 12 7 Z M12 11 A1 1 0 1 0 12 13 A1 1 0 1 0 12 11 Z",
+    },
+    name: "Album Cover Maker",
+    shot: "/apps/album-cover-maker.jpg",
+    status: "live",
+  },
+  {
     desc: "Seasons, matches and standings for a spike tournament",
     href: "https://alsace-arena-spike-tournament.vercel.app/",
     icon: {
