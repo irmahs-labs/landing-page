@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 11 October 2026
 
+- **#34 Keep the patch notes popup its own width on phones:** on screens 600px wide or less the patch notes were squeezed to Tokkae's 63px width, since the phone rule stretching every window to full width caught them too. Only the desk's windows go full width now, so the notes pop up at their usual 290px.
 - **#33 Add the Album Cover Maker to the apps, and a test suite:**
   - The Album Cover Maker (album-cover-maker.irmahs.dev) joins the apps with a screenshot and a record icon, making six, one full page at the biggest size.
   - Adds Vitest and React Testing Library, set up as in Next.js's Vitest guide. `npm test` covers the data, the sky maths, weather and Spotify, the now-playing route, Tokkae and its buddy, and the apps window, theme picker, player and windows. CI runs it on every pull request.
