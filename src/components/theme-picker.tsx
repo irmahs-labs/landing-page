@@ -1,3 +1,4 @@
+import { useStoredChoice } from "@/hooks/use-stored-choice";
 import { BASE_THEME, THEME_ORDER, THEMES } from "@/lib/themes";
 import type { Theme, ThemeId } from "@/lib/themes";
 
@@ -9,12 +10,17 @@ interface ThemePickerProps {
   onToggle: () => void;
 }
 
+// Whether the swatches under the panel are out, remembered between visits
+const DRAWER = ["hidden", "shown"] as const;
+
 export const ThemePicker = ({
   current,
   enabled,
   onPick,
   onToggle,
 }: ThemePickerProps) => {
+  const [drawer, saveDrawer] = useStoredChoice("themeDrawer", DRAWER, "shown");
+  const open = drawer === "shown";
   // Cute Matcha is the page itself, not a variation, so it goes unnamed
   const named = current.id !== BASE_THEME;
   return (
@@ -34,9 +40,25 @@ export const ThemePicker = ({
         >
           <span className="theme-switch-track" />
         </button>
+        {/* Tucks the swatches away, keeping the variation on */}
+        {enabled && (
+          <button
+            aria-controls="theme-drawer"
+            aria-expanded={open}
+            aria-label={open ? "Hide theme colours" : "Show theme colours"}
+            className="btn theme-hide"
+            onClick={() => saveDrawer(open ? "hidden" : "shown")}
+            title={open ? "hide the colours" : "show the colours"}
+            type="button"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M6 15 L12 9 L18 15" />
+            </svg>
+          </button>
+        )}
       </fieldset>
-      {enabled && (
-        <div className="theme-drawer">
+      {enabled && open && (
+        <div className="theme-drawer" id="theme-drawer">
           <fieldset aria-label="Theme colours" className="swatches">
             {THEME_ORDER.map((id) => {
               const th = THEMES[id];

@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 11 October 2026
 
+- **#35 Add a button to hide the theme colours:** with theme variations on, a chevron next to the switch tucks away the swatches, the variation's name and the Flaticon credit, keeping the variation on. The choice is remembered like the theme. On phones the switch and the chevron sit together on the right of the panel.
 - **#34 Keep the patch notes popup its own width on phones:** on screens 600px wide or less the patch notes were squeezed to Tokkae's 63px width, since the phone rule stretching every window to full width caught them too. Only the desk's windows go full width now, so the notes pop up at their usual 290px.
 - **#33 Add the Album Cover Maker to the apps, and a test suite:**
   - The Album Cover Maker (album-cover-maker.irmahs.dev) joins the apps with a screenshot and a record icon, making six, one full page at the biggest size.

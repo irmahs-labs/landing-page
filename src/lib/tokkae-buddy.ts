@@ -43,6 +43,8 @@ type Mode = "beside" | "chase" | "flee" | "orbit" | "roam";
 const HURRY = 2.6;
 const CHASE = 230;
 const FLEE = 250;
+// How fast its height follows the leap's arc, per second
+const LEAP_EASE = 12;
 const ORBIT_RAD_PER_S = 1.3;
 // A heart every so often while they trade hearts or say hello
 const HEART_GAP_S = 0.45;
@@ -229,10 +231,21 @@ export class Buddy {
       lo: 0,
       x: this.x,
     });
+    // Full speed along the ground to the edge
+    const dx = (this.fleeDir > 0 ? hi : 0) - this.x;
+    this.x += Math.sign(dx) * Math.min(Math.abs(dx), FLEE * dt);
+    if (Math.abs(dx) > 2) {
+      this.face = dx > 0 ? 1 : -1;
+    }
+    // Over Tokkae on an arc while passing it, settling back down after
     const [, gy] = Buddy.ground(mate, this.size, cx);
-    const passing = Math.abs(cx - tokkaeCx) < mate.w / 2 + this.size / 2;
-    const ty = passing ? gy - this.size * 0.8 : gy;
-    this.moveTo(this.fleeDir > 0 ? hi : 0, ty, FLEE, dt);
+    const reach = mate.w / 2 + this.size / 2;
+    const across = (cx - tokkaeCx + reach) / (2 * reach);
+    const lift =
+      across > 0 && across < 1
+        ? Math.sin(Math.PI * across) * this.size * 0.8
+        : 0;
+    this.y += (gy - lift - this.y) * Math.min(1, dt * LEAP_EASE);
   }
 
   /** Drifting about the lower half of the screen, bouncing off its edges */
