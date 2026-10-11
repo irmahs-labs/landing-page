@@ -10,6 +10,14 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "new app in my_apps: the album cover maker!",
+      "drop in a photo, add a title, and download your cover",
+    ],
+    date: "2026-10-11",
+    title: "make an album cover",
+  },
+  {
+    changes: [
       "turn on theme variations and i'll run over to meet my new buddy!",
       "we trade hearts, have picnics, play tag and nap together",
       "turn them off and i'll cry a little… but i'll be ok",
