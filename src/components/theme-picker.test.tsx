@@ -46,4 +46,31 @@ describe("ThemePicker", () => {
     const credit = screen.getByRole("link", { name: /flaticon/u });
     expect(credit.getAttribute("href")).toBe("https://www.flaticon.com");
   });
+
+  it("has no hide button while the variations are off", () => {
+    render(<ThemePicker {...props()} />);
+    expect(screen.queryByRole("button", { name: /theme colours/u })).toBeNull();
+  });
+
+  it("hides the colours, keeping the variation on, and remembers it", () => {
+    const { unmount } = render(<ThemePicker {...props()} enabled />);
+    const hide = screen.getByRole("button", { name: "Hide theme colours" });
+    expect(hide.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.click(hide);
+    expect(screen.queryAllByRole("button", { name: / theme$/u })).toHaveLength(
+      0
+    );
+    expect(screen.getByRole("switch").getAttribute("aria-checked")).toBe(
+      "true"
+    );
+    expect(localStorage.getItem("themeDrawer")).toBe("hidden");
+    unmount();
+    render(<ThemePicker {...props()} enabled />);
+    const show = screen.getByRole("button", { name: "Show theme colours" });
+    expect(show.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(show);
+    expect(screen.getAllByRole("button", { name: / theme$/u })).toHaveLength(
+      THEME_ORDER.length
+    );
+  });
 });
