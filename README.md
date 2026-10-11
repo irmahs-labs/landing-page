@@ -92,14 +92,27 @@ On `localhost` the sign-in check is blocked by CORS, since the account service o
 | `npm run dev`                | Development server                |
 | `npm run build`, `npm start` | Production build and server       |
 | `npm run typecheck`          | `tsc --noEmit`                    |
+| `npm test`                   | Unit and component tests (Vitest) |
+| `npm run test:watch`         | The same, rerunning on changes    |
 | `npm run check`              | Lint and format check (Ultracite) |
 | `npm run fix`                | Fix what Ultracite can            |
+
+### Tests
+
+The tests sit next to what they test, as `*.test.ts` and `*.test.tsx` under `src/`, and run with [Vitest](https://vitest.dev) in jsdom, set up as in Next.js's Vitest guide ([`vitest.config.mts`](vitest.config.mts)). They cover:
+
+- **Data:** every app links over https and has a screenshot in `public/`, every theme has its animal and flower, and the changelog is dated and in order.
+- **Pure logic:** the sky maths, weather codes, Spotify's answers and its ten-second cache, the now-playing route and its fallback, and the sign-in link.
+- **Tokkae:** its frames, how it reacts and how often it plays each game, and how its buddy moves.
+- **Components,** with React Testing Library: the apps window's 1, 2, 4 or 6 apps, the theme picker, the player, the singing emote and the windows.
+
+They fake `fetch`, timers and `ResizeObserver` but never mock the app's own modules.
 
 ## Working on it
 
 - **Pull before making changes.** Start from the latest `origin/main`. If your branch's PR is already merged, start a new branch.
 - **Name branches after what they do:** `<type>/<feature-name>`, for example `feat/contact-form` or `fix/dark-mode-contrast`. Types are `feat`, `fix`, `chore`, `docs` and `refactor`.
-- **Lint before you commit.** CI runs `npm run check`, `npm run typecheck` and `npm run build` on every pull request to `main`, then starts the server for a smoke test. With Claude Code, a hook runs Ultracite on every file it edits.
+- **Test and lint before you commit.** CI runs `npm run check`, `npm run typecheck`, `npm test` and `npm run build` on every pull request to `main`, then starts the server for a smoke test. With Claude Code, a hook runs Ultracite on every file it edits.
 
 ## Deployment
 
