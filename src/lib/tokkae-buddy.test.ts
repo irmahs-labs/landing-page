@@ -86,7 +86,8 @@ describe("Buddy", () => {
     const buddy = new Buddy(room);
     const poses = run(buddy, tokkae("tag", { tagIt: "tokkae" }), 15);
     const ground = 828 + 68 - room.size;
-    expect(poses.some((p) => p.y < ground - 40)).toBe(true);
+    // A real hop over Tokkae, at least half its own height, wherever it starts
+    expect(poses.some((p) => p.y < ground - room.size / 2)).toBe(true);
     const xs = poses.map((p) => p.x);
     expect(Math.min(...xs)).toBeLessThan(40);
     expect(Math.max(...xs)).toBeGreaterThan(room.vw - room.size - 40);
