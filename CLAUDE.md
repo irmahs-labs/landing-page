@@ -14,6 +14,23 @@ Always name the branch after the feature or fix it contains, never a random or g
 - Examples: `feat/contact-form`, `fix/dark-mode-contrast`, `chore/ultracite-hook`
 - If the session assigns a generic branch (for example `claude/<random-words>`), create a feature-named branch instead and push there
 
+## Pull requests
+
+- Never push to `main`. Every change goes in through a pull request.
+- Open the PR and stop there: never merge it, not even when CI is green. Irma reviews and clicks merge.
+- Deploys run on merge to `main`. Re-run a deploy only when Irma asks.
+
+## Checks before pushing
+
+```sh
+npm run check      # Ultracite (oxlint + oxfmt); CI fails on it
+npm run typecheck
+npm test           # vitest
+npm run build
+```
+
+The PostToolUse hook in `.claude/hooks/ultracite.sh` runs Ultracite and the typecheck on every file you edit.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
