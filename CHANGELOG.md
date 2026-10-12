@@ -2,6 +2,13 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 12 October 2026
+
+- **#36 Move GitHub and LinkedIn to a socials window, with a CV to download:**
+  - A socials window under the player has GitHub and LinkedIn, each opening in a new tab, and Irma's CV to download (`public/cv/Irma_Houver_Sing_CV.pdf`).
+  - GitHub and LinkedIn leave the apps, which are now the pantry spinner, the Album Cover Maker, Alsace Arena and the portfolio. GitHub's unused screenshot is deleted.
+  - The profile window loses its two icon links, so each link is on the page once.
+
 ## 11 October 2026
 
 - **#35 Add a button to hide the theme colours:** with theme variations on, a chevron next to the switch tucks away the swatches, the variation's name and the Flaticon credit, keeping the variation on. The choice is remembered like the theme. On phones the switch and the chevron sit together on the right of the panel.

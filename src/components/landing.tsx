@@ -28,6 +28,7 @@ import { MilkLayer } from "./milk-layer";
 import { Player } from "./player";
 import { ProfileWindow } from "./profile-window";
 import { Scene } from "./scene";
+import { SocialsWindow } from "./socials-window";
 import { SurpriseButton } from "./surprise-button";
 import { ThemePicker } from "./theme-picker";
 import { Tokkae } from "./tokkae";
@@ -207,6 +208,7 @@ export const Landing = () => {
           </div>
           <div className="desk-side">
             <Player now={now} />
+            <SocialsWindow />
           </div>
         </main>
       </div>
