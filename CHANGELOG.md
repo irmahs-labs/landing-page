@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 12 October 2026
 
+- **#39 Make my_apps end level with the socials window:** on desktop the apps window grows to the bottom of the side column, so it lines up with the socials window under the player (505px tall instead of 480px at 1440 × 900). It can still be resized larger, and tablets and phones are unchanged.
 - **#37 Give my_apps and socials a file suffix, and update the CV:** the two windows are titled `my_apps.app` and `socials.lnk`, like the others (`paris.local`, `profile.exe`, `now_playing.mp3`, `patch_notes.txt`), and the CV to download is replaced with the latest version.
 - **#36 Move GitHub and LinkedIn to a socials window, with a CV to download:**
   - A socials window under the player has GitHub and LinkedIn, each opening in a new tab, and Irma's CV to download (`public/cv/Irma_Houver_Sing_CV.pdf`).
