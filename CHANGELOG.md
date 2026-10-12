@@ -4,6 +4,10 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 12 October 2026
 
+- **#40 Apps in a new tab and a new order, a walk between Tokkae's activities, and the design system's fleur-de-lys:**
+  - Every app opens in a new tab, in the order Album Cover Maker, the pantry spinner, Alsace Arena, Portfolio.
+  - Tokkae walks about for 6 to 12 seconds between everything it does on its own, instead of going straight from one thing to the next, so it does something new about every ten seconds rather than six times as often.
+  - The Paris button uses Cute Matcha's own fleur-de-lys motif instead of a drawing of our own.
 - **#39 Make my_apps end level with the socials window:** on desktop the apps window grows to the bottom of the side column, so it lines up with the socials window under the player (505px tall instead of 480px at 1440 × 900). It can still be resized larger, and tablets and phones are unchanged.
 - **#37 Give my_apps and socials a file suffix, and update the CV:** the two windows are titled `my_apps.app` and `socials.lnk`, like the others (`paris.local`, `profile.exe`, `now_playing.mp3`, `patch_notes.txt`), and the CV to download is replaced with the latest version.
 - **#36 Move GitHub and LinkedIn to a socials window, with a CV to download:**

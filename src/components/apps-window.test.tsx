@@ -91,4 +91,14 @@ describe("AppsWindow", () => {
       "my_apps.app"
     );
   });
+
+  it("opens every app in a new tab", () => {
+    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    resize(1200, 500);
+    for (const tile of tiles()) {
+      expect(tile.getAttribute("target")).toBe("_blank");
+      expect(tile.getAttribute("rel")).toBe("noreferrer");
+      expect(tile.textContent).toContain("(opens in a new tab)");
+    }
+  });
 });

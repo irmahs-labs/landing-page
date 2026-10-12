@@ -52,4 +52,13 @@ describe("APPS", () => {
       expect(app.href).not.toMatch(/github\.com|linkedin\.com/u);
     }
   });
+
+  it("lists the apps in Irma's order", () => {
+    expect(APPS.map((app) => app.name)).toEqual([
+      "Album Cover Maker",
+      "What's in my pantry?",
+      "Alsace Arena",
+      "Portfolio",
+    ]);
+  });
 });

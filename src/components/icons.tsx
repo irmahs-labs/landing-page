@@ -18,14 +18,15 @@ export const LotusIcon = ({ size }: { size: number }) => (
   </svg>
 );
 
+/** The fleur-de-lys for Paris: Cute Matcha's fleur-de-lys.svg motif, inlined */
 export const ParisIcon = () => (
-  <svg aria-hidden="true" height="24" viewBox="0 0 24 24" width="24">
-    <g fill="#d9786a" stroke="#2f3b34" strokeLinejoin="round" strokeWidth="1">
-      <path d="M12 2 C15 6 15 10 12 13 C9 10 9 6 12 2 Z" />
-      <path d="M11 13 C7 13 3 11 4 7 C6 9 8 9 9 8 C9 10 10 12 11 13 Z" />
-      <path d="M13 13 C17 13 21 11 20 7 C18 9 16 9 15 8 C15 10 14 12 13 13 Z" />
-      <rect height="2.5" rx="1" width="10" x="7" y="13" />
-      <path d="M10 15.5 L9 21 L12 19 L15 21 L14 15.5 Z" />
+  <svg aria-hidden="true" height="24" viewBox="-12 -12 24 24" width="24">
+    <g fill="#d9786a" stroke="#2f3b34" strokeLinejoin="round" strokeWidth="0.8">
+      <path d="M1.5 1 C 4 -4, 10 -6, 10 -1 C 10 2, 7 2, 7 0 C 7 -2, 4 -1, 2.5 3 Z" />
+      <path d="M-1.5 1 C -4 -4, -10 -6, -10 -1 C -10 2, -7 2, -7 0 C -7 -2, -4 -1, -2.5 3 Z" />
+      <path d="M-1.5 5 C -2 8, -4 10, -6 10 C -4 11, -1 10, 0 8 C 1 10, 4 11, 6 10 C 4 10, 2 8, 1.5 5 Z" />
+      <path d="M0 -11 C 4 -7, 4 -2, 0 3 C -4 -2, -4 -7, 0 -11 Z" />
+      <rect height="2.6" rx="1.2" width="10" x="-5" y="2.5" />
     </g>
   </svg>
 );

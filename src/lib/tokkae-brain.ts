@@ -106,9 +106,14 @@ const FRAME_MS = 200;
 const PLAYTIME_ODDS = 0.4;
 const GAMES: readonly Action[] = ["hearts", "picnic", "tag", "napTogether"];
 
-/** The things Tokkae gets up to on its own, and how often */
+// How long each walk between activities lasts, wandering from spot to spot
+const WANDER_MS: readonly [number, number] = [6000, 12_000];
+
+/**
+ * The things Tokkae gets up to on its own, and how often; it walks about
+ * between each of them
+ */
 const CHOICES: readonly [Action, number][] = [
-  ["walk", 34],
   ["idle", 10],
   ["sleep", 10],
   ["wave", 8],
@@ -130,7 +135,7 @@ const pick = (buddy: boolean, last: Action): Action => {
       return action;
     }
   }
-  return "walk";
+  return "idle";
 };
 
 const MOVING = new Set<Action>(["angry", "enter", "greet", "tag", "walk"]);
@@ -203,6 +208,8 @@ export class Brain {
   private fleeDir: FleeDir = 0;
   private lastJump = 0;
   private moving = false;
+  // The last activity picked, so a game isn't picked twice running
+  private lastPick: Action = "walk";
   private readonly onAction: (action: Action) => void;
   // A greeting or a cry waiting for Tokkae to finish what it's doing
   private pending: Nudge | null = null;
@@ -362,6 +369,7 @@ export class Brain {
     const [lo, hi] = this.range(world);
     if (action === "walk") {
       this.target = rand(lo, hi);
+      this.until = now + rand(...WANDER_MS);
     } else if (action === "sleep") {
       this.until = now + rand(5000, 9000);
     } else if (action === "napTogether") {
@@ -457,9 +465,9 @@ export class Brain {
     }
     this.vx = 0;
     this.vy = 0;
+    // Landed: off for a walk, along the window or the floor
     if (this.action === "jump") {
-      this.set("idle", world, now);
-      this.until = now + rand(600, 1500);
+      this.set("walk", world, now);
     }
   }
 
@@ -553,7 +561,8 @@ export class Brain {
       this.become("announce", now);
       this.until = now + ANNOUNCE_MS;
     } else if (this.action === "walk") {
-      this.until = Math.min(this.until, now);
+      // There already: wander on somewhere else until the walk is over
+      this.target = rand(lo, hi);
     } else if (this.surface && Math.abs(this.target - goal) > 40) {
       // Angry, and the cursor is past the edge of this window: hop down
       this.hopDown(Math.sign(this.target - goal));
@@ -601,7 +610,12 @@ export class Brain {
     if (follows && (this.buddy || !TOGETHER.has(follows))) {
       return follows;
     }
-    return pick(this.buddy, this.action);
+    // A walk between everything else, so one thing never runs into the next
+    if (this.action !== "walk") {
+      return "walk";
+    }
+    this.lastPick = pick(this.buddy, this.lastPick);
+    return this.lastPick;
   }
 
   private frameFor(now: number, airborne: boolean) {

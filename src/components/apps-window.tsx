@@ -64,7 +64,14 @@ const Tile = ({ app, theme }: { app: AppLink; theme: Theme }) => {
   };
 
   return (
-    <a className="tile" href={app.href} onFocus={start} onMouseEnter={start}>
+    <a
+      className="tile"
+      href={app.href}
+      onFocus={start}
+      onMouseEnter={start}
+      rel="noreferrer"
+      target="_blank"
+    >
       <span
         className={app.shot ? "app-shot has-shot" : "app-shot"}
         // SAFETY: CSSProperties has no index signature for custom properties
@@ -88,6 +95,7 @@ const Tile = ({ app, theme }: { app: AppLink; theme: Theme }) => {
       <span className="app-text">
         <span className="app-name">{app.name}</span>
         <span className="app-desc">{app.desc}</span>
+        <span className="sr-only">(opens in a new tab)</span>
       </span>
       {burst > 0 && <Burst key={burst} theme={theme} />}
     </a>
