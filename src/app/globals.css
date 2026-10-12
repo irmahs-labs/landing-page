@@ -304,6 +304,8 @@ fieldset {
 }
 .desk-main {
   flex: 0 1 780px;
+  /* As tall as the side column, so the apps can reach down to its bottom */
+  align-self: stretch;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -700,6 +702,8 @@ input:focus-visible {
   width: min(780px, 100%);
   max-width: calc(100vw - 32px);
   height: var(--apps-h);
+  /* Grows to end level with the socials window under the player */
+  flex-grow: 1;
   min-width: 300px;
   min-height: 260px;
   resize: both;
