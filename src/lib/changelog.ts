@@ -10,6 +10,15 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "i take a little walk between everything i do now, no more rushing",
+      "the apps open in a new tab, so you don't lose me",
+      "paris got its proper fleur-de-lys",
+    ],
+    date: "2026-10-12",
+    title: "a slower stroll",
+  },
+  {
+    changes: [
       "a socials window, under the music: github, linkedin and irma's cv to download",
       "github and linkedin left my_apps to live there",
     ],

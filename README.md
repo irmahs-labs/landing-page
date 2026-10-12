@@ -7,7 +7,7 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 - **Windows you can move.** Every window has the same title bar (its name on the left, the + − × buttons on the right). On desktop and tablet you can drag it by the title bar, and the window you press comes to the front. Only the apps window resizes. On phones the windows stack instead.
 - **Weather and clock** for Paris or Phnom Penh: local time and date, sunrise and sunset, and the current weather. The sky follows the time of day there, with the sun or moon rising and setting, stars, rain and night tint.
 - **Profile:** name, role, studies, location and languages.
-- **Apps:** the pantry spinner, the Album Cover Maker, Alsace Arena and the portfolio, each with a screenshot, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
+- **Apps:** the Album Cover Maker, the pantry spinner, Alsace Arena and the portfolio, each with a screenshot and opening in a new tab, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
 - **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sings into a mic stand in the cover, on loop until music plays. Clicking the song opens it on Spotify. The control buttons are for show for now.
 - **Socials,** under the player: GitHub and LinkedIn, each opening in a new tab, and Irma’s CV to download (`public/cv/`).
 - **Theme variations:** off by default, so the page is Cute Matcha. Turned on, twelve colour variations appear, each with its own animal, falling flowers and background pattern. The chevron next to the switch tucks the colours away, keeping the variation on, and the page remembers it. The animal is Tokkae's buddy (see below).
@@ -20,7 +20,7 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 Tokkae is a pixel gecko from the brand canvas (a 12 × 13 sprite in an 18 × 17 frame).
 
 - **When someone arrives,** it walks in from one side, waves, and opens `patch_notes.txt` with the latest entry of the in-app changelog.
-- **On its own,** it walks around, eats bugs, naps, waves, types at a little PC, and jumps onto the tops of windows.
+- **On its own,** it eats bugs, naps, waves, types at a little PC and jumps onto the tops of windows, walking about for 6 to 12 seconds between each, so it does something new only every ten seconds or so.
 - **It leaves your cursor alone** unless you bother it.
 - **Click it, or pick it up and drop it,** and it gets angry and chases your cursor for ten seconds, jumping up to the window it's over or hopping down off one. Then it gets sleepy for a moment and goes back to its routine.
 - **With a theme variation on,** the theme's animal is its buddy. Every so often, instead of its own routine, Tokkae plays with it. Each of these is equally likely:
