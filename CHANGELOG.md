@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 12 October 2026
 
+- **#37 Give my_apps and socials a file suffix, and update the CV:** the two windows are titled `my_apps.app` and `socials.lnk`, like the others (`paris.local`, `profile.exe`, `now_playing.mp3`, `patch_notes.txt`), and the CV to download is replaced with the latest version.
 - **#36 Move GitHub and LinkedIn to a socials window, with a CV to download:**
   - A socials window under the player has GitHub and LinkedIn, each opening in a new tab, and Irma's CV to download (`public/cv/Irma_Houver_Sing_CV.pdf`).
   - GitHub and LinkedIn leave the apps, which are now the pantry spinner, the Album Cover Maker, Alsace Arena and the portfolio. GitHub's unused screenshot is deleted.
