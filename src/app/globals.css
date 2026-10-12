@@ -1222,47 +1222,9 @@ input:focus-visible {
 .profile-line svg {
   flex: none;
 }
-.profile-foot {
-  margin-top: 4px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.profile-links {
-  list-style: none;
-  margin: 0 0 0 auto;
-  padding: 0;
-  display: flex;
-  gap: 6px;
-}
-.profile-link {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid #2f3b34;
-  border-radius: 7px;
-  box-shadow: 2px 2px 0 var(--line);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-.profile-link:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--line);
-}
-.profile-link svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
 .languages {
   list-style: none;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 0;
   display: flex;
   gap: 6px;
@@ -1285,6 +1247,66 @@ input:focus-visible {
 .lang.is-current {
   background-color: var(--bar);
   color: var(--bar-text);
+}
+
+/* ---------- socials ---------- */
+.socials-window {
+  width: 280px;
+}
+.socials {
+  list-style: none;
+  margin: 0;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.social {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px 0 6px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  background-color: #fff;
+  color: inherit;
+  transition: background-color 0.15s ease;
+}
+.social:hover {
+  background-color: color-mix(in srgb, var(--alt) 40%, #fff);
+}
+.social-icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #2f3b34;
+  border-radius: 7px;
+}
+.social-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.social-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.social-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+.social-handle {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 /* ---------- tokkae ----------

@@ -6,9 +6,10 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 
 - **Windows you can move.** Every window has the same title bar (its name on the left, the + − × buttons on the right). On desktop and tablet you can drag it by the title bar, and the window you press comes to the front. Only the apps window resizes. On phones the windows stack instead.
 - **Weather and clock** for Paris or Phnom Penh: local time and date, sunrise and sunset, and the current weather. The sky follows the time of day there, with the sun or moon rising and setting, stars, rain and night tint.
-- **Profile:** name, role, studies, location, languages, and links to GitHub and LinkedIn.
-- **Apps:** GitHub, the pantry spinner, the Album Cover Maker, Alsace Arena, LinkedIn and the portfolio, each with a screenshot (LinkedIn keeps its icon, since it only shows a sign-in wall to visitors), paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
+- **Profile:** name, role, studies, location and languages.
+- **Apps:** the pantry spinner, the Album Cover Maker, Alsace Arena and the portfolio, each with a screenshot, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
 - **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sings into a mic stand in the cover, on loop until music plays. Clicking the song opens it on Spotify. The control buttons are for show for now.
+- **Socials,** under the player: GitHub and LinkedIn, each opening in a new tab, and Irma’s CV to download (`public/cv/`).
 - **Theme variations:** off by default, so the page is Cute Matcha. Turned on, twelve colour variations appear, each with its own animal, falling flowers and background pattern. The chevron next to the switch tucks the colours away, keeping the variation on, and the page remembers it. The animal is Tokkae's buddy (see below).
 - **Surprise me:** pours milk tea over the screen and turns the page into boba for 20 seconds.
 - **Sign in** with Google through the IrmaHS Labs account service ([irmahs-labs/auth](https://github.com/irmahs-labs/auth)). The session is shared by every `*.irmahs.dev` site.

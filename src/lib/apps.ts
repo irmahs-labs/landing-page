@@ -11,18 +11,6 @@ export interface AppLink {
 
 export const APPS: readonly AppLink[] = [
   {
-    desc: "Repos, side projects and experiments",
-    href: "https://github.com/irmahs",
-    icon: {
-      bg: "#4a7fc0",
-      fg: "#fff3cf",
-      path: "M8 7 L3 12 L8 17 M16 7 L21 12 L16 17 M14 5 L10 19",
-    },
-    name: "GitHub",
-    shot: "/apps/github.jpg",
-    status: "code",
-  },
-  {
     desc: "Pull the lever and let it pick what's for dinner",
     href: "https://pantry-spinner.irmahs.dev",
     icon: {
@@ -58,17 +46,6 @@ export const APPS: readonly AppLink[] = [
     name: "Alsace Arena",
     shot: "/apps/alsace-arena.jpg",
     status: "live",
-  },
-  {
-    desc: "Experience, background and how to reach me",
-    href: "https://www.linkedin.com/in/irma-hs/",
-    icon: {
-      bg: "#f2d27a",
-      fg: "#2f3b34",
-      path: "M3 8 H21 V20 H3 Z M9 8 V5 H15 V8 M3 13 H21 M11 13 V15 H13 V13",
-    },
-    name: "LinkedIn",
-    status: "profile",
   },
   {
     desc: "Selected projects, all in one place",

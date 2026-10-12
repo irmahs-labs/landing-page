@@ -46,4 +46,10 @@ describe("APPS", () => {
     expect(maker?.href).toBe("https://album-cover-maker.irmahs.dev");
     expect(maker?.shot).toBe("/apps/album-cover-maker.jpg");
   });
+
+  it("leaves GitHub and LinkedIn to the socials window", () => {
+    for (const app of APPS) {
+      expect(app.href).not.toMatch(/github\.com|linkedin\.com/u);
+    }
+  });
 });
