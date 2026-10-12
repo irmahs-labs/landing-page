@@ -128,15 +128,15 @@ describe("Brain", () => {
     const t = settled();
     t.setBuddy({ cx: 900, w: 120 });
     const from = t.seen.length;
-    t.run(60 * 60 * 1000);
-    // Every action started, in order, including one started again
-    const started = t.seen.slice(from);
+    t.run(2 * 60 * 60 * 1000);
+    // Every activity picked, in order, leaving out the walks between them
+    const picked = t.seen.slice(from).filter((action) => action !== "walk");
     const games = new Set<Action>(["hearts", "napTogether", "picnic", "tag"]);
     const counts: Record<string, number> = {};
     let repeats = 0;
-    for (const [i, action] of started.entries()) {
+    for (const [i, action] of picked.entries()) {
       counts[action] = (counts[action] ?? 0) + 1;
-      if (games.has(action) && started[i - 1] === action) {
+      if (games.has(action) && picked[i - 1] === action) {
         repeats += 1;
       }
     }
@@ -148,6 +148,27 @@ describe("Brain", () => {
       expect(n / total).toBeLessThan(0.35);
     }
     expect(repeats).toBe(0);
+  });
+
+  it("walks about between everything it does on its own", () => {
+    const t = settled();
+    const from = t.seen.length;
+    t.run(30 * 60 * 1000);
+    const started = t.seen.slice(from);
+    const backToBack = started.filter(
+      (action, i) => i > 0 && action !== "walk" && started[i - 1] !== "walk"
+    );
+    expect(backToBack).toEqual([]);
+  });
+
+  it("gets up to something new only every ten seconds or so", () => {
+    const t = settled();
+    const from = t.seen.length;
+    t.run(30 * 60 * 1000);
+    const perMinute =
+      t.seen.slice(from).filter((action) => action !== "walk").length / 30;
+    expect(perMinute).toBeGreaterThan(3);
+    expect(perMinute).toBeLessThan(7);
   });
 
   it("plays tag for ten seconds, with either one as it", () => {
