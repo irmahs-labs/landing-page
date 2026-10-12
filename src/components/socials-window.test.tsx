@@ -30,4 +30,12 @@ describe("SocialsWindow", () => {
     expect(cv.getAttribute("download")).toBe(CV.file);
     expect(existsSync(path.join(process.cwd(), "public", CV.href))).toBe(true);
   });
+
+  it("is titled like a file, as every window is", () => {
+    render(<SocialsWindow />);
+    const region = screen.getByRole("region", { name: "Socials" });
+    expect(region.querySelector(".titlebar-text")?.textContent).toBe(
+      "socials.lnk"
+    );
+  });
 });

@@ -8,7 +8,7 @@ const CV_ICON =
 
 /** Where else to find me, each opening in a new tab, and my CV to download */
 export const SocialsWindow = () => (
-  <Window className="socials-window" label="Socials" title="socials">
+  <Window className="socials-window" label="Socials" title="socials.lnk">
     <ul className="socials">
       {SOCIALS.map((s) => (
         <li key={s.href}>

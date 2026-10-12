@@ -83,4 +83,12 @@ describe("AppsWindow", () => {
     resize(800, 375);
     expect(tiles().map((a) => a.getAttribute("href"))).toContain(APPS[3]?.href);
   });
+
+  it("is titled like a file, as every window is", () => {
+    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    const region = screen.getByRole("region", { name: "My apps" });
+    expect(region.querySelector(".titlebar-text")?.textContent).toBe(
+      "my_apps.app"
+    );
+  });
 });

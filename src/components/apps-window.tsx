@@ -167,7 +167,7 @@ export const AppsWindow = ({ theme }: { theme: Theme }) => {
       className="apps-window"
       label="My apps"
       meta={`${APPS.length} items`}
-      title="my_apps"
+      title="my_apps.app"
     >
       <div className="apps-body">
         <div
