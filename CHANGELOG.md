@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 14 October 2026
+
+- **#41 Give the pantry app its slot machine icon and a fresh screenshot:** the pantry app's badge becomes a line drawing of its own logo, a little slot machine with its lever, on lime, instead of the icon left over from Sleepy Spinner. Its screenshot is retaken from the app's current Cute Matcha design, as `pantry-spinner.jpg`.
+
 ## 12 October 2026
 
 - **#40 Apps in a new tab and a new order, a walk between Tokkae's activities, and the design system's fleur-de-lys:**

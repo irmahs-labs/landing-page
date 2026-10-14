@@ -27,12 +27,13 @@ export const APPS: readonly AppLink[] = [
     desc: "Pull the lever and let it pick what's for dinner",
     href: "https://pantry-spinner.irmahs.dev",
     icon: {
-      bg: "#3b4a42",
-      fg: "#fff3cf",
-      path: "M6 9 H18 A4 4 0 0 1 18 17 H16 L14 15 H10 L8 17 H6 A4 4 0 0 1 6 9 Z M8 11 V15 M6 13 H10",
+      bg: "#b8d970",
+      fg: "#2f3b34",
+      // The app's own logo: a little slot machine, its lever on the right
+      path: "M5 4 H15 A2 2 0 0 1 17 6 V18 A2 2 0 0 1 15 20 H5 A2 2 0 0 1 3 18 V6 A2 2 0 0 1 5 4 Z M5.5 9 H14.5 V14 H5.5 Z M8.5 9 V14 M11.5 9 V14 M7 6.5 H13 M7 17 H13 M17 13 H20 V7 M20 3 A1.5 1.5 0 1 0 20 6 A1.5 1.5 0 1 0 20 3 Z",
     },
     name: "What's in my pantry?",
-    shot: "/apps/sleepy-spinner.jpg",
+    shot: "/apps/pantry-spinner.jpg",
     status: "live",
   },
   {
