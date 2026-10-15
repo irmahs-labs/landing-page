@@ -27,7 +27,7 @@ export type Action =
 /** Who is "it" in a game of tag */
 export type Tagger = "buddy" | "tokkae";
 
-/** The visitor turning the theme variations on (greet) or off (cry) */
+/** The visitor bringing the playmate out (greet) or sending it home (cry) */
 export type Nudge = "cry" | "greet";
 
 /** Which way a runner in tag is heading; 0 until it picks */
@@ -56,7 +56,7 @@ export const nextFleeDir = (run: {
   return dir;
 };
 
-/** Where the theme's animal is, so Tokkae can run to it or from it */
+/** Where the playmate is, so Tokkae can run to it or from it */
 export interface BuddySpot {
   /** Its centre */
   cx: number;
@@ -101,7 +101,7 @@ const JUMP_GAP_MS = 1500;
 const ANGRY_MS = 10_000;
 const SLEEPY_MS = 2500;
 const FRAME_MS = 200;
-// How often, with the theme's animal around, Tokkae picks a game over its
+// How often, with its playmate around, Tokkae picks a game over its
 // own routine; each game is then equally likely
 const PLAYTIME_ODDS = 0.4;
 const GAMES: readonly Action[] = ["hearts", "picnic", "tag", "napTogether"];
@@ -195,7 +195,7 @@ const PLAYS: Record<Action, [Anim, number]> = {
  * then picks something to do every few seconds, falls with gravity and lands
  * on the tops of windows. It leaves the cursor alone unless poked or picked
  * up: then it gets angry and chases you for ten seconds, then gets sleepy
- * and carries on. With the theme's animal around, it sometimes plays with
+ * and carries on. With its playmate, a cube, around, it sometimes plays with
  * it instead: hearts, a picnic, tag or a nap together.
  */
 export class Brain {
@@ -285,7 +285,7 @@ export class Brain {
     this.until = now + ANGRY_MS;
   }
 
-  /** The theme's animal came or went, without a word from the visitor */
+  /** The playmate came out or went home, without a word from the visitor */
   setBuddy(present: boolean, now: number) {
     this.buddy = present;
     if (present) {
@@ -300,9 +300,9 @@ export class Brain {
   }
 
   /**
-   * The visitor turned the theme variations on, so Tokkae runs over to say
-   * hello to the animal, or off, so it cries a little. Both wait if it's
-   * busy announcing, being held or angry.
+   * The visitor brought the playmate out, so Tokkae runs over to say hello,
+   * or sent it home, so it cries a little. Both wait if it's busy
+   * announcing, being held or angry.
    */
   react(kind: Nudge, now: number) {
     this.pending = kind;

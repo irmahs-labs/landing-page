@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fredoka, Kantumruy_Pro } from "next/font/google";
-import Script from "next/script";
 import type { ReactNode } from "react";
-
-import { themeInitScript } from "@/lib/theme-script";
 
 import "./globals.css";
 
@@ -30,17 +27,8 @@ export const viewport: Viewport = {
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
-  <html
-    className={`${fredoka.variable} ${kantumruy.variable}`}
-    lang="en"
-    suppressHydrationWarning
-  >
-    <body>
-      <Script id="theme-init" strategy="beforeInteractive">
-        {themeInitScript()}
-      </Script>
-      {children}
-    </body>
+  <html className={`${fredoka.variable} ${kantumruy.variable}`} lang="en">
+    <body>{children}</body>
   </html>
 );
 

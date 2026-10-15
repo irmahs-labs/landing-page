@@ -12,9 +12,9 @@ export interface Mate {
   y: number;
 }
 
-/** The screen, and the buddy's box size and pace, which the theme can change */
+/** The screen, and the playmate's box size and pace */
 export interface Room {
-  /** The animal's box, square, in px, as the CSS sizes it */
+  /** The cube's box, square, in px, as the CSS sizes it */
   size: number;
   speed: number;
   vh: number;
@@ -67,10 +67,9 @@ const modeFor = (mate: Mate): Mode => {
 };
 
 /**
- * The theme's animal, as Tokkae's buddy: it roams the lower half of the
- * screen, comes to stand beside Tokkae for hearts and picnics, circles it
- * while it naps, and chases it or runs from it in tag. Only its position
- * and facing change; the animal's picture is never touched.
+ * Tokkae's playmate, a cube: it roams the lower half of the screen, comes
+ * to stand beside Tokkae for hearts and picnics, circles it while it naps,
+ * and chases it or runs from it in tag.
  */
 export class Buddy {
   private angle = 0;

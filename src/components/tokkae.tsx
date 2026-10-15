@@ -5,8 +5,7 @@ import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { CHANGELOG } from "@/lib/changelog";
-import type { Theme } from "@/lib/themes";
-import { BOWL, FRAMES, HEART, runsOf } from "@/lib/tokkae";
+import { BOWL, CUBE, FRAMES, HEART, runsOf } from "@/lib/tokkae";
 import { Brain } from "@/lib/tokkae-brain";
 import type { Action, Nudge, Pointer, World } from "@/lib/tokkae-brain";
 import { Buddy } from "@/lib/tokkae-buddy";
@@ -49,46 +48,49 @@ const measure = (el: HTMLElement): World => ({
   windows: [...document.querySelectorAll("section.window:not(.patch-notes)")],
 });
 
-/** A theme switch by the visitor; a new object each time, for the effect */
-export interface ThemeNudge {
+/** The visitor's playmate switch; a new object each time, for the effect */
+export interface PlaymateNudge {
   kind: Nudge;
 }
 
+// How fast the cube gets about, in px/s
+const PLAYMATE_SPEED = 108;
+
 /** The screen, and the buddy's size as its CSS box has it, and its pace */
-const roomFor = (box: HTMLElement, theme: Theme): Room => ({
+const roomFor = (box: HTMLElement): Room => ({
   size: box.offsetWidth,
-  speed: (theme.cfg?.speed ?? 90) * 1.2,
+  speed: PLAYMATE_SPEED,
   vh: window.innerHeight,
   vw: window.innerWidth,
 });
 
-/** Bring the buddy in or out to match the theme's animal */
+/** Bring the playmate out or send it home, as the switch says */
 const syncBuddy = (
   brain: Brain,
   buddy: RefObject<Buddy | null>,
   box: HTMLElement | null,
-  theme: Theme,
+  playmate: boolean,
   now: number
 ) => {
-  if (theme.animal && box && !buddy.current) {
-    buddy.current = new Buddy(roomFor(box, theme));
+  if (playmate && box && !buddy.current) {
+    buddy.current = new Buddy(roomFor(box));
     brain.setBuddy(true, now);
-  } else if (!theme.animal && buddy.current) {
+  } else if (!playmate && buddy.current) {
     buddy.current = null;
     brain.setBuddy(false, now);
   }
 };
 
 /**
- * Move the buddy's box; its picture only ever flips to face its way. The
- * facing and layering change rarely, so they're only written when they do.
+ * Move the playmate's box, turned to face its way. The facing and layering
+ * change rarely, so they're only written when they do.
  */
-const placeBuddy = (el: HTMLElement, pose: BuddyPose, native: number) => {
+const placeBuddy = (el: HTMLElement, pose: BuddyPose) => {
   el.style.transform = `translate(${pose.x.toFixed(1)}px, ${(pose.y + pose.dip).toFixed(1)}px)`;
   const face = pose.face > 0 ? "right" : "left";
   if (el.dataset.face !== face) {
     el.dataset.face = face;
-    el.style.setProperty("--face", String(pose.face * native));
+    el.style.setProperty("--face", String(pose.face));
   }
   const behind = pose.behind ? "1" : "0";
   if (el.dataset.behind !== behind) {
@@ -144,18 +146,17 @@ const PatchNotes = ({ onClose }: { onClose: () => void }) => {
  * and announces the latest changes, then wanders: eating bugs, napping,
  * waving, typing and jumping onto windows. Click it, or pick it up and drop
  * it, and it gets angry and chases the cursor.
- * With a theme variation on, the theme's animal is its buddy and they play
- * together. Turning the variations on sends Tokkae running to say hello;
- * turning them off makes it cry.
+ * With the playmate switch on, a cube comes out to play with it. Turning the
+ * switch on sends Tokkae running to say hello; turning it off makes it cry.
  * With reduced motion it stands still in the corner and just announces, and
- * there's no buddy.
+ * the cube stays home.
  */
 export const Tokkae = ({
   nudge,
-  theme,
+  playmate,
 }: {
-  nudge: ThemeNudge | null;
-  theme: Theme;
+  nudge: PlaymateNudge | null;
+  playmate: boolean;
 }) => {
   const reduceMotion = useReducedMotion();
   const layer = useRef<HTMLDivElement>(null);
@@ -165,7 +166,7 @@ export const Tokkae = ({
   const heartTpl = useRef<HTMLSpanElement>(null);
   const brainRef = useRef<Brain | null>(null);
   const buddyRef = useRef<Buddy | null>(null);
-  const themeRef = useRef(theme);
+  const playmateRef = useRef(playmate);
   const pointerRef = useRef<Pointer | null>(null);
   const [action, setAction] = useState<Action>("enter");
   const [notesOpen, setNotesOpen] = useState(true);
@@ -177,8 +178,8 @@ export const Tokkae = ({
   };
 
   useEffect(() => {
-    themeRef.current = theme;
-  }, [theme]);
+    playmateRef.current = playmate;
+  }, [playmate]);
 
   // Only the visitor's own switches; the saved choice on load is no news
   useEffect(() => {
@@ -223,8 +224,7 @@ export const Tokkae = ({
       if (!(buddy && box)) {
         return;
       }
-      const { current } = themeRef;
-      const room = roomFor(box, current);
+      const room = roomFor(box);
       const pose = buddy.step(dt, room, {
         action: brain.action,
         h: world.h,
@@ -233,7 +233,7 @@ export const Tokkae = ({
         x,
         y,
       });
-      placeBuddy(box, pose, current.cfg?.native ?? 1);
+      placeBuddy(box, pose);
       bowlEl.current?.classList.toggle("is-off", !pose.bowl);
       if (pose.heart && heartTpl.current && layer.current) {
         const jitter = (Math.random() - 0.5) * room.size * 0.3;
@@ -245,7 +245,7 @@ export const Tokkae = ({
     const tick = (now: number) => {
       const dt = Math.min(0.05, (now - prev) / 1000);
       prev = now;
-      syncBuddy(brain, buddyRef, buddyEl.current, themeRef.current, now);
+      syncBuddy(brain, buddyRef, buddyEl.current, playmateRef.current, now);
       const world = measure(el);
       const pose = brain.step(
         now,
@@ -339,15 +339,16 @@ export const Tokkae = ({
 
   // With reduced motion Tokkae only ever announces
   const shown = reduceMotion ? "announce" : action;
-  const showBuddy = Boolean(theme.animal) && !reduceMotion;
+  const showBuddy = playmate && !reduceMotion;
 
   return (
     <div className="tokkae-layer" ref={layer}>
       {showBuddy && (
         <div aria-hidden="true" className="buddy" ref={buddyEl}>
           <div className="buddy-body">
-            {/* oxlint-disable-next-line next/no-img-element -- the theme's animal, as the cursor critter had it */}
-            <img alt="" className={theme.cls} src={theme.animal ?? ""} />
+            <span className="buddy-cube hop">
+              <Sprite rows={CUBE} />
+            </span>
           </div>
           <span className="buddy-bowl is-off" ref={bowlEl}>
             <Sprite rows={BOWL} />

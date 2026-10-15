@@ -10,8 +10,7 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 - **Apps:** the Album Cover Maker, the pantry spinner, Alsace Arena and the portfolio, each with a screenshot and opening in a new tab, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
 - **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sings into a mic stand in the cover, on loop until music plays. Clicking the song opens it on Spotify. The control buttons are for show for now.
 - **Socials,** under the player: GitHub and LinkedIn, each opening in a new tab, and Irma’s CV to download (`public/cv/`).
-- **Theme variations:** off by default, so the page is Cute Matcha. Turned on, twelve colour variations appear, each with its own animal, falling flowers and background pattern. The chevron next to the switch tucks the colours away, keeping the variation on, and the page remembers it. The animal is Tokkae's buddy (see below).
-- **Surprise me:** pours milk tea over the screen and turns the page into boba for 20 seconds.
+- **Playmate:** a switch, top left, that brings Tokkae a playmate, a little pixel cube (see below). Off by default, and the page remembers it.
 - **Sign in** with Google through the IrmaHS Labs account service ([irmahs-labs/auth](https://github.com/irmahs-labs/auth)). The session is shared by every `*.irmahs.dev` site.
 - **Tokkae**, described below.
 
@@ -23,13 +22,12 @@ Tokkae is a pixel gecko from the brand canvas (a 12 × 13 sprite in an 18 × 17 
 - **On its own,** it eats bugs, naps, waves, types at a little PC and jumps onto the tops of windows, walking about for 6 to 12 seconds between each, so it does something new only every ten seconds or so.
 - **It leaves your cursor alone** unless you bother it.
 - **Click it, or pick it up and drop it,** and it gets angry and chases your cursor for ten seconds, jumping up to the window it's over or hopping down off one. Then it gets sleepy for a moment and goes back to its routine.
-- **With a theme variation on,** the theme's animal is its buddy. Every so often, instead of its own routine, Tokkae plays with it. Each of these is equally likely:
+- **With the playmate switch on,** a cube comes out to play. Every so often, instead of its own routine, Tokkae plays with it. Each of these is equally likely:
   - **Hearts:** side by side, hearts rising from both of them.
-  - **A picnic:** the animal at its pet bowl, Tokkae catching bugs.
-  - **Tag** for ten seconds, with Tokkae or the animal as "it", 50/50.
-  - **A nap together:** Tokkae asleep, the animal circling it.
-- **Turning the theme variations on** puts a "!" over Tokkae, and it runs to say hello to the animal. **Turning them off** makes it cry for two seconds before it carries on. Both wait while it's announcing, angry or being held.
-- **The animal is only ever moved,** turned to face its way, and given hearts or a bowl. Its picture is never changed.
+  - **A picnic:** the cube at its pet bowl, Tokkae catching bugs.
+  - **Tag** for ten seconds, with Tokkae or the cube as "it", 50/50.
+  - **A nap together:** Tokkae asleep, the cube circling it.
+- **Turning the playmate on** puts a "!" over Tokkae, and it runs to say hello to the cube. **Turning it off** makes it cry for two seconds before it carries on. Both wait while it's announcing, angry or being held.
 - **With reduced motion,** it stands still in the corner and only shows the patch notes, and there's no buddy.
 
 The sprite and its animations are in [`src/lib/tokkae.ts`](src/lib/tokkae.ts). Its behaviour is a small class with no React in it, in [`src/lib/tokkae-brain.ts`](src/lib/tokkae-brain.ts), and its buddy's in [`src/lib/tokkae-buddy.ts`](src/lib/tokkae-buddy.ts). [`src/components/tokkae.tsx`](src/components/tokkae.tsx) draws it and runs the animation loop.
@@ -44,7 +42,7 @@ There are two:
 ## Stack
 
 - [Next.js 16](https://nextjs.org) (App Router) with React 19 and strict TypeScript. This version of Next.js is newer than most AI assistants know: read the guides in `node_modules/next/dist/docs/` before changing framework code.
-- Plain CSS in [`src/app/globals.css`](src/app/globals.css), with the theme colours as CSS custom properties.
+- Plain CSS in [`src/app/globals.css`](src/app/globals.css), with Cute Matcha's colours as CSS custom properties.
 - [Ultracite](https://www.ultracite.ai) (oxlint, oxfmt and the anti-slop rules) for linting and formatting.
 - Docker for deployment, behind Caddy from [irmahs-labs/proxy](https://github.com/irmahs-labs/proxy).
 
@@ -55,8 +53,9 @@ src/
   app/          layout, page, global styles, tab icon, /api/now-playing
   components/   the page's pieces: windows, header controls, scene, Tokkae
   hooks/        clock, viewport, reduced motion, saved choices, session, Spotify
-  lib/          themes, apps, cities, sky maths, weather, Spotify, changelog, Tokkae
-public/assets/  theme animals, flowers and background patterns
+  lib/          apps, socials, cities, sky maths, weather, Spotify, changelog, Tokkae
+public/apps/    the apps' screenshots
+public/cv/      the CV to download
 ```
 
 ## Running it locally
@@ -102,10 +101,10 @@ On `localhost` the sign-in check is blocked by CORS, since the account service o
 
 The tests sit next to what they test, as `*.test.ts` and `*.test.tsx` under `src/`, and run with [Vitest](https://vitest.dev) in jsdom, set up as in Next.js's Vitest guide ([`vitest.config.mts`](vitest.config.mts)). They cover:
 
-- **Data:** every app links over https and has a screenshot in `public/`, every theme has its animal and flower, and the changelog is dated and in order.
+- **Data:** every app links over https and has a screenshot in `public/`, and the changelog is dated and in order.
 - **Pure logic:** the sky maths, weather codes, Spotify's answers and its ten-second cache, the now-playing route and its fallback, and the sign-in link.
 - **Tokkae:** its frames, how it reacts and how often it plays each game, and how its buddy moves.
-- **Components,** with React Testing Library: the apps window's 1, 2, 4 or 6 apps, the theme picker, the player, the singing emote and the windows.
+- **Components,** with React Testing Library: the apps window's 1, 2, 4 or 6 apps, the playmate switch, Tokkae and its cube, the player, the singing emote and the windows.
 
 They fake `fetch`, timers and `ResizeObserver` but never mock the app's own modules.
 
@@ -125,7 +124,6 @@ Every push to `main` deploys to the server through GitHub Actions ([`deploy.yml`
 
 ## Credits
 
-- The theme variations' animal and flower icons come from [Flaticon](https://www.flaticon.com).
 - Fonts are Fredoka and Kantumruy Pro, from Google Fonts.
 
 ## Licence

@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
 
 import { useViewport } from "@/hooks/use-viewport";
 import { H0, pct, W0 } from "@/lib/format";
 import { skyTint } from "@/lib/sky";
 import type { SkyPhase } from "@/lib/sky";
-import { PATTERN_IMG } from "@/lib/themes";
-import type { Theme } from "@/lib/themes";
-
-import { Wave } from "./wave";
 
 const STARS = Array.from({ length: 40 }, (_, i) => ({
   delay: `${-(i % 7) * 0.6}s`,
@@ -36,180 +31,12 @@ const DROPS = Array.from({ length: 60 }, (_, i) => ({
   left: pct((i * 89 + 17) % 1500, W0),
 }));
 
-const FLOWER_SIZES = [22, 48, 30, 60, 26, 40, 54, 20, 36, 58, 28, 44, 32, 50];
-const FLOWER_FALLS = [11, 24, 15, 30, 9, 19, 27, 13, 22, 33, 10, 17, 25, 14];
-const FLOWERS = FLOWER_SIZES.map((size, i) => {
-  const fall = FLOWER_FALLS[i] ?? 20;
-  return {
-    animationDelay: `${(-((i * 7.3) % fall)).toFixed(1)}s`,
-    animationDuration: `${fall}s`,
-    height: `${size}px`,
-    left: pct(6 + i * 102 + ((i * 37) % 40), W0),
-    spin: `${17 + ((i * 5) % 12)}s`,
-    width: `${size}px`,
-  };
-});
-
-const PEARLS = Array.from({ length: 28 }, (_, i) => {
-  const size = `${8 + ((i * 5) % 7)}px`;
-  return {
-    animationDelay: `${(-((i * 1.7) % 16)).toFixed(1)}s`,
-    animationDuration: `${9 + ((i * 7) % 9)}s`,
-    height: size,
-    left: pct(10 + i * 51 + ((i * 23) % 30), W0),
-    width: size,
-  };
-});
-
-const BOBA_LAYERS = [
-  { animation: "slosh 3.4s linear infinite reverse", color: "#e3c9b0" },
-  { animation: "slosh 2.4s linear infinite", color: "#fbf3e6" },
-];
-
-interface PatternLayer {
-  id: number;
-  state: "in" | "out" | "still";
-  theme: Theme;
-}
-
-interface PatternsProps {
-  animate: boolean;
-  night: boolean;
-  theme: Theme;
-}
-
-/**
- * Background pattern; crossfades to the new theme's when `animate` is set.
- * At night it turns to light lines so it still shows against the dark sky.
- */
-const Patterns = ({ animate, night, theme }: PatternsProps) => {
-  const [layers, setLayers] = useState<PatternLayer[]>([
-    { id: 0, state: "still", theme },
-  ]);
-
-  // Add a layer as soon as the theme changes, during render
-  const top = layers.at(-1);
-  if (top && top.theme.id !== theme.id) {
-    const added: PatternLayer = {
-      id: top.id + 1,
-      state: animate ? "in" : "still",
-      theme,
-    };
-    setLayers(
-      animate
-        ? [...layers.map((l) => ({ ...l, state: "out" as const })), added]
-        : [added]
-    );
-  }
-
-  // Drop faded-out layers once their animation is over
-  const fading = layers.some((l) => l.state === "out");
-  useEffect(() => {
-    if (!fading) {
-      return;
-    }
-    const t = setTimeout(
-      () => setLayers((prev) => prev.filter((l) => l.state !== "out")),
-      850
-    );
-    return () => clearTimeout(t);
-  }, [fading]);
-
-  return (
-    <div className={`patterns${night ? " is-night" : ""}`}>
-      {layers.map(({ id, state, theme: th }) => {
-        const img = th.patternImg ? PATTERN_IMG[th.patternImg] : null;
-        return (
-          <div
-            className={state === "still" ? undefined : `pattern-${state}`}
-            key={id}
-          >
-            <div style={{ background: th.pattern ?? "transparent" }} />
-            {img && (
-              <div
-                style={{
-                  backgroundImage: `url(/assets/patterns/${img.file})`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: `${img.size}px auto`,
-                }}
-              />
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-/** Falling flowers; the image fades out and back in when the theme changes */
-const Flowers = ({ src }: { src: string | null }) => {
-  const [shown, setShown] = useState(src);
-  const swapping = Boolean(src && shown && src !== shown);
-
-  useEffect(() => {
-    if (!swapping) {
-      return;
-    }
-    const t = setTimeout(() => setShown(src), 400);
-    return () => clearTimeout(t);
-  }, [swapping, src]);
-
-  const img = shown ?? src;
-  return (
-    <div className="flowers" hidden={!src}>
-      {FLOWERS.map((f) => (
-        <span
-          className="flower"
-          key={f.left}
-          style={{
-            animationDelay: f.animationDelay,
-            animationDuration: f.animationDuration,
-            height: f.height,
-            left: f.left,
-            width: f.width,
-          }}
-        >
-          <span style={{ animationDuration: f.spin }}>
-            {img && (
-              // oxlint-disable-next-line next/no-img-element -- decorative sprite, sized by CSS
-              <img
-                alt=""
-                className={swapping ? "swap" : undefined}
-                decoding="async"
-                src={img}
-              />
-            )}
-          </span>
-        </span>
-      ))}
-    </div>
-  );
-};
-
-const BobaScene = () => (
-  <div className="boba-scene">
-    {PEARLS.map((p) => (
-      <span className="tiny-pearl" key={p.left} style={p} />
-    ))}
-    <div className="fill-up">
-      {BOBA_LAYERS.map(({ animation, color }) => (
-        <div className="swell" key={color}>
-          <Wave fill={color} style={{ animation }} />
-          <div style={{ backgroundColor: color }} />
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
 interface SceneProps {
-  animatePattern: boolean;
   phase: SkyPhase | null;
   rainy: boolean;
-  theme: Theme;
 }
 
-export const Scene = ({ animatePattern, phase, rainy, theme }: SceneProps) => {
+export const Scene = ({ phase, rainy }: SceneProps) => {
   const viewport = useViewport();
 
   let bodyStyle: CSSProperties | undefined;
@@ -252,8 +79,6 @@ export const Scene = ({ animatePattern, phase, rainy, theme }: SceneProps) => {
           opacity: tintOpacity.toFixed(2),
         }}
       />
-      {/* Above the tint, so the night sky doesn't hide it */}
-      <Patterns animate={animatePattern} night={!isDay} theme={theme} />
       <div
         className="stars"
         hidden={isDay}
@@ -323,8 +148,6 @@ export const Scene = ({ animatePattern, phase, rainy, theme }: SceneProps) => {
           </svg>
         ))}
       </div>
-      {theme.id === "boba" && <BobaScene />}
-      <Flowers src={theme.flower} />
       <div className="rain" hidden={!rainy}>
         {DROPS.map((d) => (
           <div className="drop" key={d.left} style={d} />

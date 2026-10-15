@@ -4,7 +4,7 @@
   --bar: #3b4a42;
   --bar-grid: #4e6152;
   --bar-text: #fff3cf;
-  /* Cute Matcha, the page's colours while themes are off */
+  /* Cute Matcha, the page's colours */
   --body: #dde87e;
   --alt: #b8d970;
   --panel: #f7f8de;
@@ -65,8 +65,7 @@ fieldset {
 }
 
 /* ---------- scenery ---------- */
-.scene,
-.milk-layer {
+.scene {
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -76,33 +75,7 @@ fieldset {
   position: absolute;
   inset: 0;
 }
-.patterns {
-  transition: filter 1.2s ease;
-}
-.patterns > div {
-  position: absolute;
-  inset: 0;
-  opacity: 0.2;
-  transition: opacity 1.2s ease;
-}
-/* The theme's CSS pattern and its image tile, each filling the screen */
-.patterns > div > div {
-  position: absolute;
-  inset: 0;
-}
-/* Light lines on the dark night sky */
-.patterns.is-night {
-  filter: invert(1) hue-rotate(180deg);
-}
-.patterns.is-night > div {
-  opacity: 0.28;
-}
-.pattern-in {
-  animation: xIn 0.8s var(--ease) both;
-}
-.pattern-out {
-  animation: xOut 0.8s var(--ease) both;
-}
+
 .sky-tint,
 .sky-dim {
   transition:
@@ -154,28 +127,6 @@ fieldset {
   transition: fill 1.2s ease;
 }
 
-.flower {
-  position: absolute;
-  top: -80px;
-  animation: fallOnly linear infinite;
-}
-.flower > span {
-  display: block;
-  width: 100%;
-  height: 100%;
-  animation: spinOnly linear infinite;
-}
-.flower img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  opacity: 0.9;
-  transition: opacity 0.4s var(--ease);
-}
-.flower img.swap {
-  opacity: 0;
-}
-
 .drop {
   position: absolute;
   top: 0;
@@ -192,54 +143,9 @@ fieldset {
   animation: flash 9s linear infinite;
 }
 
-.tiny-pearl {
-  position: absolute;
-  top: -30px;
-  border-radius: 50%;
-  background-color: #2b1d17;
-  animation: fallDown linear infinite;
-}
-.fill-up {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: calc(100vh + 200px);
-  animation: fillUp 20s cubic-bezier(0.45, 0, 0.7, 1) forwards;
-}
-.fill-up .swell {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  animation: swell 5s ease-in-out infinite;
-}
-.fill-up .swell + .swell {
-  top: 60px;
-  animation-delay: -2.5s;
-}
-.wave {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 3360px;
-  height: 64px;
-}
-.wave + div {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 60px;
-  bottom: 0;
-}
-
-/* ---------- the theme animals' own bounce ---------- */
+/* ---------- the playmate's bounce ---------- */
 .hop {
   animation: hop 0.45s ease-in-out infinite alternate;
-}
-.flap {
-  animation: flap 1.2s ease-in-out infinite alternate;
 }
 
 /* ---------- page layout ---------- */
@@ -256,12 +162,12 @@ fieldset {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  grid-template-areas: "theme center surprise";
+  grid-template-areas: "playmate center account";
   align-items: start;
   gap: 16px;
 }
-.theme-col {
-  grid-area: theme;
+.playmate-col {
+  grid-area: playmate;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -277,8 +183,8 @@ fieldset {
   align-items: center;
   gap: 10px;
 }
-.surprise-col {
-  grid-area: surprise;
+.account-col {
+  grid-area: account;
   justify-self: end;
   padding-top: 10px;
   display: flex;
@@ -293,7 +199,7 @@ fieldset {
 .desk {
   --top-h: 172px;
   --apps-h: clamp(320px, calc(100vh - 420px), 520px);
-  /* Dragged windows stack among themselves, under Tokkae and the milk */
+  /* Dragged windows stack among themselves, under Tokkae and its playmate */
   isolation: isolate;
   width: 100%;
   max-width: 1080px;
@@ -326,7 +232,6 @@ fieldset {
 /* ---------- shared pieces ---------- */
 .panel,
 .window,
-.pill,
 .tile,
 .seg {
   transition:
@@ -341,20 +246,11 @@ fieldset {
 }
 .btn:focus-visible,
 .tile:focus-visible,
-.credit:focus-visible,
 input:focus-visible {
   outline: 3px solid #4a7fc0;
   outline-offset: 3px;
 }
-.pill {
-  margin-left: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 2px 12px;
-  background-color: var(--panel);
-  border: 1.5px solid var(--line);
-  border-radius: 999px;
-}
+
 .window {
   max-width: 100%;
   display: flex;
@@ -421,9 +317,9 @@ input:focus-visible {
   display: block;
 }
 
-/* ---------- theme picker ---------- */
-/* Just the label and the switch; the swatches open below, on the page */
-.theme-panel {
+/* ---------- playmate ---------- */
+/* Just the label and the switch */
+.playmate-panel {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -440,8 +336,8 @@ input:focus-visible {
   white-space: nowrap;
   flex-shrink: 0;
 }
-/* Themes on/off: a small outlined switch, dark like a selected pill when on */
-.theme-switch {
+/* Playmate on/off: a small outlined switch, dark like a selected pill when on */
+.playmate-switch {
   height: 44px;
   padding: 0 4px;
   border: 0;
@@ -450,7 +346,7 @@ input:focus-visible {
   display: flex;
   align-items: center;
 }
-.theme-switch-track {
+.playmate-switch-track {
   position: relative;
   width: 40px;
   height: 24px;
@@ -459,7 +355,7 @@ input:focus-visible {
   background-color: var(--body);
   transition: background-color 0.2s ease;
 }
-.theme-switch-track::after {
+.playmate-switch-track::after {
   content: "";
   position: absolute;
   top: 2px;
@@ -472,83 +368,12 @@ input:focus-visible {
     transform 0.2s var(--ease),
     background-color 0.2s ease;
 }
-.theme-switch[aria-checked="true"] .theme-switch-track {
+.playmate-switch[aria-checked="true"] .playmate-switch-track {
   background-color: var(--bar);
 }
-.theme-switch[aria-checked="true"] .theme-switch-track::after {
+.playmate-switch[aria-checked="true"] .playmate-switch-track::after {
   background-color: var(--bar-text);
   transform: translateX(16px);
-}
-/* Hides and shows the swatches: a chevron pointing up while they're out */
-.theme-hide {
-  width: 36px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--line);
-}
-.theme-hide svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: transform 0.2s var(--ease);
-}
-.theme-hide[aria-expanded="false"] svg {
-  transform: rotate(180deg);
-}
-/* Floats under the panel, over the page, so nothing below moves */
-.theme-col {
-  position: relative;
-  z-index: 2;
-}
-.theme-drawer {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-}
-.swatches {
-  display: grid;
-  grid-template-columns: repeat(6, 44px);
-  border: 0;
-}
-.swatch {
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.swatch span {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 1.5px solid var(--line);
-  box-shadow: 2px 2px 0 var(--line);
-  transition: box-shadow 0.2s ease;
-}
-.swatch[aria-pressed="true"] span {
-  box-shadow:
-    0 0 0 3px var(--panel),
-    0 0 0 5px var(--line),
-    4px 4px 0 var(--line);
 }
 
 /* ---------- city + clock ---------- */
@@ -637,34 +462,7 @@ input:focus-visible {
   font-weight: 500;
 }
 
-/* ---------- surprise ---------- */
-.surprise {
-  height: 54px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 20px 0 7px;
-  border-radius: 999px;
-  font-size: 16px;
-  font-weight: 500;
-}
-.surprise[aria-pressed="true"] {
-  background-color: var(--bar);
-  color: var(--bar-text);
-}
-.surprise-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: #e0574b;
-  border: 1.5px solid #2f3b34;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* ---------- account ---------- */
-/* Sized exactly like .surprise below it */
 .account {
   height: 54px;
   display: flex;
@@ -753,7 +551,7 @@ input:focus-visible {
     box-shadow 0.15s ease,
     background-color 0.15s ease;
 }
-/* A light wash of the theme's colour, so the picked app reads as the theme's */
+/* A light wash of the page's green on the app hovered or focused */
 .tile:hover,
 .tile:focus-visible {
   transform: translate(-2px, -2px);
@@ -901,33 +699,6 @@ input:focus-visible {
   font-size: 14px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-}
-
-.burst-wrap {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  z-index: 3;
-}
-.burst-wrap > span {
-  position: absolute;
-  display: block;
-}
-.burst-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.burst-wrap .pearl {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 1.5px solid #2f3b34;
-  background-color: #2b1d17;
 }
 
 /* ---------- player ---------- */
@@ -1362,9 +1133,9 @@ input:focus-visible {
   display: none;
 }
 
-/* Tokkae's buddy, the theme's animal: moved and turned by tokkae.tsx, the
-   picture itself left as it is. In front of Tokkae, unless it's circling
-   behind it during a nap. */
+/* Tokkae's playmate, a pixel cube: moved and turned by tokkae.tsx, bouncing
+   as it goes. In front of Tokkae, unless it's circling behind it during a
+   nap. */
 .tokkae {
   z-index: 1;
 }
@@ -1373,8 +1144,9 @@ input:focus-visible {
   top: 0;
   left: 0;
   z-index: 2;
-  width: 120px;
-  height: 120px;
+  /* The 14 × 14 cube at 4px a pixel */
+  width: 56px;
+  height: 56px;
   /* Offscreen until the first frame places it */
   transform: translate(-300px, 0);
   will-change: transform;
@@ -1387,11 +1159,10 @@ input:focus-visible {
   height: 100%;
   transform: scaleX(var(--face, 1));
 }
-.buddy-body img {
+.buddy-cube {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
 }
 /* The pet bowl at its front feet, at a picnic */
 .buddy-bowl {
@@ -1413,6 +1184,7 @@ input:focus-visible {
   margin-left: -10px;
   animation: heart-up 1.4s ease-out forwards;
 }
+.buddy-cube svg,
 .buddy-bowl svg,
 .buddy-heart svg {
   display: block;
@@ -1486,56 +1258,7 @@ input:focus-visible {
   font-weight: 500;
 }
 
-/* Credit for the variations' icons, under the swatches */
-.credit {
-  margin-left: 12px;
-  padding: 1px 8px;
-  border-radius: 999px;
-  background-color: var(--panel);
-  font-size: 11px;
-  color: var(--muted);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: background-color 0.8s var(--ease);
-}
-
-/* ---------- milk pour ---------- */
-.milk-layer {
-  z-index: 50;
-}
-.milk {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 60px;
-  bottom: 0;
-  background-color: #fbf3e6;
-  animation: milkRise 3.4s ease-in-out both;
-}
-.milk .wave {
-  top: -60px;
-  animation: slosh 1.6s linear infinite;
-}
-.milk-pearl {
-  position: absolute;
-  bottom: -50px;
-  border-radius: 50%;
-  background-color: #2b1d17;
-  animation-timing-function: ease-in-out;
-  animation-fill-mode: both;
-}
-
 /* ---------- keyframes ---------- */
-@keyframes xIn {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes xOut {
-  to {
-    opacity: 0;
-  }
-}
 @keyframes drift {
   from {
     transform: translateX(0);
@@ -1592,14 +1315,7 @@ input:focus-visible {
     transform: translateY(-7px);
   }
 }
-@keyframes flap {
-  from {
-    transform: translateY(-6px) rotate(-4deg);
-  }
-  to {
-    transform: translateY(8px) rotate(4deg);
-  }
-}
+
 @keyframes rainfall {
   from {
     transform: translate(0, -120px) rotate(14deg);
@@ -1624,276 +1340,6 @@ input:focus-visible {
     opacity: 0.45;
   }
 }
-@keyframes fallDown {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  25% {
-    transform: translate(22px, 28vh) rotate(90deg);
-  }
-  50% {
-    transform: translate(-14px, 56vh) rotate(180deg);
-  }
-  75% {
-    transform: translate(18px, 84vh) rotate(270deg);
-  }
-  100% {
-    transform: translate(0, 112vh) rotate(360deg);
-  }
-}
-@keyframes fallOnly {
-  0% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(22px, 28vh);
-  }
-  50% {
-    transform: translate(-14px, 56vh);
-  }
-  75% {
-    transform: translate(18px, 84vh);
-  }
-  100% {
-    transform: translate(0, calc(112vh + 80px));
-  }
-}
-@keyframes spinOnly {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes swell {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-@keyframes fillUp {
-  from {
-    transform: translateY(77vh);
-  }
-  to {
-    transform: translateY(-70px);
-  }
-}
-@keyframes slosh {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-480px);
-  }
-}
-@keyframes milkRise {
-  0% {
-    transform: translateY(105%);
-  }
-  45%,
-  55% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(105%);
-  }
-}
-@keyframes pearlA {
-  0% {
-    transform: translate(0, 0) scale(0.5);
-    opacity: 0;
-  }
-  12% {
-    opacity: 1;
-  }
-  45% {
-    transform: translate(34px, -37vh) scale(1);
-  }
-  78% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-26px, -71vh) scale(0.15);
-    opacity: 0;
-  }
-}
-@keyframes pearlB {
-  0% {
-    transform: translate(0, 0) scale(0.5);
-    opacity: 0;
-  }
-  12% {
-    opacity: 1;
-  }
-  45% {
-    transform: translate(-30px, -33vh) scale(1);
-  }
-  78% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(22px, -67vh) scale(0.15);
-    opacity: 0;
-  }
-}
-@keyframes burst0 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(80px, 0) scale(1) rotate(-120deg);
-    opacity: 0;
-  }
-}
-@keyframes burst1 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(74px, 80px) scale(1) rotate(-47deg);
-    opacity: 0;
-  }
-}
-@keyframes burst2 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(24px, 85px) scale(1) rotate(26deg);
-    opacity: 0;
-  }
-}
-@keyframes burst3 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-22px, 115px) scale(1) rotate(99deg);
-    opacity: 0;
-  }
-}
-@keyframes burst4 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-59px, 76px) scale(1) rotate(-68deg);
-    opacity: 0;
-  }
-}
-@keyframes burst5 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-113px, 53px) scale(1) rotate(5deg);
-    opacity: 0;
-  }
-}
-@keyframes burst6 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-104px, -4px) scale(1) rotate(78deg);
-    opacity: 0;
-  }
-}
-@keyframes burst7 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-54px, -63px) scale(1) rotate(-89deg);
-    opacity: 0;
-  }
-}
-@keyframes burst8 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-27px, -109px) scale(1) rotate(-16deg);
-    opacity: 0;
-  }
-}
-@keyframes burst9 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(20px, -89px) scale(1) rotate(57deg);
-    opacity: 0;
-  }
-}
-@keyframes burst10 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(77px, -92px) scale(1) rotate(-110deg);
-    opacity: 0;
-  }
-}
-@keyframes burst11 {
-  0% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(91px, -39px) scale(1) rotate(-37deg);
-    opacity: 0;
-  }
-}
 
 /* ---------- smaller screens ---------- */
 /* The side column no longer fits beside the apps: it moves below, as a row */
@@ -1909,12 +1355,12 @@ input:focus-visible {
     justify-content: center;
   }
 }
-/* Theme panel stays top left and the buttons top right; when the three no
+/* The playmate switch stays top left and sign in top right; when the three no
    longer fit on one row, the city switch drops to its own row between them */
 @media (max-width: 900px) {
   .top {
     grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas: "theme . surprise" "center center center";
+    grid-template-areas: "playmate . account" "center center center";
   }
 }
 @media (max-width: 820px) {
@@ -1922,8 +1368,8 @@ input:focus-visible {
     padding: 14px 16px 10px;
   }
 }
-/* Phone layout: city, sign in and surprise on one row, then the theme panel,
-   then every window at full width, one under the other */
+/* Phone layout: city and sign in on one row, then the playmate switch, then
+   every window at full width, one under the other */
 @media (max-width: 600px) {
   .page {
     gap: 12px;
@@ -1931,7 +1377,7 @@ input:focus-visible {
   }
   .top {
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: "city surprise" "theme theme";
+    grid-template-areas: "city account" "playmate playmate";
     align-items: center;
     gap: 12px;
   }
@@ -1948,56 +1394,35 @@ input:focus-visible {
     padding: 0 14px 0 10px;
     font-size: 15px;
   }
-  .surprise-col {
+  .account-col {
     padding-top: 0;
     flex-direction: row;
     align-items: center;
     gap: 8px;
   }
 
-  .theme-col {
+  .playmate-col {
     align-items: stretch;
     padding-top: 0;
   }
-  .theme-panel {
+  .playmate-panel {
     padding: 0 4px 0 12px;
   }
-  /* The label on the left, the switch and the hide button together on the right */
-  .theme-switch {
+  /* The label on the left, the switch on the right */
+  .playmate-switch {
     margin-left: auto;
   }
   .panel-label {
     padding-left: 0;
   }
-  /* On phones the drawer opens in place, pushing the windows down */
-  .theme-drawer {
-    position: static;
-    margin-top: 0;
-    align-items: stretch;
-  }
-  .theme-drawer .pill,
-  .credit {
-    align-self: flex-start;
-  }
-  .swatches {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    justify-items: center;
-  }
 
-  .surprise {
-    width: 52px;
-    height: 52px;
-    padding: 0;
-    justify-content: center;
-  }
   .account {
     width: 52px;
     height: 52px;
     padding: 0;
     justify-content: center;
   }
-  .account-text,
-  .surprise-text {
+  .account-text {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -2075,8 +1500,8 @@ input:focus-visible {
     height: 59.5px;
   }
   .buddy {
-    width: 84px;
-    height: 84px;
+    width: 42px;
+    height: 42px;
   }
 }
 @media (max-width: 360px) {
@@ -2096,24 +1521,12 @@ input:focus-visible {
   .star,
   .rays,
   .bob,
-  .flower,
-  .flower > span,
   .hop,
-  .flap,
   .stripes,
   .drop,
   .flash,
-  .tiny-pearl,
-  .swell,
-  .wave,
   .eq i {
     animation: none !important;
-  }
-  .burst-wrap,
-  .milk-layer,
-  .fill-up,
-  .flowers {
-    display: none !important;
   }
   .tile,
   .bar-fill {
