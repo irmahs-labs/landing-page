@@ -41,8 +41,8 @@ export const WindowButtons = () => (
     width="41"
   >
     <g stroke="#2f3b34" strokeWidth="1">
-      <circle cx="4.5" cy="4.5" fill="#5fc35a" r="3.8" />
-      <circle cx="14.5" cy="4.5" fill="#f5c04a" r="3.8" />
+      <circle cx="4.5" cy="4.5" fill="#5c8f48" r="3.8" />
+      <circle cx="14.5" cy="4.5" fill="#f2d27a" r="3.8" />
       <circle cx="24.5" cy="4.5" fill="#f0675c" r="3.8" />
       <path
         d="M2.8 4.5 H6.2 M4.5 2.8 V6.2 M12.8 4.5 H16.2 M23 3 L26 6 M26 3 L23 6"

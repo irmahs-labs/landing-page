@@ -1,25 +1,29 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import type { Anim } from "@/lib/tokkae";
 import { ANIMS, FRAMES } from "@/lib/tokkae";
 
 import { Sprite } from "./tokkae";
 
 const FRAME_MS = 200;
-const SING = ANIMS.sing;
-// Each distinct frame drawn once, and the loop as positions in that list
-const DRAWN = [...new Set(SING)];
-const LOOP = SING.map((id) => DRAWN.indexOf(id));
 
 /**
- * Tokkae singing at a mic stand, on loop, for when there's no music. With
- * reduced motion it holds the first frame.
+ * Tokkae singing at a mic stand, on loop, for when there's no music: plain
+ * sing by default, or one of its other songs. With reduced motion it holds
+ * the first frame.
  */
-export const TokkaeEmote = () => {
+export const TokkaeEmote = ({ anim = "sing" }: { anim?: Anim }) => {
   const reduceMotion = useReducedMotion();
   const root = useRef<HTMLSpanElement>(null);
+  // Each distinct frame drawn once, and the loop as positions in that list
+  const { drawn, loop } = useMemo(() => {
+    const frames = ANIMS[anim];
+    const unique = [...new Set(frames)];
+    return { drawn: unique, loop: frames.map((id) => unique.indexOf(id)) };
+  }, [anim]);
 
   useEffect(() => {
     const el = root.current;
@@ -29,17 +33,17 @@ export const TokkaeEmote = () => {
     const frames = [...el.querySelectorAll("svg")];
     let step = 0;
     const timer = setInterval(() => {
-      frames[LOOP[step % LOOP.length] ?? 0]?.classList.add("is-off");
+      frames[loop[step % loop.length] ?? 0]?.classList.add("is-off");
       step += 1;
-      frames[LOOP[step % LOOP.length] ?? 0]?.classList.remove("is-off");
+      frames[loop[step % loop.length] ?? 0]?.classList.remove("is-off");
     }, FRAME_MS);
     return () => clearInterval(timer);
-  }, [reduceMotion]);
+  }, [loop, reduceMotion]);
 
   return (
-    <span aria-hidden="true" className="emote" ref={root}>
-      {DRAWN.map((id) => (
-        <Sprite hidden={id !== SING[0]} key={id} rows={FRAMES[id] ?? []} />
+    <span aria-hidden="true" className="emote" key={anim} ref={root}>
+      {drawn.map((id, i) => (
+        <Sprite hidden={i !== loop[0]} key={id} rows={FRAMES[id] ?? []} />
       ))}
     </span>
   );

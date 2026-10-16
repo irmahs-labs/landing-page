@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import type { NowPlaying } from "@/lib/spotify";
@@ -13,7 +13,8 @@ describe("Player", () => {
   it("has Tokkae sing in the cover while nothing plays", async () => {
     nowPlaying({ playing: false });
     const { container } = render(<Player now={null} />);
-    expect(await screen.findByText("Nothing playing")).toBeDefined();
+    expect(await screen.findByText("Sings for you")).toBeDefined();
+    expect(screen.getByText("Tokkae")).toBeDefined();
     expect(container.querySelector(".cover .emote")).not.toBeNull();
     expect(container.querySelector(".player-window.is-idle")).not.toBeNull();
   });
@@ -41,14 +42,53 @@ describe("Player", () => {
     expect(container.querySelector(".emote")).toBeNull();
   });
 
-  it("keeps the controls as decorations for now", async () => {
-    nowPlaying({ playing: false });
+  it("keeps the controls as decorations while music plays", async () => {
+    nowPlaying({
+      album: null,
+      artist: "Someone",
+      durationMs: 200_000,
+      image: null,
+      playing: true,
+      progressMs: 0,
+      title: "A song",
+      url: "https://open.spotify.com/track/1",
+    });
     render(<Player now={null} />);
-    await screen.findByText("Nothing playing");
+    await screen.findByText("A song");
     for (const name of ["Shuffle", "Previous track", "Next track", "Repeat"]) {
       expect(screen.getByRole("button", { name }).getAttribute("title")).toBe(
         "coming soon"
       );
     }
+  });
+
+  it("steps through Tokkae's songs with previous and next while it's quiet", async () => {
+    nowPlaying({ playing: false });
+    render(<Player now={null} />);
+    expect(await screen.findByText("Sings for you")).toBeDefined();
+
+    const next = screen.getByRole("button", { name: "Next song" });
+    const moods = [];
+    for (let i = 0; i < 9; i += 1) {
+      fireEvent.click(next);
+      moods.push(screen.getByText(/^Sings /u).textContent);
+    }
+    expect(moods).toEqual([
+      "Sings with joy",
+      "Sings happily",
+      "Sings with love",
+      "Sings heartbroken",
+      "Sings angrily",
+      "Sings in a rage",
+      "Sings under dark clouds",
+      "Sings through tears",
+      "Sings peacefully",
+    ]);
+
+    // Round the end, and back again
+    fireEvent.click(next);
+    expect(screen.getByText("Sings for you")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Previous song" }));
+    expect(screen.getByText("Sings peacefully")).toBeDefined();
   });
 });

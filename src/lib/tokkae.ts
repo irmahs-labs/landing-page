@@ -1,22 +1,35 @@
 /**
- * Tokkae, the pixel gecko, from the brand canvas: a 12 × 13 sprite drawn
- * into an 18 × 17 frame that leaves room for its props (the bug, the pc,
- * the z's). Every frame is composed from a base sprite plus pixel edits,
- * exactly as the canvas's Gecko component does it. The base faces right.
+ * Tokkae, the pixel gecko, from the Tokkae design system: a 12 × 13 sprite
+ * drawn into an 18 × 17 frame that leaves room for its props (the bug, the
+ * pc, the z's). Every frame is composed from a base sprite plus pixel edits
+ * and props, never a new drawing. The base faces right.
  */
 
+// Tokkae's colours, every one a Cute Matcha colour (its token in brackets)
 const PALETTE = {
+  // Romduol (gold)
   O: "#f2d27a",
+  // Bubble (white)
   W: "#ffffff",
+  // Belly (cream)
   b: "#fff3cf",
+  // Spots (moss)
   d: "#5c8f48",
+  // Body (accent-soft)
   g: "#b8d970",
+  // Eyes (on-accent)
   k: "#2f3b34",
-  p: "#ff8e7d",
-  r: "#e0574b",
+  // Blush (terracotta)
+  p: "#d9786a",
+  // Heart (danger)
+  r: "#f0675c",
+  // Tongue (terracotta)
   t: "#d9786a",
+  // Screen (focus)
   w: "#4a7fc0",
-  x: "#1b1e1c",
+  // The bug and the mic, drawn in eyes
+  x: "#2f3b34",
+  // Z's, sparkles and keys (belly)
   z: "#fff3cf",
 } satisfies Record<string, string>;
 
@@ -277,6 +290,124 @@ const screen = (pts: readonly (readonly [number, number])[]): Px[] => [
   ...z(pts),
 ];
 
+// ---------- songs ----------
+// Every song is sing's eight frames: the mic stand and two notes rising on
+// the right, and its own props in the free space on the left and along the
+// top of the frame, in frame coordinates.
+
+/** Where sing's two notes float, one per frame */
+const NOTE_PATH = [
+  [15, 2],
+  [15, 1],
+  [15, 0],
+  [15, -1],
+  [14, 2],
+  [14, 1],
+  [14, 0],
+  [14, -1],
+] as const;
+
+interface SongStyle {
+  /** Bobs up on frames 4 and 5, as plain sing does */
+  bounce?: boolean;
+  /** The face for frame i, as edits on the standing sprite */
+  face?: (i: number) => readonly Px[];
+  /** The first note's colour, then the second's */
+  notes?: readonly [string, string];
+  /** The props for frame i, in frame coordinates */
+  props?: (i: number) => readonly Px[];
+}
+
+/** Eyes shut while it holds the long note, as in plain sing */
+const singFace = (i: number) => (i >= 4 && i <= 6 ? shut : []);
+
+const song = ({
+  bounce = true,
+  face = singFace,
+  notes = ["w", "r"],
+  props = () => [],
+}: SongStyle): FrameSpec[] =>
+  NOTE_PATH.map(([x, y], i) => ({
+    dy: bounce && (i === 4 || i === 5) ? -1 : 0,
+    edits: singing(face(i)),
+    extra: [
+      ...props(i),
+      ...micStand,
+      ...note(x, y, i < 4 ? notes[0] : notes[1]),
+    ],
+  }));
+
+// joy: a little sun in the corner, its rays twinkling round a warm centre
+const SUN_PLUS = [".O.", "OtO", ".O."];
+const SUN_CROSS = ["O.O", ".t.", "O.O"];
+
+// happiness: a little rainbow, drawn band by band, and a sparkle
+const RAINBOW = [".rrr", "rOOO", "rOww", "rOw."];
+const RAINBOW_BANDS = ["r", "O", "w"];
+const rainbow = (bands: number) =>
+  stamp(RAINBOW, 0, 0).filter((px) =>
+    RAINBOW_BANDS.slice(0, bands).includes(px[2])
+  );
+
+// love: small hearts floating up the left
+const MINI_HEART = ["r.r", "rrr", ".r."];
+const floatingUp = (i: number, offset: number) => 8 - ((i + offset) % 8);
+
+// heartbreak: a heart that cracks, then falls apart
+const HEART_LEFT = ["rr.", "rrr", ".r.", "..r"];
+const HEART_RIGHT = ["...rr", "...rr", "..rr."];
+const crack: Px[] = [
+  [1, 2, "k"],
+  [2, 2, "k"],
+];
+
+// anger: a storm cloud, and lightning striking the ground
+const CLOUD = [".kkk.", "kkkkk"];
+const bolt: Px[] = [
+  ...paint(
+    [
+      [2, 1],
+      [3, 1],
+      [4, 2],
+      [5, 2],
+      [6, 1],
+      [7, 1],
+      [8, 0],
+      [9, 0],
+      [10, 1],
+      [11, 1],
+      [12, 2],
+      [13, 2],
+      [14, 1],
+      [15, 1],
+    ],
+    "O"
+  ),
+  ...paint(
+    [
+      [16, 0],
+      [16, 2],
+    ],
+    "W"
+  ),
+  [16, 1, "O"],
+];
+const STRIKES = new Set([2, 3, 6]);
+
+// rage: little flames floating around, flickering
+const FLAME_A = [".r.", "rr.", "rOr", ".r."];
+const FLAME_B = [".r.", ".rr", "rOr", ".r."];
+const flame = (i: number, y: number) => stamp(i % 2 ? FLAME_B : FLAME_A, 0, y);
+
+// sadness: tears spraying from its left cheek
+const leftTears = [tearsA, tearsB, tearsC, tearsB].map((tears) =>
+  tears.filter(([, x]) => x < 3)
+);
+
+// peaceful: flowers drifting down, blush petals round a gold centre, so they
+// show on the cream cover
+const FLOWER = [".p.", "pOp", ".p."];
+
 const ANIM_SPECS = {
   alert: [{ extra: bang }, { dy: -1, extra: bang }],
   alertRun: [{ extra: bang }, { edits: stepping, extra: bang }],
@@ -349,24 +480,75 @@ const ANIM_SPECS = {
     ),
   ],
   // Two notes, one after the other, float up from the mic
-  sing: [
-    { edits: singing(), extra: [...micStand, ...note(15, 2, "w")] },
-    { edits: singing(), extra: [...micStand, ...note(15, 1, "w")] },
-    { edits: singing(), extra: [...micStand, ...note(15, 0, "w")] },
-    { edits: singing(), extra: [...micStand, ...note(15, -1, "w")] },
-    {
-      dy: -1,
-      edits: singing(shut),
-      extra: [...micStand, ...note(14, 2, "r")],
+  sing: song({}),
+  singAnger: song({
+    bounce: false,
+    face: () => fuming,
+    notes: ["r", "r"],
+    props: (i) => [...stamp(CLOUD, 0, 0), ...(STRIKES.has(i) ? bolt : [])],
+  }),
+  singDepression: song({
+    bounce: false,
+    face: () => shut,
+    notes: ["k", "k"],
+    props: (i) => [...stamp(CLOUD, i, 0), ...stamp(CLOUD, (i + 5) % 8, 0)],
+  }),
+  singHappiness: song({
+    notes: ["O", "w"],
+    props: (i) => [
+      ...rainbow(Math.min(i + 1, 3)),
+      [i % 2 ? 6 : 5, i % 2 ? 0 : 1, "b"],
+    ],
+  }),
+  singHeartbreak: song({
+    bounce: false,
+    face: (i) => (i >= 4 ? sobbing : []),
+    notes: ["w", "w"],
+    props: (i) => {
+      if (i < 3) {
+        return stamp(HEART, 0, 0);
+      }
+      if (i === 3) {
+        return [...stamp(HEART, 0, 0), ...crack];
+      }
+      return [
+        ...stamp(HEART_LEFT, 0, i >= 6 ? 2 : 1),
+        ...stamp(HEART_RIGHT, 0, 0),
+      ];
     },
-    {
-      dy: -1,
-      edits: singing(shut),
-      extra: [...micStand, ...note(14, 1, "r")],
-    },
-    { edits: singing(shut), extra: [...micStand, ...note(14, 0, "r")] },
-    { edits: singing(), extra: [...micStand, ...note(14, -1, "r")] },
-  ],
+  }),
+  singJoy: song({
+    notes: ["O", "r"],
+    props: (i) => stamp(i % 2 ? SUN_CROSS : SUN_PLUS, 0, 0),
+  }),
+  singLove: song({
+    face: (i) => (i === 2 || i === 3 ? blink : singFace(i)),
+    notes: ["r", "r"],
+    props: (i) => [
+      ...stamp(MINI_HEART, 0, floatingUp(i, 0)),
+      ...stamp(MINI_HEART, 0, floatingUp(i, 4) + 4),
+    ],
+  }),
+  singPeaceful: song({
+    bounce: false,
+    face: (i) => (i < 2 ? [] : shut),
+    notes: ["w", "d"],
+    props: (i) => [
+      ...stamp(FLOWER, 0, i * 2 - 2),
+      ...stamp(FLOWER, 0, ((i + 4) % 8) * 2 - 2),
+    ],
+  }),
+  singRage: song({
+    face: () => fuming,
+    notes: ["r", "O"],
+    props: (i) => [...flame(i, 11 - (i % 4) * 3), ...flame(i + 1, (i % 4) * 2)],
+  }),
+  singSadness: song({
+    bounce: false,
+    face: () => sobbing,
+    notes: ["w", "w"],
+    props: (i) => leftTears[i % 4] ?? [],
+  }),
   sleepy: [
     { edits: shut, extra: z([[2, 13]]) },
     { edits: shut, extra: z([[1, 14]]) },
@@ -482,12 +664,38 @@ export const ANIMS: Record<Anim, number[]> = {
   love: animIds(ANIM_SPECS.love),
   nap: animIds(ANIM_SPECS.nap),
   sing: animIds(ANIM_SPECS.sing),
+  singAnger: animIds(ANIM_SPECS.singAnger),
+  singDepression: animIds(ANIM_SPECS.singDepression),
+  singHappiness: animIds(ANIM_SPECS.singHappiness),
+  singHeartbreak: animIds(ANIM_SPECS.singHeartbreak),
+  singJoy: animIds(ANIM_SPECS.singJoy),
+  singLove: animIds(ANIM_SPECS.singLove),
+  singPeaceful: animIds(ANIM_SPECS.singPeaceful),
+  singRage: animIds(ANIM_SPECS.singRage),
+  singSadness: animIds(ANIM_SPECS.singSadness),
   sleepy: animIds(ANIM_SPECS.sleepy),
   type: animIds(ANIM_SPECS.type),
   wag: animIds(ANIM_SPECS.wag),
   walk: animIds(ANIM_SPECS.walk),
   wave: animIds(ANIM_SPECS.wave),
 };
+
+/**
+ * Tokkae's songs for the music window while Spotify is quiet, in the order
+ * previous and next step through them, each with how it sings.
+ */
+export const SONGS = [
+  { anim: "sing", mood: "for you" },
+  { anim: "singJoy", mood: "with joy" },
+  { anim: "singHappiness", mood: "happily" },
+  { anim: "singLove", mood: "with love" },
+  { anim: "singHeartbreak", mood: "heartbroken" },
+  { anim: "singAnger", mood: "angrily" },
+  { anim: "singRage", mood: "in a rage" },
+  { anim: "singDepression", mood: "under dark clouds" },
+  { anim: "singSadness", mood: "through tears" },
+  { anim: "singPeaceful", mood: "peacefully" },
+] as const satisfies readonly { anim: Anim; mood: string }[];
 
 const isPaletteKey = (ch: string): ch is keyof typeof PALETTE =>
   Object.hasOwn(PALETTE, ch);
