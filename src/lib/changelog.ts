@@ -10,6 +10,16 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "no music? i know ten songs now! press next or previous to pick one",
+      "i sing with joy, happily, with love, heartbroken, angrily, in a rage…",
+      "…under dark clouds, through tears, or peacefully, with flowers falling",
+      "my cheeks got a warmer pink, and the page its new matcha colours",
+    ],
+    date: "2026-10-16",
+    title: "ten songs for you",
+  },
+  {
+    changes: [
       "theme variations are gone… goodbye little animals, you'll be missed",
       "but i have a new playmate! flip the switch and a cube comes out to play",
       "we still trade hearts, picnic, play tag and nap together",
