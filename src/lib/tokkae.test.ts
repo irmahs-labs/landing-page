@@ -8,6 +8,7 @@ import {
   GRID_H,
   GRID_W,
   HEART,
+  SONGS,
   runsOf,
 } from "./tokkae";
 
@@ -54,6 +55,56 @@ describe("Tokkae's frames", () => {
   });
 });
 
+/** Whether a song draws this colour in the three columns left of Tokkae */
+const hasProp = (anim: (typeof SONGS)[number]["anim"], key: string) =>
+  ANIMS[anim].some((id) =>
+    (FRAMES[id] ?? []).some((row) => row.slice(0, 3).includes(key))
+  );
+
+describe("Tokkae's songs", () => {
+  it("come in Irma's order, plain sing first", () => {
+    expect(SONGS.map((song) => song.anim)).toEqual([
+      "sing",
+      "singJoy",
+      "singHappiness",
+      "singLove",
+      "singHeartbreak",
+      "singAnger",
+      "singRage",
+      "singDepression",
+      "singSadness",
+      "singPeaceful",
+    ]);
+  });
+
+  it("are each eight frames at the mic stand, mouthless, all different", () => {
+    const looks = new Set<string>();
+    for (const { anim } of SONGS) {
+      const ids = ANIMS[anim];
+      expect(ids).toHaveLength(8);
+      for (const id of ids) {
+        const rows = FRAMES[id] ?? [];
+        // The stand's pole runs down column 14, whatever the song
+        expect(rows[12]?.[14]).toBe("k");
+        expect(rows[7]).not.toMatch(/g[kt]g/u);
+      }
+      looks.add(ids.map((id) => FRAMES[id]?.join("/")).join("|"));
+    }
+    expect(looks.size).toBe(SONGS.length);
+  });
+
+  it("show each mood with its own prop", () => {
+    // Props sit in the three columns left of Tokkae
+    expect(hasProp("singJoy", "O")).toBe(true);
+    expect(hasProp("singHappiness", "w")).toBe(true);
+    expect(hasProp("singLove", "r")).toBe(true);
+    expect(hasProp("singAnger", "O")).toBe(true);
+    expect(hasProp("singSadness", "w")).toBe(true);
+    expect(hasProp("singPeaceful", "p")).toBe(true);
+    expect(hasProp("sing", "r")).toBe(false);
+  });
+});
+
 describe("props", () => {
   it("draws the heart, the bowl and the cube from known colours", () => {
     for (const row of [...HEART, ...BOWL, ...CUBE]) {
@@ -74,7 +125,7 @@ describe("props", () => {
 describe("runsOf", () => {
   it("merges each row's same-coloured pixels into one rect", () => {
     expect(runsOf(["rr.w", "..ww"])).toEqual([
-      { color: "#e0574b", w: 2, x: 0, y: 0 },
+      { color: "#f0675c", w: 2, x: 0, y: 0 },
       { color: "#4a7fc0", w: 1, x: 3, y: 0 },
       { color: "#4a7fc0", w: 2, x: 2, y: 1 },
     ]);

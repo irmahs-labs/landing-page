@@ -1,7 +1,11 @@
 "use client";
 
+import { useState } from "react";
+
 import { useNowPlaying } from "@/hooks/use-now-playing";
 import { fmtSeconds } from "@/lib/format";
+import type { Anim } from "@/lib/tokkae";
+import { SONGS } from "@/lib/tokkae";
 
 import { TokkaeEmote } from "./tokkae-emote";
 import { Window } from "./window";
@@ -20,7 +24,8 @@ const ICONS = {
   volume: "M4 9 H8 L13 5 V19 L8 15 H4 Z M16 9 C17.5 10.5 17.5 13.5 16 15",
 };
 
-// The controls are for show for now: they press, but don't change playback
+// The controls are for show while music plays: they press, but don't change
+// playback. While Spotify is quiet, previous and next pick Tokkae's song.
 const SOON = "coming soon";
 
 const Icon = ({ d, filled }: { d: string; filled?: boolean }) => (
@@ -33,34 +38,64 @@ const Icon = ({ d, filled }: { d: string; filled?: boolean }) => (
   </svg>
 );
 
-/** A control button that presses but does nothing yet */
+/** A control button: for show unless it is given something to do */
 const Control = ({
   className = "btn ctl",
   d,
   filled,
   label,
+  onClick,
 }: {
   className?: string;
   d: string;
   filled?: boolean;
   label: string;
+  onClick?: () => void;
 }) => (
-  <button aria-label={label} className={className} title={SOON} type="button">
+  <button
+    aria-label={label}
+    className={className}
+    onClick={onClick}
+    title={onClick ? label : SOON}
+    type="button"
+  >
     <Icon d={d} filled={filled} />
   </button>
 );
 
-const Controls = ({ playing }: { playing: boolean }) => (
+/** While Spotify is quiet, previous and next step through Tokkae's songs */
+interface SongSteps {
+  next: () => void;
+  prev: () => void;
+}
+
+const Controls = ({
+  playing,
+  songs,
+}: {
+  playing: boolean;
+  songs: SongSteps | null;
+}) => (
   <div className="controls">
     <Control d={ICONS.shuffle} label="Shuffle" />
-    <Control d={ICONS.prev} filled label="Previous track" />
+    <Control
+      d={ICONS.prev}
+      filled
+      label={songs ? "Previous song" : "Previous track"}
+      onClick={songs?.prev}
+    />
     <Control
       className="btn ctl ctl-main"
       d={playing ? ICONS.pause : ICONS.play}
       filled={!playing}
       label={playing ? "Pause" : "Play"}
     />
-    <Control d={ICONS.next} filled label="Next track" />
+    <Control
+      d={ICONS.next}
+      filled
+      label={songs ? "Next song" : "Next track"}
+      onClick={songs?.next}
+    />
     <Control d={ICONS.repeat} label="Repeat" />
   </div>
 );
@@ -79,12 +114,14 @@ const Record = () => (
  */
 const Cover = ({
   image,
+  song,
   url,
 }: {
   image: string | null;
+  song: Anim;
   url: string | null;
 }) => {
-  let art = url ? <Record /> : <TokkaeEmote />;
+  let art = url ? <Record /> : <TokkaeEmote anim={song} />;
   if (image) {
     // Spotify's image host is remote and the cover is small, so a plain img
     // oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS
@@ -119,6 +156,20 @@ const Cover = ({
 };
 
 /**
+ * Which of Tokkae's songs plays while Spotify is quiet, and the steps
+ * previous and next take through them (none while music plays)
+ */
+const useTokkaeSong = (quiet: boolean) => {
+  const [index, setIndex] = useState(0);
+  const step = (by: number) =>
+    setIndex((i) => (i + by + SONGS.length) % SONGS.length);
+  const steps: SongSteps | null = quiet
+    ? { next: () => step(1), prev: () => step(-1) }
+    : null;
+  return { song: SONGS[index] ?? SONGS[0], steps };
+};
+
+/**
  * What's playing on Spotify right now; `now` drives the progress between
  * polls. The cover and the title open the song on Spotify in a new tab.
  */
@@ -127,6 +178,7 @@ export const Player = ({ now }: { now: Date | null }) => {
   const track = data && "title" in data ? data : null;
   const playing = Boolean(track?.playing);
   const url = track ? (track.url ?? "https://open.spotify.com") : null;
+  const { song, steps: songs } = useTokkaeSong(!track);
 
   let pos = 0;
   let dur = 0;
@@ -148,7 +200,7 @@ export const Player = ({ now }: { now: Date | null }) => {
       title="now_playing.mp3"
     >
       <div className="player-body">
-        <Cover image={track?.image ?? null} url={url} />
+        <Cover image={track?.image ?? null} song={song.anim} url={url} />
 
         <div className="track-row">
           {track && url ? (
@@ -165,7 +217,9 @@ export const Player = ({ now }: { now: Date | null }) => {
           ) : (
             <div className="track">
               <span className="track-title">Nothing playing</span>
-              <span className="track-artist">Spotify is quiet</span>
+              <span aria-live="polite" className="track-artist">
+                Tokkae sings {song.mood}
+              </span>
             </div>
           )}
           <Control className="btn ctl like" d={ICONS.heart} label="Like" />
@@ -188,7 +242,7 @@ export const Player = ({ now }: { now: Date | null }) => {
           </div>
         </div>
 
-        <Controls playing={playing} />
+        <Controls playing={playing} songs={songs} />
 
         <label className="volume" title={SOON}>
           <Icon d={ICONS.volume} />

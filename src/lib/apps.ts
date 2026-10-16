@@ -40,7 +40,7 @@ export const APPS: readonly AppLink[] = [
     desc: "Seasons, matches and standings for a spike tournament",
     href: "https://alsace-arena-spike-tournament.vercel.app/",
     icon: {
-      bg: "#e0574b",
+      bg: "#f0675c",
       fg: "#fff3cf",
       path: "M8 4 H16 V10 A4 4 0 0 1 8 10 Z M8 6 H5 A3 3 0 0 0 8 11 M16 6 H19 A3 3 0 0 1 16 11 M12 14 V18 M8 20 H16",
     },
