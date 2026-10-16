@@ -216,10 +216,10 @@ export const Player = ({ now }: { now: Date | null }) => {
             </a>
           ) : (
             <div className="track">
-              <span className="track-title">Nothing playing</span>
-              <span aria-live="polite" className="track-artist">
-                Tokkae sings {song.mood}
+              <span aria-live="polite" className="track-title">
+                Sings {song.mood}
               </span>
+              <span className="track-artist">Tokkae</span>
             </div>
           )}
           <Control className="btn ctl like" d={ICONS.heart} label="Like" />

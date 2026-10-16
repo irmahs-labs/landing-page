@@ -5,7 +5,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 ## 16 October 2026
 
 - **#43 Tokkae's ten songs, and the updated Cute Matcha and Tokkae colours:**
-  - While Spotify is quiet, previous and next in the player step through Tokkae's songs, in this order: plain singing, then with joy (a little sun), happiness (a rainbow), love (hearts), heartbreak (a heart breaking), anger (a thunderstorm with lightning), rage (little flames), depression (dark clouds), sadness (tears) and peace (flowers drifting down). The line under "Nothing playing" says how it sings. Each song is sing's eight frames with its own props, drawn in Tokkae's colours.
+  - While Spotify is quiet, previous and next in the player step through Tokkae's songs, in this order: plain singing, then with joy (a little sun), happiness (a rainbow), love (hearts), heartbreak (a heart breaking), anger (a thunderstorm with lightning), rage (little flames), depression (dark clouds), sadness (tears) and peace (flowers drifting down). Each song shows as a track: its title says how Tokkae sings ("Sings with joy"), and the artist is Tokkae. Each song is sing's eight frames with its own props, drawn in Tokkae's colours.
   - Tokkae takes its new colours from the Tokkae design system: terracotta cheeks, danger red for hearts and marks, and the bug and mic in its eye colour.
   - The page's colours are Cute Matcha's role tokens, with the page's own names as aliases. Window titles are set in `on-strong`, hovered tiles and links fill with `raised-hover`, the window buttons are moss, gold and danger, and reading text (app descriptions, profile lines, the patch notes, social handles) is set in Nunito.
 

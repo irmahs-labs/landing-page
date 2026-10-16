@@ -13,7 +13,8 @@ describe("Player", () => {
   it("has Tokkae sing in the cover while nothing plays", async () => {
     nowPlaying({ playing: false });
     const { container } = render(<Player now={null} />);
-    expect(await screen.findByText("Nothing playing")).toBeDefined();
+    expect(await screen.findByText("Sings for you")).toBeDefined();
+    expect(screen.getByText("Tokkae")).toBeDefined();
     expect(container.querySelector(".cover .emote")).not.toBeNull();
     expect(container.querySelector(".player-window.is-idle")).not.toBeNull();
   });
@@ -64,30 +65,30 @@ describe("Player", () => {
   it("steps through Tokkae's songs with previous and next while it's quiet", async () => {
     nowPlaying({ playing: false });
     render(<Player now={null} />);
-    expect(await screen.findByText("Tokkae sings for you")).toBeDefined();
+    expect(await screen.findByText("Sings for you")).toBeDefined();
 
     const next = screen.getByRole("button", { name: "Next song" });
     const moods = [];
     for (let i = 0; i < 9; i += 1) {
       fireEvent.click(next);
-      moods.push(screen.getByText(/^Tokkae sings /u).textContent);
+      moods.push(screen.getByText(/^Sings /u).textContent);
     }
     expect(moods).toEqual([
-      "Tokkae sings with joy",
-      "Tokkae sings happily",
-      "Tokkae sings with love",
-      "Tokkae sings heartbroken",
-      "Tokkae sings angrily",
-      "Tokkae sings in a rage",
-      "Tokkae sings under dark clouds",
-      "Tokkae sings through tears",
-      "Tokkae sings peacefully",
+      "Sings with joy",
+      "Sings happily",
+      "Sings with love",
+      "Sings heartbroken",
+      "Sings angrily",
+      "Sings in a rage",
+      "Sings under dark clouds",
+      "Sings through tears",
+      "Sings peacefully",
     ]);
 
     // Round the end, and back again
     fireEvent.click(next);
-    expect(screen.getByText("Tokkae sings for you")).toBeDefined();
+    expect(screen.getByText("Sings for you")).toBeDefined();
     fireEvent.click(screen.getByRole("button", { name: "Previous song" }));
-    expect(screen.getByText("Tokkae sings peacefully")).toBeDefined();
+    expect(screen.getByText("Sings peacefully")).toBeDefined();
   });
 });
