@@ -1,22 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useNow } from "@/hooks/use-now";
-import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useStoredChoice } from "@/hooks/use-stored-choice";
 import { CITIES, CITY_IDS, DEFAULT_CITY } from "@/lib/cities";
 import type { CityId } from "@/lib/cities";
 import { skyPhase } from "@/lib/sky";
-import {
-  BASE_THEME,
-  DEFAULT_THEME,
-  THEME_ORDER,
-  THEMES,
-  THEMES_SWITCH,
-  themeVars,
-} from "@/lib/themes";
-import type { ThemeId } from "@/lib/themes";
 import { fetchWeather } from "@/lib/weather";
 import type { Weather } from "@/lib/weather";
 
@@ -24,54 +14,36 @@ import { AccountButton } from "./account-button";
 import { AppsWindow } from "./apps-window";
 import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
-import { MilkLayer } from "./milk-layer";
 import { Player } from "./player";
+import { PlaymateSwitch } from "./playmate-switch";
 import { ProfileWindow } from "./profile-window";
 import { Scene } from "./scene";
 import { SocialsWindow } from "./socials-window";
-import { SurpriseButton } from "./surprise-button";
-import { ThemePicker } from "./theme-picker";
 import { Tokkae } from "./tokkae";
-import type { ThemeNudge } from "./tokkae";
+import type { PlaymateNudge } from "./tokkae";
 
 const WEATHER_TTL = 15 * 60 * 1000;
-const BOBA_MS = 20_000;
+// Whether the visitor has brought Tokkae's playmate out; it starts at home
+const PLAYMATE_SWITCH = ["off", "on"] as const;
 
 const setRootVar = (k: string, v: string) =>
   document.documentElement.style.setProperty(k, v);
 
 export const Landing = () => {
-  const reduceMotion = useReducedMotion();
   const now = useNow();
-  const [savedTheme, saveTheme] = useStoredChoice(
-    "theme",
-    THEME_ORDER,
-    DEFAULT_THEME
-  );
-  // Colour themes are opt-in: until turned on, the page is Cute Matcha
-  const [themesSwitch, saveThemesSwitch] = useStoredChoice(
-    "themes",
-    THEMES_SWITCH,
+  const [playmate, savePlaymate] = useStoredChoice(
+    "playmate",
+    PLAYMATE_SWITCH,
     "off"
   );
-  const themesOn = themesSwitch === "on";
+  const playmateOn = playmate === "on";
   const [cityId, saveCity] = useStoredChoice("city", CITY_IDS, DEFAULT_CITY);
-  // Boba is never saved: it's a temporary override from "surprise me"
-  const [boba, setBoba] = useState(false);
-  const [animatePattern, setAnimatePattern] = useState(false);
   const [weather, setWeather] = useState<Partial<Record<CityId, Weather>>>({});
   // Mirrors `weather` so the fetch effect can check freshness without depending on it
   const weatherCache = useRef(weather);
-  const [milk, setMilk] = useState(false);
-  // The visitor's own theme switches, for Tokkae to greet or mourn the animal
-  const [nudge, setNudge] = useState<ThemeNudge | null>(null);
-  const milkTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // The visitor's own switches, for Tokkae to greet or miss its playmate
+  const [nudge, setNudge] = useState<PlaymateNudge | null>(null);
 
-  let themeId: ThemeId = themesOn ? savedTheme : BASE_THEME;
-  if (boba) {
-    themeId = "boba";
-  }
-  const th = THEMES[themeId];
   const city = CITIES[cityId];
   const phase = now ? skyPhase(city, now) : null;
   const wx = weather[cityId];
@@ -79,21 +51,12 @@ export const Landing = () => {
   const isDay = phase?.isDay ?? true;
 
   useEffect(() => {
-    for (const [k, v] of Object.entries(themeVars(th))) {
-      setRootVar(k, v);
-    }
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", themeVars(th)["--ground"] ?? "");
-  }, [th]);
-
-  useEffect(() => {
-    let fill = isDay ? th.c.panel : "#8b9590";
+    let fill = isDay ? "var(--panel)" : "#8b9590";
     if (rainy) {
       fill = isDay ? "#aeb8b4" : "#5d6863";
     }
     setRootVar("--cloud-fill", fill);
-  }, [isDay, rainy, th]);
+  }, [isDay, rainy]);
 
   const sunColor = (phase?.twilight ?? 0) > 0.3 ? "#f2a65a" : "#f2d27a";
   useEffect(() => setRootVar("--sun", sunColor), [sunColor]);
@@ -119,77 +82,23 @@ export const Landing = () => {
     };
   }, [cityId]);
 
-  const cancelMilk = useCallback(() => {
-    for (const t of milkTimers.current) {
-      clearTimeout(t);
-    }
-    milkTimers.current = [];
-    setMilk(false);
-  }, []);
-
-  useEffect(() => cancelMilk, [cancelMilk]);
-
-  const pickTheme = (id: ThemeId) => {
-    if (id === themeId) {
-      return;
-    }
-    cancelMilk();
-    setBoba(false);
-    setAnimatePattern(true);
-    saveTheme(id);
-  };
-
-  const toggleThemes = () => {
-    cancelMilk();
-    setBoba(false);
-    setAnimatePattern(true);
-    saveThemesSwitch(themesOn ? "off" : "on");
-    setNudge({ kind: themesOn ? "cry" : "greet" });
-  };
-
-  // "surprise me": milk tea pour, 20 s of boba, then back
-  const pourBoba = () => {
-    cancelMilk();
-    if (reduceMotion) {
-      setAnimatePattern(true);
-      setBoba(true);
-      milkTimers.current = [setTimeout(() => setBoba(false), BOBA_MS)];
-      return;
-    }
-    setAnimatePattern(false);
-    milkTimers.current = [
-      setTimeout(() => setMilk(true), 30),
-      setTimeout(() => setBoba(true), 1550),
-      setTimeout(() => setMilk(false), 3450),
-      setTimeout(() => setMilk(true), BOBA_MS),
-      setTimeout(() => setBoba(false), BOBA_MS + 1550),
-      setTimeout(() => setMilk(false), BOBA_MS + 3450),
-    ];
+  const togglePlaymate = () => {
+    savePlaymate(playmateOn ? "off" : "on");
+    setNudge({ kind: playmateOn ? "cry" : "greet" });
   };
 
   return (
     <>
-      <Scene
-        animatePattern={animatePattern}
-        phase={phase}
-        rainy={rainy}
-        theme={th}
-      />
+      <Scene phase={phase} rainy={rainy} />
 
       <div className="page">
         <header className="top">
-          <ThemePicker
-            current={th}
-            enabled={themesOn}
-            onPick={pickTheme}
-            onToggle={toggleThemes}
-          />
+          <PlaymateSwitch on={playmateOn} onToggle={togglePlaymate} />
           <div className="center-col">
             <CityToggle current={cityId} onPick={saveCity} />
           </div>
-          <div className="surprise-col">
+          <div className="account-col">
             <AccountButton />
-            <SurpriseButton active={boba} onClick={pourBoba} />
           </div>
         </header>
 
@@ -204,7 +113,7 @@ export const Landing = () => {
               />
               <ProfileWindow />
             </div>
-            <AppsWindow theme={th} />
+            <AppsWindow />
           </div>
           <div className="desk-side">
             <Player now={now} />
@@ -213,9 +122,7 @@ export const Landing = () => {
         </main>
       </div>
 
-      <Tokkae nudge={nudge} theme={th} />
-
-      {milk && <MilkLayer />}
+      <Tokkae nudge={nudge} playmate={playmateOn} />
     </>
   );
 };

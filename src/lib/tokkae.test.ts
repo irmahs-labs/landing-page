@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { ANIMS, BOWL, FRAMES, GRID_H, GRID_W, HEART, runsOf } from "./tokkae";
+import {
+  ANIMS,
+  BOWL,
+  CUBE,
+  FRAMES,
+  GRID_H,
+  GRID_W,
+  HEART,
+  runsOf,
+} from "./tokkae";
 
 // Every colour key the palette knows, plus '.' for empty
 const KEYS = /^[.OWbdgkprtwxz]+$/u;
@@ -46,10 +55,19 @@ describe("Tokkae's frames", () => {
 });
 
 describe("props", () => {
-  it("draws the heart and the bowl from known colours", () => {
-    for (const row of [...HEART, ...BOWL]) {
+  it("draws the heart, the bowl and the cube from known colours", () => {
+    for (const row of [...HEART, ...BOWL, ...CUBE]) {
       expect(row).toMatch(KEYS);
     }
+  });
+
+  it("draws the playmate as a square 14 × 14 cube with a face", () => {
+    expect(CUBE).toHaveLength(14);
+    for (const row of CUBE) {
+      expect(row).toHaveLength(14);
+    }
+    expect(CUBE.join("")).toContain("k");
+    expect(CUBE.join("").match(/p/gu)).toHaveLength(2);
   });
 });
 

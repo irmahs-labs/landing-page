@@ -2,7 +2,6 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { APPS } from "@/lib/apps";
-import { BASE_THEME, THEMES } from "@/lib/themes";
 
 import { AppsWindow } from "./apps-window";
 
@@ -32,14 +31,14 @@ const label = () => screen.getByText(/\d+ \/ \d+/u).textContent;
 
 describe("AppsWindow", () => {
   it("opens on one app, with a screenshot", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     expect(tiles()).toHaveLength(1);
     expect(label()).toBe(`1 / ${APPS.length}`);
     expect(tiles()[0]?.querySelector("img")).not.toBeNull();
   });
 
   it("flips through the apps with the arrows, wrapping round", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     fireEvent.click(screen.getByRole("button", { name: "Next apps" }));
     expect(tiles()[0]?.getAttribute("href")).toBe(APPS[1]?.href);
     fireEvent.click(screen.getByRole("button", { name: "Previous apps" }));
@@ -48,7 +47,7 @@ describe("AppsWindow", () => {
   });
 
   it("shows 2, 4 or 6 apps as the window grows", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     resize(745, 375);
     expect(tiles()).toHaveLength(1);
     resize(800, 375);
@@ -60,13 +59,13 @@ describe("AppsWindow", () => {
   });
 
   it("stacks two apps in a tall, narrow window", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     resize(400, 500);
     expect(tiles()).toHaveLength(2);
   });
 
   it("turns off the arrows when every app fits", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     resize(1200, 500);
     expect(label()).toBe("1 / 1");
     expect(screen.getByRole("button", { name: "Next apps" })).toHaveProperty(
@@ -76,7 +75,7 @@ describe("AppsWindow", () => {
   });
 
   it("keeps the first app in view when the page size changes", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     for (let i = 0; i < 3; i += 1) {
       fireEvent.click(screen.getByRole("button", { name: "Next apps" }));
     }
@@ -85,7 +84,7 @@ describe("AppsWindow", () => {
   });
 
   it("is titled like a file, as every window is", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     const region = screen.getByRole("region", { name: "My apps" });
     expect(region.querySelector(".titlebar-text")?.textContent).toBe(
       "my_apps.app"
@@ -93,7 +92,7 @@ describe("AppsWindow", () => {
   });
 
   it("opens every app in a new tab", () => {
-    render(<AppsWindow theme={THEMES[BASE_THEME]} />);
+    render(<AppsWindow />);
     resize(1200, 500);
     for (const tile of tiles()) {
       expect(tile.getAttribute("target")).toBe("_blank");

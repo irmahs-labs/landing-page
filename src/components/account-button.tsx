@@ -23,7 +23,7 @@ const GoogleMark = () => (
 );
 
 /**
- * Top right, above "surprise me": "sign in" with Google, or once signed in,
+ * Top right: "sign in" with Google, or once signed in,
  * your picture and first name. Either way it opens the IrmaHS Labs account
  * page, which signs in, shows who you are, or signs out, then comes back here.
  */
