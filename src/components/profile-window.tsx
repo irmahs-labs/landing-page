@@ -11,7 +11,7 @@ const PinIcon = () => (
   <svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16">
     <path
       d="M12 21.5 C12 21.5 4.5 14.5 4.5 9.5 A7.5 7.5 0 0 1 19.5 9.5 C19.5 14.5 12 21.5 12 21.5 Z"
-      fill="#e0574b"
+      fill="#f0675c"
       stroke="#2f3b34"
       strokeLinejoin="round"
       strokeWidth="1.6"

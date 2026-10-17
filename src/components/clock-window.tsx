@@ -33,7 +33,7 @@ const WeatherIcon = ({ isDay, rainy }: { isDay: boolean; rainy: boolean }) => {
         <path
           d="M12.5 9 L10.5 12 H13 L11.5 14.5"
           fill="none"
-          stroke="#e0574b"
+          stroke="#f0675c"
           strokeWidth="1.2"
         />
       </svg>

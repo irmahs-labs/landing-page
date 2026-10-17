@@ -57,6 +57,7 @@ describe("APPS", () => {
     expect(APPS.map((app) => app.name)).toEqual([
       "Album Cover Maker",
       "What's in my pantry?",
+      "Mini Games",
       "Alsace Arena",
       "Portfolio",
     ]);

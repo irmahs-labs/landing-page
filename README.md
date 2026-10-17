@@ -7,8 +7,8 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 - **Windows you can move.** Every window has the same title bar (its name on the left, the + − × buttons on the right). On desktop and tablet you can drag it by the title bar, and the window you press comes to the front. Only the apps window resizes. On phones the windows stack instead.
 - **Weather and clock** for Paris or Phnom Penh: local time and date, sunrise and sunset, and the current weather. The sky follows the time of day there, with the sun or moon rising and setting, stars, rain and night tint.
 - **Profile:** name, role, studies, location and languages.
-- **Apps:** the Album Cover Maker, the pantry spinner, Alsace Arena and the portfolio, each with a screenshot and opening in a new tab, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
-- **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sings into a mic stand in the cover, on loop until music plays. Clicking the song opens it on Spotify. The control buttons are for show for now.
+- **Apps:** the Album Cover Maker, the pantry spinner, Mini Games, Alsace Arena and the portfolio, each with a screenshot and opening in a new tab, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
+- **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sings into a mic stand in the cover, on loop until music plays, and previous and next pick one of its ten songs, each shown as a track by Tokkae: for you, with joy (a little sun), happily (a rainbow), with love (hearts), heartbroken (a breaking heart), angrily (a thunderstorm), in a rage (little flames), under dark clouds, through tears, and peacefully (flowers drifting down). Clicking the song opens it on Spotify. While music plays, the control buttons are for show.
 - **Socials,** under the player: GitHub and LinkedIn, each opening in a new tab, and Irma’s CV to download (`public/cv/`).
 - **Playmate:** a switch, top left, that brings Tokkae a playmate, a little pixel cube (see below). Off by default, and the page remembers it.
 - **Sign in** with Google through the IrmaHS Labs account service ([irmahs-labs/auth](https://github.com/irmahs-labs/auth)). The session is shared by every `*.irmahs.dev` site.
@@ -42,7 +42,7 @@ There are two:
 ## Stack
 
 - [Next.js 16](https://nextjs.org) (App Router) with React 19 and strict TypeScript. This version of Next.js is newer than most AI assistants know: read the guides in `node_modules/next/dist/docs/` before changing framework code.
-- Plain CSS in [`src/app/globals.css`](src/app/globals.css), with Cute Matcha's colours as CSS custom properties.
+- Plain CSS in [`src/app/globals.css`](src/app/globals.css), with Cute Matcha's role tokens (Light Matcha) as CSS custom properties, and the page's own names for them as the design system lists.
 - [Ultracite](https://www.ultracite.ai) (oxlint, oxfmt and the anti-slop rules) for linting and formatting.
 - Docker for deployment, behind Caddy from [irmahs-labs/proxy](https://github.com/irmahs-labs/proxy).
 
@@ -80,7 +80,7 @@ Then open http://localhost:3000.
 
 | Variable | What it's for |
 | --- | --- |
-| `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN` | Read what's playing on Spotify. Without them the player shows "Nothing playing". |
+| `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN` | Read what's playing on Spotify. Without them the player shows Tokkae singing. |
 | `NEXT_PUBLIC_AUTH_URL` | The account service for sign in. Defaults to `https://auth.irmahs.dev`. |
 
 On `localhost` the sign-in check is blocked by CORS, since the account service only allows `*.irmahs.dev`. The button simply doesn't appear, which is expected.
@@ -124,7 +124,7 @@ Every push to `main` deploys to the server through GitHub Actions ([`deploy.yml`
 
 ## Credits
 
-- Fonts are Fredoka and Kantumruy Pro, from Google Fonts.
+- Fonts are Fredoka, Nunito and Kantumruy Pro, from Google Fonts.
 
 ## Licence
 
