@@ -2,6 +2,12 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 17 October 2026
+
+- **#44 Mini Games in the apps, and #43 onto `main`:**
+  - Mini Games (minigames.irmahs.dev) joins the apps after the pantry spinner, with a screenshot of the Wheel of Fortune and its die icon on lime, making five.
+  - #43 was merged into `feat/playmate` seconds after #42 had merged that branch into `main`, so its songs and colours never reached `main`. Its commits come across here as they were, with the 44px tap area for the player's round buttons (previous and next now do something, so phones need a real target).
+
 ## 16 October 2026
 
 - **#43 Tokkae's ten songs, and the updated Cute Matcha and Tokkae colours:**
