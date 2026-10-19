@@ -1,5 +1,5 @@
 interface PlaymateSwitchProps {
-  /** Whether Tokkae's playmate, the cube, is out */
+  /** Whether Tokkae's playmate, Coq the rooster, is out */
   on: boolean;
   onToggle: () => void;
 }

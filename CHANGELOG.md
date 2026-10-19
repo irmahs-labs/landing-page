@@ -2,6 +2,12 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 19 October 2026
+
+- **#45 Coq instead of the cube, and Mini Games first:**
+  - Tokkae's playmate is now Coq, its friend from the Tokkae design system: a pixel French rooster in white, blue and red. Its frames are copied from the system's sheets, and it struts while it moves, pecks at seeds at a picnic (in place of the cube's bowl), crows when Tokkae says hello, hops while they trade hearts, and otherwise stands about blinking. As the system asks, it stands on Tokkae's right, two pixels off (on its left only at the screen's edge), and faces Tokkae whenever they play, even circling it during a nap; only when it runs from Tokkae in tag does it face the way it runs.
+  - The apps are in a new order: Mini Games, Album Cover Maker, the pantry spinner, then Alsace Arena and the portfolio.
+
 ## 17 October 2026
 
 - **#44 Mini Games in the apps, and #43 onto `main`:**
