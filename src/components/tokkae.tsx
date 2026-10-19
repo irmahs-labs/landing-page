@@ -5,7 +5,9 @@ import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { CHANGELOG } from "@/lib/changelog";
-import { BOWL, CUBE, FRAMES, HEART, runsOf } from "@/lib/tokkae";
+import { COQ_FRAMES, coqAnim, coqFrame } from "@/lib/coq";
+import type { CoqAnim } from "@/lib/coq";
+import { FRAMES, HEART, runsOf } from "@/lib/tokkae";
 import { Brain } from "@/lib/tokkae-brain";
 import type { Action, Nudge, Pointer, World } from "@/lib/tokkae-brain";
 import { Buddy } from "@/lib/tokkae-buddy";
@@ -53,11 +55,12 @@ export interface PlaymateNudge {
   kind: Nudge;
 }
 
-// How fast the cube gets about, in px/s
+// How fast Coq gets about, in px/s
 const PLAYMATE_SPEED = 108;
 
-/** The screen, and the buddy's size as its CSS box has it, and its pace */
+/** The screen, and Coq's box as the CSS sizes it, and its pace */
 const roomFor = (box: HTMLElement): Room => ({
+  height: box.offsetHeight,
   size: box.offsetWidth,
   speed: PLAYMATE_SPEED,
   vh: window.innerHeight,
@@ -86,7 +89,7 @@ const syncBuddy = (
  * change rarely, so they're only written when they do.
  */
 const placeBuddy = (el: HTMLElement, pose: BuddyPose) => {
-  el.style.transform = `translate(${pose.x.toFixed(1)}px, ${(pose.y + pose.dip).toFixed(1)}px)`;
+  el.style.transform = `translate(${pose.x.toFixed(1)}px, ${pose.y.toFixed(1)}px)`;
   const face = pose.face > 0 ? "right" : "left";
   if (el.dataset.face !== face) {
     el.dataset.face = face;
@@ -97,6 +100,13 @@ const placeBuddy = (el: HTMLElement, pose: BuddyPose) => {
     el.dataset.behind = behind;
   }
 };
+
+/** Coq's animation on show, when it started, and the frame showing */
+interface CoqShowing {
+  anim: CoqAnim;
+  shown: number;
+  since: number;
+}
 
 /** A pixel heart floating up from the buddy's head, gone once it fades */
 const releaseHeart = (
@@ -146,10 +156,10 @@ const PatchNotes = ({ onClose }: { onClose: () => void }) => {
  * and announces the latest changes, then wanders: eating bugs, napping,
  * waving, typing and jumping onto windows. Click it, or pick it up and drop
  * it, and it gets angry and chases the cursor.
- * With the playmate switch on, a cube comes out to play with it. Turning the
+ * With the playmate switch on, Coq the rooster comes out to play with it. Turning the
  * switch on sends Tokkae running to say hello; turning it off makes it cry.
  * With reduced motion it stands still in the corner and just announces, and
- * the cube stays home.
+ * Coq stays home.
  */
 export const Tokkae = ({
   nudge,
@@ -162,7 +172,6 @@ export const Tokkae = ({
   const layer = useRef<HTMLDivElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const buddyEl = useRef<HTMLDivElement>(null);
-  const bowlEl = useRef<HTMLSpanElement>(null);
   const heartTpl = useRef<HTMLSpanElement>(null);
   const brainRef = useRef<Brain | null>(null);
   const buddyRef = useRef<Buddy | null>(null);
@@ -218,7 +227,33 @@ export const Tokkae = ({
     let prev = performance.now();
     let frame = 0;
 
-    const moveBuddy = (dt: number, world: World, x: number, y: number) => {
+    // Coq's animation, when it started, and the frame on show
+    let coq: CoqShowing = {
+      anim: "idle",
+      shown: 0,
+      since: 0,
+    };
+    const showCoq = (pose: BuddyPose, now: number) => {
+      const anim = coqAnim({ action: brain.action, ...pose });
+      if (anim !== coq.anim) {
+        coq = { ...coq, anim, since: now };
+      }
+      const next = coqFrame(anim, now - coq.since);
+      if (next !== coq.shown) {
+        const sprites = buddyEl.current?.querySelectorAll(".buddy-coq > svg");
+        sprites?.[coq.shown]?.classList.add("is-off");
+        sprites?.[next]?.classList.remove("is-off");
+        coq = { ...coq, shown: next };
+      }
+    };
+
+    const moveBuddy = (
+      dt: number,
+      world: World,
+      x: number,
+      y: number,
+      now: number
+    ) => {
       const buddy = buddyRef.current;
       const box = buddyEl.current;
       if (!(buddy && box)) {
@@ -234,7 +269,7 @@ export const Tokkae = ({
         y,
       });
       placeBuddy(box, pose);
-      bowlEl.current?.classList.toggle("is-off", !pose.bowl);
+      showCoq(pose, now);
       if (pose.heart && heartTpl.current && layer.current) {
         const jitter = (Math.random() - 0.5) * room.size * 0.3;
         const hx = pose.x + room.size / 2 + jitter;
@@ -255,7 +290,7 @@ export const Tokkae = ({
         notesOpenRef.current,
         buddyRef.current?.spot() ?? null
       );
-      moveBuddy(dt, world, pose.x, pose.y);
+      moveBuddy(dt, world, pose.x, pose.y, now);
       if (pose.closeNotes) {
         notesOpenRef.current = false;
         setNotesOpen(false);
@@ -346,13 +381,12 @@ export const Tokkae = ({
       {showBuddy && (
         <div aria-hidden="true" className="buddy" ref={buddyEl}>
           <div className="buddy-body">
-            <span className="buddy-cube hop">
-              <Sprite rows={CUBE} />
+            <span className="buddy-coq">
+              {COQ_FRAMES.map((rows, i) => (
+                <Sprite hidden={i !== 0} key={rows.join("/")} rows={rows} />
+              ))}
             </span>
           </div>
-          <span className="buddy-bowl is-off" ref={bowlEl}>
-            <Sprite rows={BOWL} />
-          </span>
         </div>
       )}
       <span aria-hidden="true" className="buddy-heart is-off" ref={heartTpl}>

@@ -88,32 +88,6 @@ const SIDE_B = [
 ];
 
 export const HEART = ["rr.rr", "rrrrr", ".rrr.", "..r.."];
-// Tokkae's playmate: a cube with a cream top, a lime front with a face (no
-// mouth, like Tokkae) and a darker side
-export const CUBE = [
-  "...kkkkkkkkkkk",
-  "..kbbbbbbbbbkk",
-  ".kbbbbbbbbbkdk",
-  "kkkkkkkkkkkddk",
-  "kgggggggggkddk",
-  "kgggggggggkddk",
-  "kgggggggggkddk",
-  "kggkgggkggkddk",
-  "kggkgggkggkddk",
-  "kgpgggggpgkddk",
-  "kgggggggggkddk",
-  "kgggggggggkdk.",
-  "kgggggggggkk..",
-  "kkkkkkkkkkk...",
-];
-// The playmate's pet bowl at a picnic, full of kibble
-export const BOWL = [
-  "...OOOO...",
-  "..OOtOOO..",
-  "wwwwwwwwww",
-  ".wbwwwwww.",
-  "..wwwwww..",
-];
 // An eighth note: flag top right, head bottom left
 const NOTE = [".kk", ".k.", ".k.", "kk."];
 

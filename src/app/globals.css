@@ -1176,8 +1176,8 @@ input:focus-visible {
   display: none;
 }
 
-/* Tokkae's playmate, a pixel cube: moved and turned by tokkae.tsx, bouncing
-   as it goes. In front of Tokkae, unless it's circling behind it during a
+/* Tokkae's playmate, Coq the rooster: moved, turned and animated by
+   tokkae.tsx. In front of Tokkae, unless it's circling behind it during a
    nap. */
 .tokkae {
   z-index: 1;
@@ -1187,9 +1187,9 @@ input:focus-visible {
   top: 0;
   left: 0;
   z-index: 2;
-  /* The 14 × 14 cube at 4px a pixel */
-  width: 56px;
-  height: 56px;
+  /* Coq's 18 × 17 frame at 4px a pixel, like Tokkae's */
+  width: 72px;
+  height: 68px;
   /* Offscreen until the first frame places it */
   transform: translate(-300px, 0);
   will-change: transform;
@@ -1202,23 +1202,11 @@ input:focus-visible {
   height: 100%;
   transform: scaleX(var(--face, 1));
 }
-.buddy-cube {
+.buddy-coq {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
-}
-/* The pet bowl at its front feet, at a picnic */
-.buddy-bowl {
-  position: absolute;
-  bottom: 2px;
-  width: 40px;
-  height: 20px;
-}
-.buddy[data-face="right"] .buddy-bowl {
-  right: -24px;
-}
-.buddy[data-face="left"] .buddy-bowl {
-  left: -24px;
 }
 .buddy-heart {
   position: absolute;
@@ -1227,15 +1215,14 @@ input:focus-visible {
   margin-left: -10px;
   animation: heart-up 1.4s ease-out forwards;
 }
-.buddy-cube svg,
-.buddy-bowl svg,
+.buddy-coq svg,
 .buddy-heart svg {
   display: block;
   width: 100%;
   height: 100%;
   shape-rendering: crispEdges;
 }
-.buddy-bowl.is-off,
+.buddy-coq svg.is-off,
 .buddy-heart.is-off {
   display: none;
 }

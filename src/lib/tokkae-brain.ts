@@ -195,7 +195,7 @@ const PLAYS: Record<Action, [Anim, number]> = {
  * then picks something to do every few seconds, falls with gravity and lands
  * on the tops of windows. It leaves the cursor alone unless poked or picked
  * up: then it gets angry and chases you for ten seconds, then gets sleepy
- * and carries on. With its playmate, a cube, around, it sometimes plays with
+ * and carries on. With its playmate, Coq the rooster, around, it sometimes plays with
  * it instead: hearts, a picnic, tag or a nap together.
  */
 export class Brain {

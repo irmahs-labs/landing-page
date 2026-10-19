@@ -10,6 +10,15 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "the cube went home… and my best friend coq came to play! cocorico!",
+      "flip the playmate switch and coq struts in, crows hello and pecks at a picnic",
+      "mini games moved to the front of my apps",
+    ],
+    date: "2026-10-19",
+    title: "coq is here",
+  },
+  {
+    changes: [
       "a new app moved in: mini games! spin a wheel of fortune",
       "and my ten songs are really here this time, press next to hear them",
     ],
