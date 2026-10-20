@@ -9,28 +9,56 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# One job per check, so a pull request lists each one with its own result.
 jobs:
-  checks:
+  lint:
+    name: Lint and format
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-
       - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Lint and format (Ultracite)
+      - run: npm ci
+      - name: Ultracite
         run: npm run check
 
-      - name: Type-check
-        run: npm run typecheck
+  typecheck:
+    name: Type-check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
 
-      - name: Tests (Vitest)
+  test:
+    name: Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Vitest
         run: npm test
+
+  build:
+    name: Build and smoke test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
 
       - name: Build
         run: npm run build
@@ -54,6 +82,12 @@ jobs:
           test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
           test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'
 
+  docker:
+    name: Docker build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
       - name: Validate compose
         run: |
           printf 'SPOTIFY_CLIENT_ID=x\nSPOTIFY_CLIENT_SECRET=x\nSPOTIFY_REFRESH_TOKEN=x\n' > .env
@@ -61,3 +95,15 @@ jobs:
 
       - name: Docker build
         run: docker build -t landing-page-web .
+
+  # The branch rules require a check named "checks". It fails if any job
+  # above failed, was cancelled or skipped; list new jobs in needs.
+  checks:
+    name: checks
+    if: always()
+    needs: [lint, typecheck, test, build, docker]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: A job did not pass
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped')
+        run: exit 1
