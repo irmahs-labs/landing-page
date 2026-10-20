@@ -12,7 +12,7 @@ on:
 
 jobs:
   codeql:
-    uses: irmahs-labs/workflows/.github/workflows/codeql.yml@feat/codeql-dependabot
+    uses: irmahs-labs/workflows/.github/workflows/codeql.yml@main
     permissions:
       actions: read
       contents: read
