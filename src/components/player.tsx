@@ -122,11 +122,13 @@ const Cover = ({
   url: string | null;
 }) => {
   let art = url ? <Record /> : <TokkaeEmote anim={song} />;
+
   if (image) {
     // Spotify's image host is remote and the cover is small, so a plain img
     // oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS
     art = <img alt="" src={image} />;
   }
+
   const inside = (
     <>
       {art}
@@ -137,9 +139,11 @@ const Cover = ({
       </span>
     </>
   );
+
   if (!url) {
     return <div className="cover">{inside}</div>;
   }
+
   // The title beside it is the accessible link, so this one stays out of the tab order
   return (
     <a
@@ -161,11 +165,14 @@ const Cover = ({
  */
 const useTokkaeSong = (quiet: boolean) => {
   const [index, setIndex] = useState(0);
+
   const step = (by: number) =>
     setIndex((i) => (i + by + SONGS.length) % SONGS.length);
+
   const steps: SongSteps | null = quiet
     ? { next: () => step(1), prev: () => step(-1) }
     : null;
+
   return { song: SONGS[index] ?? SONGS[0], steps };
 };
 
@@ -182,6 +189,7 @@ export const Player = ({ now }: { now: Date | null }) => {
 
   let pos = 0;
   let dur = 0;
+
   if (track) {
     dur = Math.floor(track.durationMs / 1000);
     const sincePoll = playing && now ? now.getTime() - fetchedAt : 0;
@@ -189,6 +197,7 @@ export const Player = ({ now }: { now: Date | null }) => {
   }
 
   let state = " is-idle";
+
   if (track) {
     state = playing ? "" : " is-paused";
   }

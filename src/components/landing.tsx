@@ -24,6 +24,7 @@ import { Tokkae } from "./tokkae";
 import type { PlaymateNudge } from "./tokkae";
 
 const WEATHER_TTL = 15 * 60 * 1000;
+
 // Whether the visitor has brought Tokkae's playmate out; it starts at home
 const PLAYMATE_SWITCH = ["off", "on"] as const;
 
@@ -32,11 +33,13 @@ const setRootVar = (k: string, v: string) =>
 
 export const Landing = () => {
   const now = useNow();
+
   const [playmate, savePlaymate] = useStoredChoice(
     "playmate",
     PLAYMATE_SWITCH,
     "off"
   );
+
   const playmateOn = playmate === "on";
   const [cityId, saveCity] = useStoredChoice("city", CITY_IDS, DEFAULT_CITY);
   const [weather, setWeather] = useState<Partial<Record<CityId, Weather>>>({});
@@ -53,9 +56,11 @@ export const Landing = () => {
 
   useEffect(() => {
     let fill = isDay ? "var(--panel)" : "#8b9590";
+
     if (rainy) {
       fill = isDay ? "#aeb8b4" : "#5d6863";
     }
+
     setRootVar("--cloud-fill", fill);
   }, [isDay, rainy]);
 
@@ -65,18 +70,24 @@ export const Landing = () => {
   // Weather for the current city, refreshed every 15 minutes
   useEffect(() => {
     let alive = true;
+
     const load = async () => {
       const fresh = await fetchWeather(cityId);
+
       if (alive && fresh) {
         weatherCache.current = { ...weatherCache.current, [cityId]: fresh };
         setWeather(weatherCache.current);
       }
     };
+
     const cached = weatherCache.current[cityId];
+
     if (!cached || Date.now() - cached.at >= WEATHER_TTL) {
       load();
     }
+
     const id = setInterval(load, WEATHER_TTL);
+
     return () => {
       alive = false;
       clearInterval(id);

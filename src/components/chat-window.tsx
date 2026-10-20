@@ -36,11 +36,14 @@ const ask = async (messages: readonly ChatMessage[]): Promise<Answer> => {
       headers: { "Content-Type": "application/json" },
       method: "POST",
     });
+
     if (!res.ok) {
       return { error: errorText(res.status), ok: false };
     }
+
     // SAFETY: our own /api/chat route answers a 200 with { reply }
     const { reply } = (await res.json()) as { reply: string };
+
     return { ok: true, reply };
   } catch {
     return { error: errorText(0), ok: false };
@@ -63,6 +66,7 @@ export const ChatWindow = () => {
   // Keep the latest message in view
   useEffect(() => {
     const el = log.current;
+
     if (el && (messages.length > 0 || pending)) {
       el.scrollTop = el.scrollHeight;
     }
@@ -76,9 +80,11 @@ export const ChatWindow = () => {
 
   const send = async (question: string) => {
     const content = question.trim();
+
     if (!content || pending) {
       return;
     }
+
     const next: ChatMessage[] = [...messages, { content, role: "user" }];
     setMessages(next);
     setDraft("");
@@ -86,6 +92,7 @@ export const ChatWindow = () => {
     setPending(true);
     const answer = await ask(next);
     setPending(false);
+
     if (answer.ok) {
       setMessages([...next, { content: answer.reply, role: "assistant" }]);
     } else {

@@ -19,6 +19,7 @@ describe("TokkaeEmote", () => {
     vi.useFakeTimers();
     const { container } = render(<TokkaeEmote />);
     const seen = new Set<number>();
+
     for (let i = 0; i < 16; i += 1) {
       expect(container.querySelectorAll("svg:not(.is-off)")).toHaveLength(1);
       seen.add(shown(container));
@@ -26,6 +27,7 @@ describe("TokkaeEmote", () => {
         vi.advanceTimersByTime(200);
       });
     }
+
     expect(seen.size).toBe(container.querySelectorAll("svg").length);
   });
 

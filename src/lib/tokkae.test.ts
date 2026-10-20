@@ -8,8 +8,10 @@ const KEYS = /^[.OWbdgkprtwxz]+$/u;
 describe("Tokkae's frames", () => {
   it("are all one 18 × 17 grid of known colours", () => {
     expect(FRAMES.length).toBeGreaterThan(0);
+
     for (const rows of FRAMES) {
       expect(rows).toHaveLength(GRID_H);
+
       for (const row of rows) {
         expect(row).toHaveLength(GRID_W);
         expect(row).toMatch(KEYS);
@@ -25,6 +27,7 @@ describe("Tokkae's frames", () => {
   it("only point animations at frames that exist", () => {
     for (const ids of Object.values(ANIMS)) {
       expect(ids.length).toBeGreaterThan(0);
+
       for (const id of ids) {
         expect(FRAMES[id]).toBeDefined();
       }
@@ -69,17 +72,21 @@ describe("Tokkae's songs", () => {
 
   it("are each eight frames at the mic stand, mouthless, all different", () => {
     const looks = new Set<string>();
+
     for (const { anim } of SONGS) {
       const ids = ANIMS[anim];
       expect(ids).toHaveLength(8);
+
       for (const id of ids) {
         const rows = FRAMES[id] ?? [];
         // The stand's pole runs down column 14, whatever the song
         expect(rows[12]?.[14]).toBe("k");
         expect(rows[7]).not.toMatch(/g[kt]g/u);
       }
+
       looks.add(ids.map((id) => FRAMES[id]?.join("/")).join("|"));
     }
+
     expect(looks.size).toBe(SONGS.length);
   });
 

@@ -10,9 +10,11 @@ beforeEach(() => {
 describe("allowRequest", () => {
   it("lets each visitor ask a few questions a minute, then waits", async () => {
     const { MAX_PER_WINDOW, allowRequest } = await load();
+
     for (let i = 0; i < MAX_PER_WINDOW; i += 1) {
       expect(allowRequest("a", 1000 + i)).toBe(true);
     }
+
     expect(allowRequest("a", 2000)).toBe(false);
     // Someone else is counted on their own
     expect(allowRequest("b", 2000)).toBe(true);

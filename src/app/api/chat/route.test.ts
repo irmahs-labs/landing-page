@@ -5,6 +5,7 @@ import type { ChatRequest } from "@/lib/chat";
 /** A fresh route, so the rate limit starts empty */
 const load = () => {
   vi.resetModules();
+
   return import("./route");
 };
 
@@ -29,6 +30,7 @@ describe("POST /api/chat", () => {
     const fetch = vi
       .fn()
       .mockResolvedValue(reply(" Irma is a software engineer. "));
+
     vi.stubGlobal("fetch", fetch);
     const { POST } = await load();
     const res = await POST(post(QUESTION));
@@ -63,9 +65,11 @@ describe("POST /api/chat", () => {
     const fetch = vi.fn();
     vi.stubGlobal("fetch", fetch);
     const { POST } = await load();
+
     const res = await POST(
       post({ messages: [{ content: "x", role: "system" }] })
     );
+
     expect(res.status).toBe(400);
     expect(fetch).not.toHaveBeenCalled();
   });
@@ -77,11 +81,13 @@ describe("POST /api/chat", () => {
     );
     const { POST } = await load();
     const statuses: number[] = [];
+
     for (let i = 0; i < 10; i += 1) {
       // oxlint-disable-next-line no-await-in-loop -- one question after another, as a visitor asks them
       const res = await POST(post(QUESTION));
       statuses.push(res.status);
     }
+
     expect(statuses.at(-1)).toBe(429);
     const other = await POST(post(QUESTION, "198.51.100.2"));
     expect(other.status).toBe(200);

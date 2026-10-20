@@ -3,6 +3,7 @@ import { SYSTEM_PROMPT } from "./about-me";
 import type { ChatMessage } from "./chat";
 
 const DEFAULT_MODEL = "openai/gpt-4o";
+
 // Keeps answers short, and each question's cost bounded
 const MAX_TOKENS = 400;
 
@@ -15,9 +16,11 @@ export const askAboutMe = async (
   messages: readonly ChatMessage[]
 ): Promise<string> => {
   const { OPENROUTER_API_KEY, OPENROUTER_MODEL } = process.env;
+
   if (!OPENROUTER_API_KEY) {
     throw new Error("Missing OPENROUTER_API_KEY");
   }
+
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     body: JSON.stringify({
       max_tokens: MAX_TOKENS,
@@ -34,14 +37,18 @@ export const askAboutMe = async (
     },
     method: "POST",
   });
+
   if (!res.ok) {
     throw new Error(`OpenRouter failed: ${res.status} ${await res.text()}`);
   }
+
   // SAFETY: a 2xx from chat/completions has OpenAI's documented shape
   const data = (await res.json()) as Completion;
   const reply = data.choices?.[0]?.message?.content?.trim();
+
   if (!reply) {
     throw new Error("OpenRouter answered without a reply");
   }
+
   return reply;
 };

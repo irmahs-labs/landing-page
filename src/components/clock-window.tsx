@@ -18,6 +18,7 @@ const WeatherIcon = ({ isDay, rainy }: { isDay: boolean; rainy: boolean }) => {
     strokeWidth: 1.2,
     viewBox: "0 0 24 24",
   } as const;
+
   if (rainy) {
     return (
       <svg {...common} strokeLinecap="round">
@@ -39,6 +40,7 @@ const WeatherIcon = ({ isDay, rainy }: { isDay: boolean; rainy: boolean }) => {
       </svg>
     );
   }
+
   if (isDay) {
     return (
       <svg {...common}>
@@ -47,6 +49,7 @@ const WeatherIcon = ({ isDay, rainy }: { isDay: boolean; rainy: boolean }) => {
       </svg>
     );
   }
+
   return (
     <svg {...common}>
       <path
@@ -83,6 +86,7 @@ export const ClockWindow = ({
 }: ClockWindowProps) => {
   const city = CITIES[cityId];
   let sunLine = "";
+
   if (phase) {
     sunLine = phase.isDay
       ? `sunrise ${fmtMinutes(phase.riseM)} · sunset ${fmtMinutes(phase.setM)}`

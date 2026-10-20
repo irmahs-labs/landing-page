@@ -17,6 +17,7 @@ describe("SocialsWindow", () => {
     expect(linkedin.getAttribute("href")).toBe(
       "https://www.linkedin.com/in/irma-hs/"
     );
+
     for (const link of [github, linkedin]) {
       expect(link.getAttribute("target")).toBe("_blank");
       expect(link.getAttribute("rel")).toBe("noreferrer");

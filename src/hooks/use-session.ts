@@ -13,26 +13,33 @@ export const useSession = () => {
 
   useEffect(() => {
     let alive = true;
+
     const load = async () => {
       let next: SessionUser | null = null;
+
       try {
         const res = await fetch(`${AUTH_URL}/api/auth/get-session`, {
           cache: "no-store",
           credentials: "include",
         });
+
         // SAFETY: Better Auth's get-session answers null or { user, session }
         const body = res.ok
           ? ((await res.json()) as { user?: SessionUser } | null)
           : null;
+
         next = body?.user ?? null;
       } catch {
         next = null;
       }
+
       if (alive) {
         setUser(next);
       }
     };
+
     load();
+
     return () => {
       alive = false;
     };

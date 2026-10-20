@@ -29,6 +29,7 @@ describe("ChatWindow", () => {
       .mockResolvedValue(
         Response.json({ reply: "She's a software engineer." })
       );
+
     vi.stubGlobal("fetch", fetch);
     open();
     ask("Who is Irma?");

@@ -24,6 +24,7 @@ const WEATHER_CODES: readonly [readonly number[], string, boolean][] = [
 
 const describe = (code: number): [string, boolean] => {
   const hit = WEATHER_CODES.find(([codes]) => codes.includes(code));
+
   return hit ? [hit[1], hit[2]] : ["—", false];
 };
 
@@ -34,14 +35,18 @@ interface OpenMeteoResponse {
 export const fetchWeather = async (id: CityId): Promise<Weather | null> => {
   const c = CITIES[id];
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&timezone=auto`;
+
   try {
     const res = await fetch(url);
+
     if (!res.ok) {
       return null;
     }
+
     // SAFETY: Open-Meteo returns these `current` fields because the URL requests them
     const data = (await res.json()) as OpenMeteoResponse;
     const [cond, rainy] = describe(data.current.weather_code);
+
     return {
       at: Date.now(),
       cond,

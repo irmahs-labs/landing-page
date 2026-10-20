@@ -43,11 +43,13 @@ interface CurrentlyPlaying {
 const credentials = () => {
   const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } =
     process.env;
+
   if (!(SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET && SPOTIFY_REFRESH_TOKEN)) {
     throw new Error(
       "Missing SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET or SPOTIFY_REFRESH_TOKEN"
     );
   }
+
   return {
     basic: Buffer.from(
       `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
@@ -62,7 +64,9 @@ const accessToken = async () => {
   if (token && Date.now() < token.expiresAt) {
     return token.value;
   }
+
   const { basic, refreshToken } = credentials();
+
   const res = await fetch("https://accounts.spotify.com/api/token", {
     body: new URLSearchParams({
       grant_type: "refresh_token",
@@ -75,18 +79,22 @@ const accessToken = async () => {
     },
     method: "POST",
   });
+
   if (!res.ok) {
     throw new Error(`token refresh failed: ${res.status} ${await res.text()}`);
   }
+
   // SAFETY: a 2xx from Spotify's token endpoint has this documented shape
   const data = (await res.json()) as {
     access_token: string;
     expires_in: number;
   };
+
   token = {
     expiresAt: Date.now() + (data.expires_in - 60) * 1000,
     value: data.access_token,
   };
+
   return token.value;
 };
 
@@ -98,19 +106,25 @@ const fetchNowPlaying = async (): Promise<NowPlaying> => {
       headers: { Authorization: `Bearer ${await accessToken()}` },
     }
   );
+
   if (res.status === 401) {
     token = null;
   }
+
   if (res.status === 204 || !res.ok) {
     return { playing: false };
   }
+
   // SAFETY: a 200 (not 204) from currently-playing has this documented shape
   const data = (await res.json()) as CurrentlyPlaying;
   const { item } = data;
+
   if (!item) {
     return { playing: false };
   }
+
   const isTrack = item.type === "track";
+
   return {
     album: isTrack ? item.album.name : null,
     artist: isTrack
@@ -126,6 +140,7 @@ const fetchNowPlaying = async (): Promise<NowPlaying> => {
 };
 
 const CACHE_MS = 10_000;
+
 // Shields Spotify from visitor traffic: at most one call per CACHE_MS
 let cache: { at: number; data: NowPlaying } | null = null;
 
@@ -133,7 +148,9 @@ export const getNowPlaying = async (): Promise<NowPlaying> => {
   if (!cache || Date.now() - cache.at > CACHE_MS) {
     cache = { at: Date.now(), data: await fetchNowPlaying() };
   }
+
   const { at, data } = cache;
+
   // Keep progress accurate for responses served from the cache
   return data.playing
     ? { ...data, progressMs: data.progressMs + (Date.now() - at) }

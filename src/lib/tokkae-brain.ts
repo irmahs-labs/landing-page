@@ -46,13 +46,17 @@ export const nextFleeDir = (run: {
   x: number;
 }): FleeDir => {
   let dir: FleeDir = run.dir;
+
   if (dir === 0) {
     dir = run.cx >= run.from ? 1 : -1;
   }
+
   const edge = dir > 0 ? run.hi : run.lo;
+
   if (Math.abs(edge - run.x) < 20) {
     return dir > 0 ? -1 : 1;
   }
+
   return dir;
 };
 
@@ -94,6 +98,7 @@ export interface Pose {
 const GRAVITY = 2200;
 const WALK = 70;
 const RUN = 260;
+
 // Chasing the buddy in tag: a little slower than it runs away
 const TAG_CHASE = 210;
 const ANNOUNCE_MS = 25_000;
@@ -101,6 +106,7 @@ const JUMP_GAP_MS = 1500;
 const ANGRY_MS = 10_000;
 const SLEEPY_MS = 2500;
 const FRAME_MS = 200;
+
 // How often, with its playmate around, Tokkae picks a game over its
 // own routine; each game is then equally likely
 const PLAYTIME_ODDS = 0.4;
@@ -126,21 +132,28 @@ const CHOICES: readonly [Action, number][] = [
 const pick = (buddy: boolean, last: Action): Action => {
   if (buddy && Math.random() < PLAYTIME_ODDS) {
     const games = GAMES.filter((game) => game !== last);
+
     return games[Math.floor(Math.random() * games.length)] ?? "hearts";
   }
+
   let roll = Math.random() * CHOICES.reduce((sum, [, w]) => sum + w, 0);
+
   for (const [action, w] of CHOICES) {
     roll -= w;
+
     if (roll < 0) {
       return action;
     }
   }
+
   return "idle";
 };
 
 const MOVING = new Set<Action>(["angry", "enter", "greet", "tag", "walk"]);
+
 // What Tokkae won't drop to greet its buddy or cry; those wait their turn
 const BUSY = new Set<Action>(["angry", "announce", "enter", "held"]);
+
 // Everything done with the buddy, dropped if it leaves
 const TOGETHER = new Set<Action>([...GAMES, "alert", "greet", "hello"]);
 
@@ -241,8 +254,10 @@ export class Brain {
   private static randomWindow(world: World) {
     const reachable = world.windows.filter((win) => {
       const r = win.getBoundingClientRect();
+
       return r.top > world.h + 20 && r.top < world.vh - 40;
     });
+
     return reachable[Math.floor(Math.random() * reachable.length)] ?? null;
   }
 
@@ -250,6 +265,7 @@ export class Brain {
   private static windowUnder(world: World, pointer: Pointer) {
     return world.windows.find((win) => {
       const r = win.getBoundingClientRect();
+
       return (
         pointer.x > r.left &&
         pointer.x < r.right &&
@@ -288,12 +304,15 @@ export class Brain {
   /** The playmate came out or went home, without a word from the visitor */
   setBuddy(present: boolean, now: number) {
     this.buddy = present;
+
     if (present) {
       return;
     }
+
     if (this.pending === "greet") {
       this.pending = null;
     }
+
     if (TOGETHER.has(this.action)) {
       this.until = Math.min(this.until, now);
     }
@@ -306,6 +325,7 @@ export class Brain {
    */
   react(kind: Nudge, now: number) {
     this.pending = kind;
+
     if (!BUSY.has(this.action)) {
       this.until = Math.min(this.until, now);
     }
@@ -321,22 +341,28 @@ export class Brain {
     buddy: BuddySpot | null = null
   ): Pose {
     this.moving = false;
+
     if (this.action === "held") {
       return this.pose(now, world, false, false);
     }
+
     this.followSurface(world);
     const airborne = this.isAirborne(world);
+
     if (airborne) {
       this.fall(world, dt, now);
     } else if (!this.surface) {
       this.y = Brain.floor(world);
     }
+
     if (!airborne) {
       this.chase(world, now, pointer);
       this.playWith(world, now, buddy);
       this.walk(world, dt, now);
     }
+
     const closeNotes = !airborne && this.maybeMoveOn(world, now, notesOpen);
+
     return this.pose(now, world, airborne, closeNotes);
   }
 
@@ -367,6 +393,7 @@ export class Brain {
     this.become(action, now);
     this.until = now + (LASTS[action] ?? rand(2500, 6000));
     const [lo, hi] = this.range(world);
+
     if (action === "walk") {
       this.target = rand(lo, hi);
       this.until = now + rand(...WANDER_MS);
@@ -389,8 +416,10 @@ export class Brain {
   private range(world: World): [number, number] {
     if (this.surface) {
       const r = this.surface.getBoundingClientRect();
+
       return [r.left, Math.max(r.left, r.right - world.w)];
     }
+
     return [0, Math.max(0, world.vw - world.w)];
   }
 
@@ -404,28 +433,35 @@ export class Brain {
     if (!win || win === this.surface) {
       return false;
     }
+
     const r = win.getBoundingClientRect();
     const landY = r.top - world.h + 2;
     const aim = aimX ?? rand(r.left, r.right);
+
     const x = Math.min(
       r.right - world.w - 4,
       Math.max(r.left + 4, aim - world.w / 2)
     );
+
     // Up to the top of an arc 50px above the landing, then down onto it
     const rise = Math.max(60, this.y - landY + 50);
     this.vy = -Math.sqrt(2 * GRAVITY * rise);
     const up = -this.vy / GRAVITY;
+
     const down = Math.sqrt(
       (2 * Math.max(0, rise - (this.y - landY))) / GRAVITY
     );
+
     this.vx = (x - this.x) / (up + down);
     this.face = this.vx >= 0 ? 1 : -1;
     this.surface = null;
     this.lastJump = now;
+
     // An angry Tokkae stays angry in the air
     if (this.action !== "angry") {
       this.become("jump", now);
     }
+
     return true;
   }
 
@@ -434,10 +470,13 @@ export class Brain {
     if (!this.surface) {
       return;
     }
+
     const r = this.surface.getBoundingClientRect();
     const cx = this.x + world.w / 2;
+
     const gone =
       r.top - world.h < 0 || r.top > world.vh || cx < r.left || cx > r.right;
+
     if (gone) {
       this.surface = null;
     } else {
@@ -455,6 +494,7 @@ export class Brain {
     this.x += this.vx * dt;
     this.y += this.vy * dt;
     const landed = this.vy > 0 ? this.windowBelow(world, before) : null;
+
     if (landed) {
       this.surface = landed;
       this.y = landed.getBoundingClientRect().top - world.h + 2;
@@ -463,8 +503,10 @@ export class Brain {
     } else {
       return;
     }
+
     this.vx = 0;
     this.vy = 0;
+
     // Landed: off for a walk, along the window or the floor
     if (this.action === "jump") {
       this.set("walk", world, now);
@@ -475,9 +517,11 @@ export class Brain {
   private windowBelow(world: World, before: number) {
     const cx = this.x + world.w / 2;
     const after = this.y + world.h;
+
     return (
       world.windows.find((win) => {
         const r = win.getBoundingClientRect();
+
         return (
           before - 2 <= r.top &&
           after >= r.top &&
@@ -496,13 +540,17 @@ export class Brain {
     if (!pointer || this.action !== "angry") {
       return;
     }
+
     const cx = this.x + world.w / 2;
     const over = Brain.windowUnder(world, pointer);
     const canJump = now - this.lastJump > JUMP_GAP_MS;
+
     if (over && canJump && Math.abs(pointer.x - cx) < 260) {
       this.jumpTo(over, world, now, pointer.x);
+
       return;
     }
+
     this.target = pointer.x - world.w / 2;
   }
 
@@ -511,9 +559,12 @@ export class Brain {
     if (!buddy) {
       return;
     }
+
     const cx = this.x + world.w / 2;
+
     if (this.action === "greet") {
       const reach = world.w / 2 + buddy.w / 2 + 12;
+
       if (Math.abs(buddy.cx - cx) < reach) {
         this.face = buddy.cx >= cx ? 1 : -1;
         this.set("hello", world, now);
@@ -546,12 +597,16 @@ export class Brain {
     if (!MOVING.has(this.action)) {
       return;
     }
+
     const entering = this.action === "enter";
+
     const [lo, hi] = entering
       ? [-world.w - 20, world.vw + 20]
       : this.range(world);
+
     const goal = Math.min(hi, Math.max(lo, this.target));
     const dx = goal - this.x;
+
     if (Math.abs(dx) > 4) {
       const speed = this.speedFor(entering);
       this.face = dx > 0 ? 1 : -1;
@@ -573,6 +628,7 @@ export class Brain {
     if (this.action === "walk" || entering) {
       return WALK;
     }
+
     return this.action === "tag" && this.tagIt === "tokkae" ? TAG_CHASE : RUN;
   }
 
@@ -588,11 +644,15 @@ export class Brain {
     if (this.action === "enter") {
       return false;
     }
+
     const announcing = this.action === "announce";
+
     if (now < this.until && !(announcing && !notesOpen)) {
       return false;
     }
+
     this.set(this.nextAction(), world, now);
+
     return announcing;
   }
 
@@ -600,34 +660,44 @@ export class Brain {
   private nextAction(): Action {
     const { pending } = this;
     this.pending = null;
+
     if (pending === "cry") {
       return "cry";
     }
+
     if (pending === "greet" && this.buddy) {
       return "alert";
     }
+
     const follows = FOLLOWS[this.action];
+
     if (follows && (this.buddy || !TOGETHER.has(follows))) {
       return follows;
     }
+
     // A walk between everything else, so one thing never runs into the next
     if (this.action !== "walk") {
       return "walk";
     }
+
     this.lastPick = pick(this.buddy, this.lastPick);
+
     return this.lastPick;
   }
 
   private frameFor(now: number, airborne: boolean) {
     let [anim, ms] = PLAYS[this.action];
+
     if (this.action === "angry" && (this.moving || airborne)) {
       anim = "angryRun";
       ms = 90;
     } else if (airborne) {
       anim = "walk";
     }
+
     const frames = ANIMS[anim];
     const i = Math.floor((now - this.since) / ms) % frames.length;
+
     return frames[i] ?? 0;
   }
 }

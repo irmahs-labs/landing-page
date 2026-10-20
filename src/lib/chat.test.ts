@@ -26,6 +26,7 @@ describe("parseConversation", () => {
     const messages = Array.from({ length: MAX_HISTORY + 5 }, (_, i) =>
       question(`question ${i}`)
     );
+
     const parsed = parseConversation({ messages });
     expect(parsed).toHaveLength(MAX_HISTORY);
     expect(parsed?.at(-1)?.content).toBe(`question ${MAX_HISTORY + 4}`);

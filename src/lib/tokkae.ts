@@ -80,6 +80,7 @@ const SIDE = [
   "..ggggggb..",
   "....gggggdd",
 ];
+
 const SIDE_B = [
   ...SIDE.slice(0, 7),
   "....gggggd.",
@@ -88,6 +89,7 @@ const SIDE_B = [
 ];
 
 export const HEART = ["rr.rr", "rrrrr", ".rrr.", "..r.."];
+
 // An eighth note: flag top right, head bottom left
 const NOTE = [".kk", ".k.", ".k.", "kk."];
 
@@ -108,16 +110,19 @@ interface FrameSpec {
 
 const box = (y: number, x: number, w: number, h: number, ch: string) => {
   const out: Px[] = [];
+
   for (let j = 0; j < h; j += 1) {
     for (let i = 0; i < w; i += 1) {
       out.push([y + j, x + i, ch]);
     }
   }
+
   return out;
 };
 
 const stamp = (sprite: readonly string[], x0: number, y0: number) => {
   const out: Px[] = [];
+
   for (const [y, row] of sprite.entries()) {
     for (const [x, ch] of [...row].entries()) {
       if (ch !== ".") {
@@ -125,21 +130,27 @@ const stamp = (sprite: readonly string[], x0: number, y0: number) => {
       }
     }
   }
+
   return out;
 };
 
 const rep = (f: FrameSpec, n: number): FrameSpec[] =>
   Array.from({ length: n }, () => f);
+
 const paint = (pts: readonly (readonly [number, number])[], ch: string) =>
   pts.map(([y, x]): Px => [y, x, ch]);
+
 const z = (pts: readonly (readonly [number, number])[]) => paint(pts, "z");
+
 const bubble = (y: number, x: number, n: number): Px[] => {
   if (n === 1) {
     return [[y, x, "W"]];
   }
+
   if (n === 2) {
     return box(y, x, 2, 2, "W");
   }
+
   return [
     [y, x + 1, "W"],
     [y + 1, x, "W"],
@@ -152,18 +163,21 @@ const blink: Px[] = [
   [3, 3, "g"],
   [3, 7, "g"],
 ];
+
 const shut: Px[] = [
   [3, 2, "k"],
   [3, 3, "k"],
   [3, 7, "k"],
   [3, 8, "k"],
 ];
+
 const raisedArm: Px[] = [
   [7, 8, "."],
   [7, 9, "."],
   [6, 8, "g"],
   [5, 9, "d"],
 ];
+
 const tailSwung: Px[] = [
   [10, 9, "g"],
   [9, 10, "."],
@@ -171,16 +185,20 @@ const tailSwung: Px[] = [
   [10, 10, "g"],
   [10, 11, "g"],
 ];
+
 const stepping: Px[] = [
   [12, 2, "."],
   [12, 4, "d"],
   [12, 8, "."],
   [12, 6, "d"],
 ];
+
 const tongue = (n: number): Px[] =>
   Array.from({ length: n }, (_, i): Px => [5, 9 + i, "t"]);
+
 const bug = (y: number, x: number): Px[] => [[y, x, "x"]];
 const heart = (x: number, y: number) => stamp(HEART, x, y);
+
 const note = (x: number, y: number, ch: string): Px[] =>
   stamp(NOTE, x, y).map(([py, px]): Px => [py, px, ch]);
 
@@ -197,6 +215,7 @@ const fuming: Px[] = [
   [5, 2, "r"],
   [5, 8, "r"],
 ];
+
 const angerMark: Px[] = [
   [0, 13, "r"],
   [0, 15, "r"],
@@ -211,6 +230,7 @@ const pc = [
   ...box(12, 15, 1, 3, "k"),
   ...box(15, 14, 3, 1, "k"),
 ];
+
 const keys = box(12, 9, 4, 1, "k");
 
 // Singing, in frame coordinates: a mic stand to the right of Tokkae's face
@@ -220,12 +240,14 @@ const micStand: Px[] = [
   ...box(8, 14, 1, 7, "k"),
   ...box(15, 12, 5, 1, "k"),
 ];
+
 // The right arm reaching out to hold the stand, in sprite coordinates
 const holdingStand: Px[] = [
   [7, 9, "g"],
   [7, 10, "g"],
   [7, 11, "d"],
 ];
+
 const singing = (eyes: readonly Px[] = []): Px[] => [...holdingStand, ...eyes];
 
 // Surprise, in frame coordinates: a red "!" up by the top of its head
@@ -233,6 +255,7 @@ const bang: Px[] = [...box(0, 13, 1, 3, "r"), [4, 13, "r"]];
 
 // Crying, on the standing sprite: eyes squeezed shut, tears on its cheeks
 const sobbing: Px[] = [...shut, [4, 3, "w"], [4, 7, "w"]];
+
 // Tears spraying out to both sides, in frame coordinates, in three stages
 const tearsA = paint(
   [
@@ -241,6 +264,7 @@ const tearsA = paint(
   ],
   "w"
 );
+
 const tearsB = paint(
   [
     [5, 2],
@@ -250,6 +274,7 @@ const tearsB = paint(
   ],
   "w"
 );
+
 const tearsC = paint(
   [
     [6, 1],
@@ -259,6 +284,7 @@ const tearsC = paint(
   ],
   "w"
 );
+
 const screen = (pts: readonly (readonly [number, number])[]): Px[] => [
   ...pc,
   ...z(pts),
@@ -318,6 +344,7 @@ const SUN_CROSS = ["O.O", ".t.", "O.O"];
 // happiness: a little rainbow, drawn band by band, and a sparkle
 const RAINBOW = [".rrr", "rOOO", "rOww", "rOw."];
 const RAINBOW_BANDS = ["r", "O", "w"];
+
 const rainbow = (bands: number) =>
   stamp(RAINBOW, 0, 0).filter((px) =>
     RAINBOW_BANDS.slice(0, bands).includes(px[2])
@@ -330,6 +357,7 @@ const floatingUp = (i: number, offset: number) => 8 - ((i + offset) % 8);
 // heartbreak: a heart that cracks, then falls apart
 const HEART_LEFT = ["rr.", "rrr", ".r.", "..r"];
 const HEART_RIGHT = ["...rr", "...rr", "..rr."];
+
 const crack: Px[] = [
   [1, 2, "k"],
   [2, 2, "k"],
@@ -337,6 +365,7 @@ const crack: Px[] = [
 
 // anger: a storm cloud, and lightning striking the ground
 const CLOUD = [".kkk.", "kkkkk"];
+
 const bolt: Px[] = [
   ...paint(
     [
@@ -366,6 +395,7 @@ const bolt: Px[] = [
   ),
   [16, 1, "O"],
 ];
+
 const STRIKES = new Set([2, 3, 6]);
 
 // rage: little flames floating around, flickering
@@ -482,9 +512,11 @@ const ANIM_SPECS = {
       if (i < 3) {
         return stamp(HEART, 0, 0);
       }
+
       if (i === 3) {
         return [...stamp(HEART, 0, 0), ...crack];
       }
+
       return [
         ...stamp(HEART_LEFT, 0, i >= 6 ? 2 : 1),
         ...stamp(HEART_RIGHT, 0, 0),
@@ -574,26 +606,34 @@ const inFrame = (y: number, x: number) =>
 const compose = (f: FrameSpec) => {
   const sprite = f.sprite ?? STAND;
   const body = sprite.map((row) => [...row]);
+
   for (const [r, c, ch] of f.edits ?? []) {
     const row = body[r];
+
     if (row) {
       row[c] = ch;
     }
   }
+
   const grid = Array.from({ length: GRID_H }, () =>
     Array.from({ length: GRID_W }, () => ".")
   );
+
   const put = ([y, x, ch]: Px) => {
     const row = grid[y];
+
     if (row && inFrame(y, x)) {
       row[x] = ch;
     }
   };
+
   const dx = 2 + (f.dx ?? 0);
   const dy = (f.sprite ? GRID_H - sprite.length - 1 : 2) + (f.dy ?? 0);
+
   for (const px of f.under ?? []) {
     put(px);
   }
+
   for (const [r, row] of body.entries()) {
     for (const [c, ch] of row.entries()) {
       if (ch !== ".") {
@@ -601,9 +641,11 @@ const compose = (f: FrameSpec) => {
       }
     }
   }
+
   for (const px of f.extra ?? []) {
     put(px);
   }
+
   return grid.map((row) => row.join(""));
 };
 
@@ -614,11 +656,14 @@ const frameIds = new Map<string, number>();
 const idOf = (rows: string[]) => {
   const key = rows.join("/");
   const known = frameIds.get(key);
+
   if (known !== undefined) {
     return known;
   }
+
   FRAMES.push(rows);
   frameIds.set(key, FRAMES.length - 1);
+
   return FRAMES.length - 1;
 };
 
@@ -684,19 +729,25 @@ export interface PixelRun {
 /** A frame as horizontal runs of one colour, ready to draw as SVG rects */
 export const runsOf = (rows: readonly string[]) => {
   const runs: PixelRun[] = [];
+
   for (const [y, row] of rows.entries()) {
     let x = 0;
+
     while (x < row.length) {
       const ch = row.charAt(x);
       let end = x;
+
       while (row.charAt(end + 1) === ch) {
         end += 1;
       }
+
       if (isPaletteKey(ch)) {
         runs.push({ color: PALETTE[ch], w: end - x + 1, x, y });
       }
+
       x = end + 1;
     }
   }
+
   return runs;
 };

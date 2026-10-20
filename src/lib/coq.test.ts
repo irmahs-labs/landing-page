@@ -10,6 +10,7 @@ describe("Coq's frames", () => {
   it("are each one 18 × 17 frame, like Tokkae's, in Tokkae's colours", () => {
     for (const rows of COQ_FRAMES) {
       expect(rows).toHaveLength(GRID_H);
+
       for (const row of rows) {
         expect(row).toHaveLength(GRID_W);
         expect(row).toMatch(KEYS);
@@ -29,6 +30,7 @@ describe("Coq's frames", () => {
     expect(COQ_ANIMS.crow.seq).toHaveLength(8);
     expect(COQ_ANIMS.hop.seq).toHaveLength(8);
     expect(COQ_ANIMS.walk.ms).toBe(150);
+
     for (const { seq } of Object.values(COQ_ANIMS)) {
       for (const id of seq) {
         expect(COQ_FRAMES[id]).toBeDefined();

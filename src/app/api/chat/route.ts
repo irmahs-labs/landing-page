@@ -20,18 +20,21 @@ const readBody = async (request: Request) => {
 
 export const POST = async (request: Request) => {
   const messages = parseConversation(await readBody(request));
+
   if (!messages) {
     return Response.json(
       { error: "bad request" },
       { headers: NO_STORE, status: 400 }
     );
   }
+
   if (!allowRequest(visitorOf(request))) {
     return Response.json(
       { error: "too many questions" },
       { headers: NO_STORE, status: 429 }
     );
   }
+
   try {
     return Response.json(
       { reply: await askAboutMe(messages) },
@@ -39,6 +42,7 @@ export const POST = async (request: Request) => {
     );
   } catch (error) {
     console.error(error);
+
     return Response.json(
       { error: "no answer" },
       { headers: NO_STORE, status: 502 }

@@ -45,9 +45,11 @@ type Mode = "beside" | "chase" | "flee" | "orbit" | "roam";
 const HURRY = 2.6;
 const CHASE = 230;
 const FLEE = 250;
+
 // How fast its height follows the leap's arc, per second
 const LEAP_EASE = 12;
 const ORBIT_RAD_PER_S = 1.3;
+
 // A heart every so often while they trade hearts or say hello
 const HEART_GAP_S = 0.45;
 
@@ -65,6 +67,7 @@ const modeFor = (mate: Mate): Mode => {
   if (mate.action === "tag") {
     return mate.tagIt === "buddy" ? "chase" : "flee";
   }
+
   return MODES[mate.action] ?? "roam";
 };
 
@@ -114,13 +117,16 @@ export class Buddy {
     ({ height: this.height, size: this.size, speed: this.speed } = room);
     this.clock += dt;
     const mode = modeFor(mate);
+
     if (mode !== this.mode) {
       this.fleeDir = 0;
       this.angle = this.x + this.size / 2 < mate.x + mate.w / 2 ? Math.PI : 0;
       this.mode = mode;
     }
+
     const [fromX, fromY] = [this.x, this.y];
     let near = false;
+
     if (mode === "beside") {
       near = this.beside(dt, room.vw, mate);
     } else if (mode === "orbit") {
@@ -133,6 +139,7 @@ export class Buddy {
     } else {
       this.roam(dt, room);
     }
+
     return {
       behind: mode === "orbit" && Math.sin(this.angle) < 0,
       eating: mate.action === "picnic" && near,
@@ -151,10 +158,13 @@ export class Buddy {
 
   private heartDue(action: Action) {
     const sharing = action === "hearts" || action === "hello";
+
     if (!sharing || this.clock - this.lastHeart < HEART_GAP_S) {
       return false;
     }
+
     this.lastHeart = this.clock;
+
     return true;
   }
 
@@ -163,17 +173,22 @@ export class Buddy {
     const dx = tx - this.x;
     const dy = ty - this.y;
     const d = Math.hypot(dx, dy);
+
     if (Math.abs(dx) > 2) {
       this.face = dx > 0 ? 1 : -1;
     }
+
     if (d < 3) {
       this.x = tx;
       this.y = ty;
+
       return true;
     }
+
     const move = Math.min(d, speed * dt);
     this.x += (dx / d) * move;
     this.y += (dy / d) * move;
+
     return false;
   }
 
@@ -189,9 +204,11 @@ export class Buddy {
     const side = tokkaeCx + gap + this.size / 2 > vw ? -1 : 1;
     const [gx, gy] = this.ground(mate, tokkaeCx + side * gap);
     const there = this.moveTo(gx, gy, this.speed * HURRY, dt);
+
     if (there) {
       this.face = side > 0 ? -1 : 1;
     }
+
     return there;
   }
 
@@ -201,6 +218,7 @@ export class Buddy {
     const ry = this.height * 0.22;
     // Its lowest point just on Tokkae's ground, its highest behind Tokkae
     const cy = mate.y + mate.h + 6 - ry - this.height / 2;
+
     return [
       mate.x + mate.w / 2 + Math.cos(angle) * rx - this.size / 2,
       cy + Math.sin(angle) * ry - this.height / 2,
@@ -210,16 +228,20 @@ export class Buddy {
   /** Round and round the sleeping Tokkae, on a flat ellipse */
   private orbit(dt: number, mate: Mate) {
     const [px, py] = this.orbitAt(mate, this.angle);
+
     if (Math.hypot(px - this.x, py - this.y) > 12) {
       this.moveTo(px, py, this.speed * HURRY, dt);
+
       return false;
     }
+
     this.angle += ORBIT_RAD_PER_S * dt;
     const [nx, ny] = this.orbitAt(mate, this.angle);
     // Strutting round, it keeps its eyes on the sleeping Tokkae
     this.face = nx + this.size / 2 <= mate.x + mate.w / 2 ? 1 : -1;
     this.x = nx;
     this.y = ny;
+
     return true;
   }
 
@@ -242,17 +264,21 @@ export class Buddy {
     // Full speed along the ground to the edge
     const dx = (this.fleeDir > 0 ? hi : 0) - this.x;
     this.x += Math.sign(dx) * Math.min(Math.abs(dx), FLEE * dt);
+
     if (Math.abs(dx) > 2) {
       this.face = dx > 0 ? 1 : -1;
     }
+
     // Over Tokkae on an arc while passing it, settling back down after
     const [, gy] = this.ground(mate, cx);
     const reach = mate.w / 2 + this.size / 2;
     const across = (cx - tokkaeCx + reach) / (2 * reach);
+
     const lift =
       across > 0 && across < 1
         ? Math.sin(Math.PI * across) * this.size * 0.8
         : 0;
+
     this.y += (gy - lift - this.y) * Math.min(1, dt * LEAP_EASE);
   }
 
@@ -263,20 +289,25 @@ export class Buddy {
       this.vx = Math.cos(ang) * this.speed;
       this.vy = Math.sin(ang) * this.speed;
     }
+
     const top = room.vh * 0.45;
     const bottom = room.vh - this.height;
+
     if (
       (this.x < 0 && this.vx < 0) ||
       (this.x > room.vw - this.size && this.vx > 0)
     ) {
       this.vx = -this.vx;
     }
+
     if ((this.y < top && this.vy < 0) || (this.y > bottom && this.vy > 0)) {
       this.vy = -this.vy;
     }
+
     if (Math.abs(this.vx) > 4) {
       this.face = this.vx > 0 ? 1 : -1;
     }
+
     this.x += this.vx * dt;
     this.y += this.vy * dt;
   }

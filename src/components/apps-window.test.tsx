@@ -10,6 +10,7 @@ interface Size {
   height: number;
   width: number;
 }
+
 let resize: (width: number, height: number) => void = vi.fn();
 
 beforeEach(() => {
@@ -76,9 +77,11 @@ describe("AppsWindow", () => {
 
   it("keeps the first app in view when the page size changes", () => {
     render(<AppsWindow />);
+
     for (let i = 0; i < 3; i += 1) {
       fireEvent.click(screen.getByRole("button", { name: "Next apps" }));
     }
+
     resize(800, 375);
     expect(tiles().map((a) => a.getAttribute("href"))).toContain(APPS[3]?.href);
   });
@@ -94,6 +97,7 @@ describe("AppsWindow", () => {
   it("opens every app in a new tab", () => {
     render(<AppsWindow />);
     resize(1200, 500);
+
     for (const tile of tiles()) {
       expect(tile.getAttribute("target")).toBe("_blank");
       expect(tile.getAttribute("rel")).toBe("noreferrer");

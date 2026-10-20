@@ -13,16 +13,20 @@ const setup = () => {
   let now = 0;
   let notesOpen = true;
   let buddy: BuddySpot | null = null;
+
   const run = (ms: number) => {
     const end = now + ms;
+
     while (now < end) {
       now += DT * 1000;
       const pose = brain.step(now, DT, world, null, notesOpen, buddy);
+
       if (pose.closeNotes) {
         notesOpen = false;
       }
     }
   };
+
   return {
     brain,
     closeNotes: () => {
@@ -46,6 +50,7 @@ const settled = () => {
   t.run(15_000);
   t.closeNotes();
   t.run(100);
+
   return t;
 };
 
@@ -134,19 +139,24 @@ describe("Brain", () => {
     const games = new Set<Action>(["hearts", "napTogether", "picnic", "tag"]);
     const counts: Record<string, number> = {};
     let repeats = 0;
+
     for (const [i, action] of picked.entries()) {
       counts[action] = (counts[action] ?? 0) + 1;
+
       if (games.has(action) && picked[i - 1] === action) {
         repeats += 1;
       }
     }
+
     const played = [...games].map((g) => counts[g] ?? 0);
     const total = played.reduce((a, b) => a + b, 0);
     expect(total).toBeGreaterThan(100);
+
     for (const n of played) {
       expect(n / total).toBeGreaterThan(0.15);
       expect(n / total).toBeLessThan(0.35);
     }
+
     expect(repeats).toBe(0);
   });
 
@@ -155,9 +165,11 @@ describe("Brain", () => {
     const from = t.seen.length;
     t.run(30 * 60 * 1000);
     const started = t.seen.slice(from);
+
     const backToBack = started.filter(
       (action, i) => i > 0 && action !== "walk" && started[i - 1] !== "walk"
     );
+
     expect(backToBack).toEqual([]);
   });
 
@@ -165,8 +177,10 @@ describe("Brain", () => {
     const t = settled();
     const from = t.seen.length;
     t.run(30 * 60 * 1000);
+
     const perMinute =
       t.seen.slice(from).filter((action) => action !== "walk").length / 30;
+
     expect(perMinute).toBeGreaterThan(3);
     expect(perMinute).toBeLessThan(7);
   });
@@ -178,9 +192,11 @@ describe("Brain", () => {
     const lengths: number[] = [];
     let start = 0;
     let last: Action = t.brain.action;
+
     for (let i = 0; i < 60 * 60 * 60 && lengths.length < 12; i += 1) {
       t.run(1000 / 60);
       const { action } = t.brain;
+
       if (action !== last) {
         if (action === "tag") {
           start = t.now;
@@ -188,10 +204,13 @@ describe("Brain", () => {
         } else if (last === "tag") {
           lengths.push(t.now - start);
         }
+
         last = action;
       }
     }
+
     expect(its).toEqual(new Set(["buddy", "tokkae"]));
+
     for (const ms of lengths) {
       expect(ms).toBeGreaterThan(9900);
       expect(ms).toBeLessThan(10_100);

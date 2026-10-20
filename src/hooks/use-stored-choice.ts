@@ -7,6 +7,7 @@ const EVENT = "stored-choice";
 const subscribe = (onChange: () => void) => {
   window.addEventListener("storage", onChange);
   window.addEventListener(EVENT, onChange);
+
   return () => {
     window.removeEventListener("storage", onChange);
     window.removeEventListener(EVENT, onChange);
@@ -27,6 +28,7 @@ export const useStoredChoice = <T extends string>(
     () => options.find((o) => o === store.get(key)) ?? fallback,
     () => fallback
   );
+
   const set = useCallback(
     (next: T) => {
       store.set(key, next);
@@ -34,5 +36,6 @@ export const useStoredChoice = <T extends string>(
     },
     [key]
   );
+
   return [value, set] as const;
 };

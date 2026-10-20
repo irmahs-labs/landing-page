@@ -14,8 +14,10 @@ export interface ChatRequest {
 
 /** How much of the conversation goes to the model with each question */
 export const MAX_HISTORY = 12;
+
 /** The longest question a visitor can type */
 export const MAX_MESSAGE_LENGTH = 500;
+
 // Answers run longer than questions, but not this long
 const MAX_ANSWER_LENGTH = 4000;
 
@@ -28,14 +30,18 @@ export const parseConversation = (
   body: ChatRequest | null
 ): ChatMessage[] | null => {
   const messages = body?.messages;
+
   if (!Array.isArray(messages)) {
     return null;
   }
+
   const conversation: ChatMessage[] = [];
+
   for (const message of messages.slice(-MAX_HISTORY)) {
     const role = message?.role;
     const raw = message?.content;
     const content = String(raw).trim();
+
     if (
       (role !== "user" && role !== "assistant") ||
       // Only text is its own String(): not a number, an object or nothing
@@ -45,9 +51,12 @@ export const parseConversation = (
     ) {
       return null;
     }
+
     conversation.push({ content, role });
   }
+
   const last = conversation.at(-1);
+
   if (
     !last ||
     last.role !== "user" ||
@@ -55,5 +64,6 @@ export const parseConversation = (
   ) {
     return null;
   }
+
   return conversation;
 };
