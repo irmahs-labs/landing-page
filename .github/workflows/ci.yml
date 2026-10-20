@@ -51,6 +51,8 @@ jobs:
           # dummy credentials can't reach Spotify, so expect the 502 fallback
           test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
           test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'
+          # a malformed question is turned away before OpenRouter is called
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{"messages":[]}' localhost:3000/api/chat)" = 400
 
   # The branch rules require a check named "checks". It fails if any job
   # above failed, was cancelled or skipped; list new jobs in needs.
