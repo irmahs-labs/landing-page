@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 20 October 2026
 
+- **#53 @types/node stays on Node 22:** Dependabot no longer proposes a new major of `@types/node` on its own; the types move with the Node version the site runs on.
 - **#52 Ask about me, a chat bot:** a chat button in the bottom-right corner opens `ask_me.chat`, where visitors ask about Irma's work, studies, skills and apps. `POST /api/chat` checks the conversation, allows each visitor 8 questions a minute and asks OpenRouter (`openai/gpt-4o`) with a profile built from the CV, the apps and the socials. The key stays on the server as `OPENROUTER_API_KEY`, a new repository secret that the deploy writes to `.env`.
 - **#48 CodeQL and Dependabot:** CodeQL code scanning from irmahs-labs/workflows checks the code and the workflows on each pull request and every week, with findings in the Security tab. Dependabot opens monthly pull requests for npm packages and GitHub Actions, minor and patch updates grouped.
 - **#47 CI from the shared irmahs-labs workflow:** Lint and format, Type-check, Tests and Docker build now come from irmahs-labs/workflows, shared with every other repo, and show as `app / …` on a pull request. The Build and smoke test job stays this repo's own.
