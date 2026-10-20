@@ -12,6 +12,7 @@ import type { Weather } from "@/lib/weather";
 
 import { AccountButton } from "./account-button";
 import { AppsWindow } from "./apps-window";
+import { ChatWindow } from "./chat-window";
 import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
 import { Player } from "./player";
@@ -122,6 +123,7 @@ export const Landing = () => {
         </main>
       </div>
 
+      <ChatWindow />
       <Tokkae nudge={nudge} playmate={playmateOn} />
     </>
   );

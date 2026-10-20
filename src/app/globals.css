@@ -1372,6 +1372,147 @@ input:focus-visible {
   }
 }
 
+/* ---------- chat ----------
+   A button in the bottom-right corner opening ask_me.chat above it. Over
+   Tokkae, so it never walks between the visitor and the text box. */
+.chat-dock {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.chat-launcher {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 0 12px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.chat-launcher:hover {
+  background-color: var(--raised-hover);
+}
+.chat-launcher svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.chat-window {
+  width: min(340px, calc(100vw - 40px));
+  height: min(440px, calc(100vh - 120px));
+}
+.chat-log {
+  font-family: var(--font-text);
+  list-style: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.chat-msg {
+  max-width: 85%;
+  padding: 8px 11px;
+  border: 1.5px solid var(--line);
+  border-radius: 9px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.chat-msg.is-assistant {
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+  background-color: var(--raised);
+}
+.chat-msg.is-user {
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+  background-color: var(--bar);
+  color: var(--bar-text);
+}
+.chat-msg.is-typing {
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px 10px;
+}
+.chat-chip {
+  font-family: var(--font-text);
+  padding: 4px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background-color: var(--alt);
+  font-size: 13px;
+}
+.chat-chip:hover {
+  background-color: var(--raised-hover);
+}
+.chat-error {
+  font-family: var(--font-text);
+  margin: 0;
+  padding: 0 12px 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.chat-form {
+  flex: none;
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1.5px solid var(--line);
+  background-color: var(--panel);
+}
+.chat-input {
+  font-family: var(--font-text);
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  background-color: var(--raised);
+  color: var(--text);
+  font-size: 14px;
+}
+.chat-send {
+  flex: none;
+  height: 36px;
+  padding: 0 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  background-color: var(--bar);
+  color: var(--bar-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.chat-send:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.chat-chip:focus-visible,
+.chat-send:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
 /* ---------- smaller screens ---------- */
 /* The side column no longer fits beside the apps: it moves below, as a row */
 @media (max-width: 1150px) {
@@ -1475,6 +1616,15 @@ input:focus-visible {
   .desk-side {
     flex: none;
     width: 100%;
+  }
+  .chat-dock {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+  }
+  .chat-window {
+    width: 100%;
+    height: min(440px, calc(100vh - 100px));
   }
   /* Full width at their content's height; no dragging or resizing on a phone.
      Only the desk's windows: the patch notes popup keeps its own width */
