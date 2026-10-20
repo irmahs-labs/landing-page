@@ -4,7 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 20 October 2026
 
-- **#46 One CI job per check:** CI's single "checks" job becomes Lint and format, Type-check, Tests, Build and smoke test, and Docker build, so each pull request lists every check with its own result. The steps are the same, and the jobs run side by side.
+- **#46 One CI job per check:** CI's single "checks" job becomes Lint and format, Type-check, Tests, Build and smoke test, and Docker build, so each pull request lists every check with its own result. The steps are the same, and the jobs run side by side. A last job keeps the name `checks`, which the branch rules require, and passes only when all the others did.
 
 ## 19 October 2026
 
