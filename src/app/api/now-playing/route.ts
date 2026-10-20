@@ -9,6 +9,7 @@ export const GET = async () => {
     });
   } catch (error) {
     console.error(error);
+
     return Response.json({ playing: false }, { status: 502 });
   }
 };

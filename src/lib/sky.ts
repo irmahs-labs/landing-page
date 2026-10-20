@@ -11,20 +11,25 @@ const sunTimes = (date: Date, lat: number, lon: number) => {
   const n = Math.round(d - 0.0009 - lw / (2 * Math.PI));
   const ds = 0.0009 + lw / (2 * Math.PI) + n;
   const M = rad * (357.5291 + 0.98560028 * ds);
+
   const C =
     rad *
     (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+
   const L = M + C + rad * 102.9372 + Math.PI;
   const dec = Math.asin(Math.sin(rad * 23.4397) * Math.sin(L));
   const Jnoon = J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+
   const w = Math.acos(
     (Math.sin(-0.833 * rad) - Math.sin(phi) * Math.sin(dec)) /
       (Math.cos(phi) * Math.cos(dec))
   );
+
   const a = 0.0009 + (w + lw) / (2 * Math.PI) + n;
   const Jset = J2000 + a + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
   const Jrise = Jnoon - (Jset - Jnoon);
   const toDate = (j: number) => new Date((j + 0.5 - J1970) * dayMs);
+
   return { rise: toDate(Jrise), set: toDate(Jset) };
 };
 
@@ -36,8 +41,10 @@ const localMinutes = (date: Date, tz: string) => {
       minute: "2-digit",
       timeZone: tz,
     }).formatToParts(date);
+
     const h = Number(parts.find((x) => x.type === "hour")?.value) % 24;
     const m = Number(parts.find((x) => x.type === "minute")?.value);
+
     return h * 60 + m;
   } catch {
     return date.getHours() * 60 + date.getMinutes();
@@ -66,10 +73,13 @@ export const skyPhase = (city: City, now: Date): SkyPhase => {
   const dayLen = setM - riseM;
   const span = isDay ? dayLen : 1440 - dayLen;
   let into = m - riseM;
+
   if (!isDay) {
     into = m >= setM ? m - setM : m + 1440 - setM;
   }
+
   const edge = Math.min(into, span - into);
+
   return {
     deep: isDay ? 0 : Math.min(1, edge / 60),
     isDay,
@@ -84,5 +94,6 @@ export const skyTint = ({ isDay, twilight }: SkyPhase) => {
   if (isDay) {
     return "#f28c5a";
   }
+
   return twilight > 0.5 ? "#c96a5a" : "#1b2550";
 };

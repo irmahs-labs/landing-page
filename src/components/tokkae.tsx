@@ -91,11 +91,14 @@ const syncBuddy = (
 const placeBuddy = (el: HTMLElement, pose: BuddyPose) => {
   el.style.transform = `translate(${pose.x.toFixed(1)}px, ${pose.y.toFixed(1)}px)`;
   const face = pose.face > 0 ? "right" : "left";
+
   if (el.dataset.face !== face) {
     el.dataset.face = face;
     el.style.setProperty("--face", String(pose.face));
   }
+
   const behind = pose.behind ? "1" : "0";
+
   if (el.dataset.behind !== behind) {
     el.dataset.behind = behind;
   }
@@ -116,9 +119,11 @@ const releaseHeart = (
   y: number
 ) => {
   const heart = template.cloneNode(true);
+
   if (!(heart instanceof HTMLElement)) {
     return;
   }
+
   heart.classList.remove("is-off");
   heart.style.left = `${x.toFixed(0)}px`;
   heart.style.top = `${y.toFixed(0)}px`;
@@ -129,9 +134,11 @@ const releaseHeart = (
 
 const PatchNotes = ({ onClose }: { onClose: () => void }) => {
   const [latest] = CHANGELOG;
+
   if (!latest) {
     return null;
   }
+
   return (
     <Window className="patch-notes" label="What's new" title="patch_notes.txt">
       <div className="patch-body">
@@ -193,23 +200,29 @@ export const Tokkae = ({
   // Only the visitor's own switches; the saved choice on load is no news
   useEffect(() => {
     const brain = brainRef.current;
+
     if (!(brain && nudge)) {
       return;
     }
+
     brain.react(nudge.kind, performance.now());
   }, [nudge]);
 
   useEffect(() => {
     const el = root.current;
+
     if (!el) {
       return;
     }
+
     const frames = [...el.querySelectorAll(".tokkae-sprite > svg")];
     let shownFrame = 0;
+
     const showFrame = (i: number) => {
       if (i === shownFrame) {
         return;
       }
+
       frames[shownFrame]?.classList.add("is-off");
       frames[i]?.classList.remove("is-off");
       shownFrame = i;
@@ -219,6 +232,7 @@ export const Tokkae = ({
       const world = measure(el);
       el.style.transform = `translate(16px, ${world.vh - world.h - 4}px)`;
       el.dataset.side = "left";
+
       return;
     }
 
@@ -233,12 +247,16 @@ export const Tokkae = ({
       shown: 0,
       since: 0,
     };
+
     const showCoq = (pose: BuddyPose, now: number) => {
       const anim = coqAnim({ action: brain.action, ...pose });
+
       if (anim !== coq.anim) {
         coq = { ...coq, anim, since: now };
       }
+
       const next = coqFrame(anim, now - coq.since);
+
       if (next !== coq.shown) {
         const sprites = buddyEl.current?.querySelectorAll(".buddy-coq > svg");
         sprites?.[coq.shown]?.classList.add("is-off");
@@ -256,10 +274,13 @@ export const Tokkae = ({
     ) => {
       const buddy = buddyRef.current;
       const box = buddyEl.current;
+
       if (!(buddy && box)) {
         return;
       }
+
       const room = roomFor(box);
+
       const pose = buddy.step(dt, room, {
         action: brain.action,
         h: world.h,
@@ -268,8 +289,10 @@ export const Tokkae = ({
         x,
         y,
       });
+
       placeBuddy(box, pose);
       showCoq(pose, now);
+
       if (pose.heart && heartTpl.current && layer.current) {
         const jitter = (Math.random() - 0.5) * room.size * 0.3;
         const hx = pose.x + room.size / 2 + jitter;
@@ -282,6 +305,7 @@ export const Tokkae = ({
       prev = now;
       syncBuddy(brain, buddyRef, buddyEl.current, playmateRef.current, now);
       const world = measure(el);
+
       const pose = brain.step(
         now,
         dt,
@@ -290,11 +314,14 @@ export const Tokkae = ({
         notesOpenRef.current,
         buddyRef.current?.spot() ?? null
       );
+
       moveBuddy(dt, world, pose.x, pose.y, now);
+
       if (pose.closeNotes) {
         notesOpenRef.current = false;
         setNotesOpen(false);
       }
+
       showFrame(pose.frame);
       el.dataset.flip = pose.flip ? "1" : "0";
       el.dataset.side = pose.side;
@@ -311,8 +338,10 @@ export const Tokkae = ({
         };
       }
     };
+
     window.addEventListener("pointermove", onMove, { passive: true });
     frame = requestAnimationFrame(tick);
+
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
@@ -325,11 +354,14 @@ export const Tokkae = ({
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     const brain = brainRef.current;
     const el = root.current;
+
     const onNotes =
       e.target instanceof Element && e.target.closest(".patch-notes");
+
     if (!(brain && el) || onNotes || e.button !== 0) {
       return;
     }
+
     e.preventDefault();
     el.setPointerCapture(e.pointerId);
     const start = { x: e.clientX, y: e.clientY };
@@ -342,31 +374,37 @@ export const Tokkae = ({
         y: ev.clientY,
       };
       const far = Math.hypot(ev.clientX - start.x, ev.clientY - start.y) > 6;
+
       if (!held && far) {
         held = true;
         brain.grab(performance.now());
         el.classList.add("is-held");
       }
+
       if (held) {
         brain.holdAt(ev.clientX, ev.clientY, measure(el));
       }
     };
+
     const up = (ev: PointerEvent) => {
       pointerRef.current = {
         at: performance.now(),
         x: ev.clientX,
         y: ev.clientY,
       };
+
       if (held) {
         brain.release(performance.now());
       } else {
         brain.poke(performance.now());
       }
+
       el.classList.remove("is-held");
       el.removeEventListener("pointermove", move);
       el.removeEventListener("pointerup", up);
       el.removeEventListener("pointercancel", up);
     };
+
     el.addEventListener("pointermove", move);
     el.addEventListener("pointerup", up);
     el.addEventListener("pointercancel", up);

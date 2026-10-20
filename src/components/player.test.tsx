@@ -55,6 +55,7 @@ describe("Player", () => {
     });
     render(<Player now={null} />);
     await screen.findByText("A song");
+
     for (const name of ["Shuffle", "Previous track", "Next track", "Repeat"]) {
       expect(screen.getByRole("button", { name }).getAttribute("title")).toBe(
         "coming soon"
@@ -69,10 +70,12 @@ describe("Player", () => {
 
     const next = screen.getByRole("button", { name: "Next song" });
     const moods = [];
+
     for (let i = 0; i < 9; i += 1) {
       fireEvent.click(next);
       moods.push(screen.getByText(/^Sings /u).textContent);
     }
+
     expect(moods).toEqual([
       "Sings with joy",
       "Sings happily",

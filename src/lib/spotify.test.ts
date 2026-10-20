@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const token = () => Response.json({ access_token: "abc", expires_in: 3600 });
+
 const track = {
   is_playing: true,
   item: {
@@ -17,6 +18,7 @@ const track = {
 /** A fresh copy of the module, so its token and cache start empty */
 const load = () => {
   vi.resetModules();
+
   return import("./spotify");
 };
 
@@ -61,10 +63,12 @@ describe("getNowPlaying", () => {
 
   it("asks Spotify at most once every ten seconds, moving the progress on", async () => {
     vi.useFakeTimers({ now: 1_000_000 });
+
     const fetch = vi
       .fn()
       .mockResolvedValueOnce(token())
       .mockResolvedValueOnce(Response.json(track));
+
     vi.stubGlobal("fetch", fetch);
     const { getNowPlaying } = await load();
     await getNowPlaying();

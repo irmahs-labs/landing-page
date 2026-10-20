@@ -35,6 +35,7 @@ export const AccountButton = () => {
   if (user === undefined) {
     return null;
   }
+
   const href = signInUrl(window.location.href);
 
   if (user === null) {
@@ -49,6 +50,7 @@ export const AccountButton = () => {
   }
 
   const firstName = user.name.split(" ")[0] || user.email;
+
   return (
     <a
       className="btn panel account"

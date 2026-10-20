@@ -16,6 +16,7 @@ describe("APPS", () => {
   it("links every app once, over https", () => {
     const hrefs = APPS.map((app) => app.href);
     expect(new Set(hrefs).size).toBe(hrefs.length);
+
     for (const href of hrefs) {
       expect(new URL(href).protocol).toBe("https:");
     }

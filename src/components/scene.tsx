@@ -40,16 +40,20 @@ export const Scene = ({ phase, rainy }: SceneProps) => {
   const viewport = useViewport();
 
   let bodyStyle: CSSProperties | undefined;
+
   if (phase && viewport) {
     // The sun and moon scale with the screen: 15.5% of its short side
     const size = Math.round(
       Math.min(180, Math.max(60, Math.min(viewport.w, viewport.h) * 0.155))
     );
+
     const margin = viewport.w >= 900 ? size * 0.8 : 15;
     const rising = phase.prog < 0.5;
+
     const yFrac = rising
       ? 0.85 - (phase.prog / 0.5) * 0.556
       : 0.294 + ((phase.prog - 0.5) / 0.5) * 0.556;
+
     const left = rising ? viewport.w - margin - size : margin;
     bodyStyle = {
       height: `${size}px`,
@@ -61,6 +65,7 @@ export const Scene = ({ phase, rainy }: SceneProps) => {
   }
 
   let tintOpacity = 0;
+
   if (phase) {
     tintOpacity = phase.isDay
       ? phase.twilight * 0.28

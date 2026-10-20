@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 /** A fresh route, so the Spotify module's token and cache start empty */
 const load = () => {
   vi.resetModules();
+
   return import("./route");
 };
 

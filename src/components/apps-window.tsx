@@ -60,15 +60,19 @@ const fit = (room: number, min: number) =>
 const layoutFor = (w: number, h: number): Layout => {
   const cols = fit(w, TILE.w);
   const rows = fit(h, TILE.h);
+
   if ((cols >= 3 && rows >= 2) || (cols >= 2 && rows >= 3)) {
     return { cols: cols >= 3 ? 3 : 2, count: 6 };
   }
+
   if (cols >= 2 && rows >= 2) {
     return { cols: 2, count: 4 };
   }
+
   if (cols >= 2 || rows >= 2) {
     return { cols: cols >= 2 ? 2 : 1, count: 2 };
   }
+
   return { cols: 1, count: 1 };
 };
 
@@ -85,24 +89,30 @@ export const AppsWindow = () => {
   const pages = Math.ceil(APPS.length / count);
   const page = Math.floor(first / count);
   const shown = APPS.slice(page * count, page * count + count);
+
   const go = (step: number) =>
     setFirst(((page + step + pages) % pages) * count);
 
   useEffect(() => {
     const el = grid.current;
+
     if (!el) {
       return;
     }
+
     const observer = new ResizeObserver(([entry]) => {
       if (!entry) {
         return;
       }
+
       const next = layoutFor(entry.contentRect.width, entry.contentRect.height);
       setLayout((prev) =>
         prev.cols === next.cols && prev.count === next.count ? prev : next
       );
     });
+
     observer.observe(el);
+
     return () => observer.disconnect();
   }, []);
 

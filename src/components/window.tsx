@@ -42,14 +42,18 @@ export const Window = ({
   // resize corner included
   useEffect(() => {
     const el = ref.current;
+
     if (!el) {
       return;
     }
+
     const raise = () => {
       topLayer += 1;
       el.style.zIndex = String(topLayer);
     };
+
     el.addEventListener("pointerdown", raise);
+
     return () => el.removeEventListener("pointerdown", raise);
   }, []);
 
@@ -57,20 +61,24 @@ export const Window = ({
     const el = ref.current;
     // Phones scroll the page with the title bar instead
     const phone = window.matchMedia("(max-width: 600px)").matches;
+
     if (!el || phone || e.button !== 0) {
       return;
     }
+
     e.preventDefault();
     const bar = e.currentTarget;
     bar.setPointerCapture(e.pointerId);
     el.classList.add("is-dragging");
 
     const rect = el.getBoundingClientRect();
+
     // Where the window would sit undragged, and where the grab started
     const home = {
       left: rect.left - offset.current.x,
       top: rect.top - offset.current.y,
     };
+
     const grab = {
       x: e.clientX - offset.current.x,
       y: e.clientY - offset.current.y,
@@ -83,20 +91,24 @@ export const Window = ({
         80 - rect.width - home.left,
         window.innerWidth - 80 - home.left
       );
+
       const y = clamp(
         ev.clientY - grab.y,
         -home.top,
         window.innerHeight - 32 - home.top
       );
+
       offset.current = { x, y };
       el.style.translate = `${x}px ${y}px`;
     };
+
     const end = () => {
       bar.removeEventListener("pointermove", move);
       bar.removeEventListener("pointerup", end);
       bar.removeEventListener("pointercancel", end);
       el.classList.remove("is-dragging");
     };
+
     bar.addEventListener("pointermove", move);
     bar.addEventListener("pointerup", end);
     bar.addEventListener("pointercancel", end);

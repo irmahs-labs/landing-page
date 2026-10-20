@@ -14,6 +14,7 @@ export const CITIES = {
 } as const;
 
 export type CityId = keyof typeof CITIES;
+
 export type City = (typeof CITIES)[CityId];
 
 export const DEFAULT_CITY: CityId = "paris";

@@ -7,6 +7,7 @@ import type { BuddyPose, Mate, Room } from "./tokkae-buddy";
 // Coq's 18 × 17 frame at 4px a pixel
 const room: Room = { height: 68, size: 72, speed: 108, vh: 900, vw: 1440 };
 const DT = 1 / 60;
+
 // Tokkae standing on the floor in the middle of the screen
 const tokkae = (action: Action, extra: Partial<Mate> = {}): Mate => ({
   action,
@@ -20,9 +21,11 @@ const tokkae = (action: Action, extra: Partial<Mate> = {}): Mate => ({
 
 const run = (buddy: Buddy, mate: Mate, seconds: number) => {
   const poses: BuddyPose[] = [];
+
   for (let t = 0; t < seconds; t += DT) {
     poses.push(buddy.step(DT, room, mate));
   }
+
   return poses;
 };
 
@@ -82,6 +85,7 @@ describe("Buddy", () => {
     expect(behind).toBeLessThan(0.7);
     const floor = 828 + 68;
     const mid = 684 + 72 / 2;
+
     for (const p of poses) {
       expect(p.y + room.height).toBeLessThanOrEqual(floor + 7);
       // Round and round, it keeps facing the sleeping Tokkae

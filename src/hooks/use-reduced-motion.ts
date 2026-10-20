@@ -5,6 +5,7 @@ const QUERY = "(prefers-reduced-motion: reduce)";
 const subscribe = (onChange: () => void) => {
   const mq = window.matchMedia(QUERY);
   mq.addEventListener("change", onChange);
+
   return () => mq.removeEventListener("change", onChange);
 };
 

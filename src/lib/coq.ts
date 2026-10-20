@@ -308,17 +308,21 @@ export const coqAnim = ({ action, eating, moving }: CoqDoing): CoqAnim => {
   if (eating) {
     return "peck";
   }
+
   if (moving) {
     return "walk";
   }
+
   if (action === "hello" || action === "greet") {
     return "crow";
   }
+
   return action === "hearts" ? "hop" : "idle";
 };
 
 /** The frame of `anim` to show `elapsed` ms after it started */
 export const coqFrame = (anim: CoqAnim, elapsed: number) => {
   const { ms, seq } = COQ_ANIMS[anim];
+
   return seq[Math.floor(elapsed / ms) % seq.length] ?? 0;
 };
