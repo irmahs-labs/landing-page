@@ -10,15 +10,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Lint and format, Type-check, Tests, Build and Docker build, shared by every
+  # Lint and format, Type-check, Tests and Docker build, shared by every
   # irmahs-labs repo (irmahs-labs/workflows); only what differs here is passed.
   app:
     uses: irmahs-labs/workflows/.github/workflows/app-ci.yml@main
     with:
       node-version: "22"
       build: ""
-      compose-check: cp .env.example .env && docker compose config --quiet
-      docker-image: landing-page-web
+      compose-check: docker compose config --quiet --no-interpolate
 
   build:
     name: Build and smoke test
