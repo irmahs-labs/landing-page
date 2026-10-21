@@ -13,8 +13,8 @@ const GREETING =
 
 const SUGGESTIONS = [
   "Who is Irma?",
-  "What does she work on?",
-  "Which languages does she speak?",
+  "What has she built?",
+  "How can I contact her?",
 ];
 
 // A speech bubble with three dots

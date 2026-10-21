@@ -45,13 +45,19 @@ describe("ChatWindow", () => {
   it("asks a suggested question in one click", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(Response.json({ reply: "French and more." }))
+      vi
+        .fn()
+        .mockResolvedValue(
+          Response.json({ reply: "Email her at irma.houversing@gmail.com." })
+        )
     );
     open();
     fireEvent.click(
-      screen.getByRole("button", { name: "Which languages does she speak?" })
+      screen.getByRole("button", { name: "How can I contact her?" })
     );
-    expect(await screen.findByText("French and more.")).toBeTruthy();
+    expect(
+      await screen.findByText("Email her at irma.houversing@gmail.com.")
+    ).toBeTruthy();
   });
 
   it("says so when there are too many questions", async () => {
