@@ -13,6 +13,9 @@ describe("SYSTEM_PROMPT", () => {
       "Achievement: internal incident-monitoring tool"
     );
     expect(SYSTEM_PROMPT).not.toContain("alma-housila");
+    // Kept for interviews and for me, not for visitors
+    expect(SYSTEM_PROMPT).not.toContain("technical disagreement");
+    expect(SYSTEM_PROMPT).not.toContain("Server and security");
   });
 
   it("uses my English job titles unless asked for the French ones", () => {

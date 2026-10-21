@@ -82,13 +82,6 @@ Job titles: she presents herself as Software Engineer for Euro Informations and 
 - **Action**: fixed many accessibility issues; tested systematically with VoiceOver (iOS) and TalkBack (Android); took charge of every accessibility topic in the team.
 - **Result**: a more accessible app for a large share of users.
 
-### Achievement: technical disagreement over a shared search component (mainly for interviews)
-
-- **Situation**: my team proposed a common search component, reusable by every feature team.
-- **Task**: defend this choice against the tech leads of the other teams, who found it too complex to share and doubted it would be adopted.
-- **Action**: took an active part in the technical discussions and argued the case despite being less senior; accepted the final decision, which went to the tech leads.
-- **Result**: each team built its own component, leading to duplicated code and functional inconsistencies, which validated the original proposal in hindsight. A formative experience of arguing a technical position and adapting to a collective decision.
-
 ---
 
 ## Sogeti (Capgemini Group) | Consultant Testeur, CV title: Test Automation Engineer, internship (Pessac, April 2022 to June 2022)
@@ -154,15 +147,6 @@ My personal lab: a GitHub organization (9 public repos and 1 private) holding we
 - **workflows** (October 20, 2026): reusable GitHub Actions workflows called by every repo, so one change reaches all repos on their next run. app-ci.yml runs one job per check (lint and format, type-check, tests, build, compose validation and Docker build); each repo adds its own jobs (Playwright, migrations, smoke test) and ends with a checks job, the only one branch rules require, which fails if any job failed, was cancelled or skipped. codeql.yml for code security scanning.
 - **.github** (October 20, 2026): the organization's public profile page, listing the apps.
 
-#### Server and security
-
-- Hetzner server on Ubuntu with Docker and Docker Compose; firewall limited to SSH, HTTP and HTTPS (including HTTP/3)
-- Key-only SSH (passwords and root login disabled); separate ed25519 keys for admin and deployment, rotated
-- Dedicated deploy user with no sudo, which can only pull code and run Docker Compose; one /srv/<app> folder per app
-- Secrets sent to the server over SSH stdin, so they never appear in a command line or a log
-- Private repo deployed with a read-only deploy key
-- Cloudflare-proxied DNS (hides the server's IP); support@ and security@irmahs.dev forwarded, DMARC set to p=reject against domain spoofing
-
 #### Timeline
 
 | Date (2026) | Milestone |
@@ -185,7 +169,7 @@ My personal lab: a GitHub organization (9 public repos and 1 private) holding we
 - **Private apps**: access restricted through Caddy forward auth and the auth service, code in a private repo; GitHub Free plan limits accepted (no CodeQL or branch rules on a private repo, so the PR-only rule is carried by its CLAUDE.md)
 - **Standardized repos**: shared template and workflows so every repo has the same rules, the same CI and the same security checks from its first commit
 - **Lessons learned**: percent-encode passwords in Postgres URLs, never rename a server folder (it holds the data volume), mount the Caddy folder rather than the single file, never require a check that only runs on some paths
-- **Next steps**: nightly pg_dump backups of the databases (auth, pantry-spinner, private app), SSH key rotation; for the chat bot: streamed answers, a cheaper model, anonymous question logging, reuse on other apps
+- **Next steps** for the chat bot: streamed answers, a cheaper model, anonymous question logging, reuse on other apps
 
 #### Tests by repo
 

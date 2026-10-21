@@ -4,7 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 21 October 2026
 
-- **#55 The chat bot answers from my master CV:** every achievement, project, volunteering role and skill from my master CV, without my phone number or the private app's name. It calls my roles Software Engineer (Euro Informations, La Banque Postale) and Test Automation Engineer (Sogeti), and gives the French titles only when asked.
+- **#55 The chat bot answers from my master CV:** every achievement, project, volunteering role and skill from my master CV, without my phone number, the private app's name, the interview-only story about a technical disagreement, or my server's security setup. It calls my roles Software Engineer (Euro Informations, La Banque Postale) and Test Automation Engineer (Sogeti), and gives the French titles only when asked.
 - **#54 The chat bot gives my email and knows what I'm looking for:** visitors who want to get in touch are given my email (never my phone number), and the bot points to it when it doesn't know an answer. It also knows the kind of role I'm looking for, and that Tokkae the gecko stands for Cambodia and Coq the rooster for my French identity. It can tell my story too: growing up between Cambodia and France, how I came to code, and my values and interests, from my portfolio's About page. It answers with a short version first (for example, who I am, my main skills and that I want front-end or full-stack roles) and goes into detail only when asked. The suggested questions are now "Who is Irma?", "What has she built?" and "How can I contact her?".
 
 ## 20 October 2026
