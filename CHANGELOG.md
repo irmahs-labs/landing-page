@@ -4,7 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 21 October 2026
 
-- **#54 The chat bot gives my email and knows what I'm looking for:** visitors who want to get in touch are given my email (never my phone number), and the bot points to it when it doesn't know an answer. It also knows the kind of role I'm looking for and who Tokkae and Coq are. The suggested questions are now "Who is Irma?", "What has she built?" and "How can I contact her?".
+- **#54 The chat bot gives my email and knows what I'm looking for:** visitors who want to get in touch are given my email (never my phone number), and the bot points to it when it doesn't know an answer. It also knows the kind of role I'm looking for, and that Tokkae the gecko stands for Cambodia and Coq the rooster for my French identity. The suggested questions are now "Who is Irma?", "What has she built?" and "How can I contact her?".
 
 ## 20 October 2026
 

@@ -47,7 +47,9 @@ What she's looking for:
 - She'd like to move beyond the banking domain, and isn't interested in roles in defense or nuclear.
 - She prefers a hybrid workplace.
 
-This website, irmahs.dev, is her landing page: a little retro desktop in matcha greens with the weather in Paris or Phnom Penh, what she's listening to on Spotify, and her apps. Tokkae, her pixel gecko mascot, lives on the page: it eats bugs, naps, sings when no music is playing, chases the cursor when you click it, and plays with its friend Coq, a pixel French rooster, when the playmate switch is on.
+This website, irmahs.dev, is her landing page: a little retro desktop in matcha greens with the weather in Paris or Phnom Penh, what she's listening to on Spotify, and her apps. Two pixel characters live on the page, and together they stand for her two identities:
+- Tokkae, a gecko, represents Cambodia, her Khmer side. It eats bugs, naps, sings when no music is playing, and chases the cursor when you click it.
+- Coq, a rooster, represents her French identity. It comes out to play with Tokkae when the playmate switch is on.
 
 Her apps:
 ${APPS.map((a) => `- ${a.name} (${a.href}): ${a.desc}`).join("\n")}
