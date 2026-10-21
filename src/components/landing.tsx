@@ -10,11 +10,11 @@ import { skyPhase } from "@/lib/sky";
 import { fetchWeather } from "@/lib/weather";
 import type { Weather } from "@/lib/weather";
 
-import { AccountButton } from "./account-button";
 import { AppsWindow } from "./apps-window";
 import { ChatWindow } from "./chat-window";
 import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
+import { Header } from "./header";
 import { Player } from "./player";
 import { PlaymateSwitch } from "./playmate-switch";
 import { ProfileWindow } from "./profile-window";
@@ -54,8 +54,10 @@ export const Landing = () => {
   const rainy = Boolean(wx?.rainy);
   const isDay = phase?.isDay ?? true;
 
+  // Clouds are part of the sky, so they keep their own colours in both
+  // themes: daytime ones the light cloud white, not the (themed) panel
   useEffect(() => {
-    let fill = isDay ? "var(--panel)" : "#8b9590";
+    let fill = isDay ? "#f7f8de" : "#8b9590";
 
     if (rainy) {
       fill = isDay ? "#aeb8b4" : "#5d6863";
@@ -104,15 +106,10 @@ export const Landing = () => {
       <Scene phase={phase} rainy={rainy} />
 
       <div className="page">
-        <header className="top">
+        <Header>
           <PlaymateSwitch on={playmateOn} onToggle={togglePlaymate} />
-          <div className="center-col">
-            <CityToggle current={cityId} onPick={saveCity} />
-          </div>
-          <div className="account-col">
-            <AccountButton />
-          </div>
-        </header>
+          <CityToggle current={cityId} onPick={saveCity} />
+        </Header>
 
         <main className="desk">
           <div className="desk-main">

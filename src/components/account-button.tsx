@@ -1,8 +1,9 @@
 import { useSession } from "@/hooks/use-session";
 import { signInUrl } from "@/lib/auth";
 
+// Google's own four-colour mark: never recoloured or redrawn
 const GoogleMark = () => (
-  <svg aria-hidden="true" height="18" viewBox="0 0 48 48" width="18">
+  <svg aria-hidden="true" height="16" viewBox="0 0 48 48" width="16">
     <path
       d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.4-.4-3.5z"
       fill="#FFC107"
@@ -23,9 +24,10 @@ const GoogleMark = () => (
 );
 
 /**
- * Top right: "sign in" with Google, or once signed in,
- * your picture and first name. Either way it opens the IrmaHS Labs account
- * page, which signs in, shows who you are, or signs out, then comes back here.
+ * Cute Matcha's AccountButton, as a header pill: "sign in" with Google's
+ * mark, or once signed in, your picture and first name. Either way it opens
+ * the IrmaHS Labs account page, which signs in, shows who you are, or signs
+ * out, then comes back here.
  */
 export const AccountButton = () => {
   const user = useSession();
@@ -40,11 +42,11 @@ export const AccountButton = () => {
 
   if (user === null) {
     return (
-      <a className="btn panel account" href={href} title="sign in with Google">
-        <span className="account-icon">
+      <a className="account" href={href} title="sign in with Google">
+        <span className="account__icon">
           <GoogleMark />
         </span>
-        <span className="account-text">sign in</span>
+        <span className="account__text">sign in</span>
       </a>
     );
   }
@@ -52,28 +54,24 @@ export const AccountButton = () => {
   const firstName = user.name.split(" ")[0] || user.email;
 
   return (
-    <a
-      className="btn panel account"
-      href={href}
-      title={`Signed in as ${user.email}`}
-    >
-      <span className="account-icon">
+    <a className="account" href={href} title={`Signed in as ${user.email}`}>
+      <span className="account__icon">
         {user.image ? (
           // Google's picture host refuses requests that carry a referrer, and
           // next/image would proxy a 30 px avatar through the server for nothing
           // oxlint-disable-next-line next/no-img-element -- remote avatar, sized by CSS
           <img
             alt=""
-            height={38}
+            height={30}
             referrerPolicy="no-referrer"
             src={user.image}
-            width={38}
+            width={30}
           />
         ) : (
           <span aria-hidden="true">{firstName.charAt(0).toUpperCase()}</span>
         )}
       </span>
-      <span className="account-text">{firstName}</span>
+      <span className="account__text">{firstName}</span>
     </a>
   );
 };
