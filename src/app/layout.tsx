@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fredoka, Kantumruy_Pro, Nunito } from "next/font/google";
+import { Fredoka, Kantumruy_Pro, Nunito_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
 import "./globals.css";
@@ -11,9 +11,9 @@ const fredoka = Fredoka({
 });
 
 // Reading text: links, bubbles and supporting lines
-const nunito = Nunito({
+const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
-  variable: "--font-nunito",
+  variable: "--font-nunito-sans",
   weight: ["400", "500", "600"],
 });
 
@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
   <html
-    className={`${fredoka.variable} ${nunito.variable} ${kantumruy.variable}`}
+    className={`${fredoka.variable} ${nunitoSans.variable} ${kantumruy.variable}`}
     lang="en"
   >
     <body>{children}</body>
