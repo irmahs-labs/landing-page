@@ -3,27 +3,31 @@
      at screen size. Pick a token by what the thing is, never by its hex. */
   --ground: #f3f1c8;
   --panel: #f7f8de;
-  --raised: #ffffff;
-  --raised-hover: #e3f0c6;
+  --raised: #fffdf0;
+  --raised-hover: #e8e1bd;
   --text: #2f3b34;
   --text-muted: #3f6b30;
   --outline: #2f3b34;
-  --accent: #dde87e;
-  --accent-soft: #b8d970;
+  --accent: #d4dd9c;
+  --accent-soft: #afc584;
   --on-accent: #2f3b34;
   --strong: #3b4a42;
   --on-strong: #fff3cf;
+  --selected: #afc584;
+  --on-selected: #2f3b34;
   --grid: #4e6152;
   --focus: #4a7fc0;
   --danger: #f0675c;
-  --shadow-hard: 3px 3px 0 var(--outline);
-  --shadow-soft: 2px 2px 0 var(--outline);
+  /* Hard shadows are a fixed near-black */
+  --shadow-hard: 3px 3px 0 #0f1411;
+  --shadow-soft: 2px 2px 0 #0f1411;
   /* Fixed colours for drawings, never text */
   --moss: #5c8f48;
   --gold: #f2d27a;
   --terracotta: #d9786a;
   --cream: #fff3cf;
   --white: #ffffff;
+  --ink: #2f3b34;
 
   /* The page's own names for them, as the design system lists them */
   --line: var(--outline);
@@ -39,9 +43,10 @@
     var(--moss) 0 10px,
     var(--accent-soft) 10px 20px
   );
-  --font: var(--font-fredoka), "Nunito", system-ui, sans-serif;
-  /* Nunito sets reading text: links, bubbles and supporting lines */
-  --font-text: var(--font-nunito), var(--font-fredoka), system-ui, sans-serif;
+  /* Fredoka sets titles and headers, Nunito Sans body text */
+  --font: var(--font-fredoka), "Nunito Sans", system-ui, sans-serif;
+  --font-text:
+    var(--font-nunito-sans), var(--font-fredoka), system-ui, sans-serif;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -88,6 +93,10 @@ fieldset {
 .km {
   font-family: var(--font-kantumruy), var(--font-fredoka), sans-serif;
 }
+
+/* Secondary lines sitting straight on a window's lime body (the clock's
+   sun times, the profile's role, the player's artist) are on-accent, as all
+   text on accent is: text-muted only reads on ground, panel and raised. */
 
 /* ---------- scenery ---------- */
 .scene {
@@ -267,7 +276,7 @@ fieldset {
 .panel {
   background-color: var(--panel);
   border: 1.5px solid var(--line);
-  box-shadow: 2px 2px 0 var(--line);
+  box-shadow: 2px 2px 0 #0f1411;
 }
 .btn:focus-visible,
 .tile:focus-visible,
@@ -282,12 +291,12 @@ input:focus-visible {
   flex-direction: column;
   border: 1.5px solid var(--line);
   border-radius: 9px;
-  box-shadow: 3px 3px 0 var(--line);
+  box-shadow: 3px 3px 0 #0f1411;
   overflow: hidden;
   background-color: var(--body);
 }
 .window.is-dragging {
-  box-shadow: 6px 6px 0 var(--line);
+  box-shadow: 6px 6px 0 #0f1411;
 }
 .window.is-dragging .titlebar {
   cursor: grabbing;
@@ -377,7 +386,7 @@ input:focus-visible {
   height: 24px;
   border-radius: 999px;
   border: 1.5px solid var(--line);
-  background-color: var(--body);
+  background-color: var(--raised);
   transition: background-color 0.2s ease;
 }
 .playmate-switch-track::after {
@@ -388,16 +397,17 @@ input:focus-visible {
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  background-color: var(--line);
+  background-color: var(--text);
   transition:
     transform 0.2s var(--ease),
     background-color 0.2s ease;
 }
+/* Cute Matcha's Switch: raised when off, selected when on */
 .playmate-switch[aria-checked="true"] .playmate-switch-track {
-  background-color: var(--bar);
+  background-color: var(--selected);
 }
 .playmate-switch[aria-checked="true"] .playmate-switch-track::after {
-  background-color: var(--bar-text);
+  background-color: var(--on-selected);
   transform: translateX(16px);
 }
 
@@ -421,8 +431,8 @@ input:focus-visible {
   font-weight: 500;
 }
 .seg[aria-pressed="true"] {
-  background-color: var(--bar);
-  color: var(--bar-text);
+  background-color: var(--selected);
+  color: var(--on-selected);
   border-color: var(--line);
 }
 
@@ -456,7 +466,7 @@ input:focus-visible {
 .clock-sun {
   font-size: 13px;
   font-weight: 500;
-  color: var(--muted);
+  color: var(--on-accent);
 }
 .weather {
   display: flex;
@@ -570,7 +580,7 @@ input:focus-visible {
   background-color: var(--raised);
   border: 1.5px solid var(--line);
   border-radius: 7px;
-  box-shadow: 2px 2px 0 var(--line);
+  box-shadow: 2px 2px 0 #0f1411;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -580,7 +590,7 @@ input:focus-visible {
 .tile:hover,
 .tile:focus-visible {
   transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 var(--line);
+  box-shadow: 5px 5px 0 #0f1411;
   background-color: var(--raised-hover);
 }
 /* A screenshot of the app with its icon in the corner, or the icon alone, large */
@@ -681,7 +691,7 @@ input:focus-visible {
   border-radius: 999px;
   border: 1.5px solid var(--line);
   background-color: var(--raised);
-  box-shadow: 2px 2px 0 var(--line);
+  box-shadow: 2px 2px 0 #0f1411;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -698,13 +708,13 @@ input:focus-visible {
 .pager-btn:active,
 .ctl:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 var(--line);
+  box-shadow: 1px 1px 0 #0f1411;
 }
 .pager-btn:disabled {
   opacity: 0.4;
   cursor: default;
   transform: none;
-  box-shadow: 2px 2px 0 var(--line);
+  box-shadow: 2px 2px 0 #0f1411;
 }
 /* Smaller words when the tiles share the window */
 .apps-grid:not([data-count="1"]) .tile {
@@ -850,7 +860,7 @@ input:focus-visible {
 }
 .track-artist {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--on-accent);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -910,7 +920,7 @@ input:focus-visible {
   border: 1.5px solid var(--line);
   background-color: var(--raised);
   color: var(--text);
-  box-shadow: 2px 2px 0 var(--line);
+  box-shadow: 2px 2px 0 #0f1411;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1023,7 +1033,7 @@ input:focus-visible {
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--on-accent);
 }
 .profile-line {
   font-family: var(--font-text);
@@ -1062,8 +1072,8 @@ input:focus-visible {
     color 0.8s var(--ease);
 }
 .lang.is-current {
-  background-color: var(--bar);
-  color: var(--bar-text);
+  background-color: var(--selected);
+  color: var(--on-selected);
 }
 
 /* ---------- socials ---------- */
@@ -1284,7 +1294,7 @@ input:focus-visible {
   border-radius: 999px;
   background-color: var(--bar);
   color: var(--bar-text);
-  box-shadow: 2px 2px 0 var(--line);
+  box-shadow: 2px 2px 0 #0f1411;
   font-size: 14px;
   font-weight: 500;
 }
