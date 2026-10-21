@@ -28,7 +28,7 @@ export const ProfileWindow = () => (
         <LotusIcon size={70} />
       </div>
       <div className="profile-text">
-        <h1 className="profile-name">Irma Houver Sing</h1>
+        <h2 className="profile-name">Irma Houver Sing</h2>
         <span className="profile-role">Software Engineer</span>
         <span className="profile-line">Master’s in Business Informatics</span>
         <span className="profile-line">

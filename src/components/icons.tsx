@@ -51,3 +51,37 @@ export const WindowButtons = () => (
     </g>
   </svg>
 );
+
+// Tokkae's head, pixel by pixel, as drawn in app/icon.svg (the favicon)
+const SITE_ICON = [
+  {
+    fill: "#b8d970",
+    px: "M4 0h4v1H4zM3 1h2v1H3zM6 1h1v1H6zM2 2h1v1H2zM4 2h4v1H4zM9 2h2v1H9zM2 3h2v1H2zM5 3h3v1H5zM9 3h2v1H9zM4 4h5v1H4zM4 5h5v1H4zM5 6h3v1H5z",
+  },
+  { fill: "#5c8f48", px: "M5 1h1v1H5zM3 2h1v1H3zM4 6h1v1H4zM8 6h1v1H8z" },
+  {
+    fill: "#d9786a",
+    px: "M2 4h2v1H2zM9 4h2v1H9zM3 5h1v1H3zM9 5h1v1H9z",
+  },
+  { fill: "#2f3b34", px: "M4 3h1v1H4zM8 3h1v1H8z" },
+  { fill: "#fff3cf", px: "M8 0h1v1H8zM7 1h1v1H7zM9 1h1v1H9zM8 2h1v1H8z" },
+  { fill: "#f2d27a", px: "M8 1h1v1H8z" },
+] as const;
+
+/**
+ * The site's 40 × 40 icon in the Header: Tokkae with its flower, the same
+ * drawing as the favicon, in its own colours in both themes
+ */
+export const SiteIcon = () => (
+  <svg
+    aria-hidden="true"
+    className="site-icon"
+    height="40"
+    viewBox="2 -1 9 9"
+    width="40"
+  >
+    {SITE_ICON.map(({ fill, px }) => (
+      <path d={px} fill={fill} key={fill} />
+    ))}
+  </svg>
+);
