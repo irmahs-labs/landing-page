@@ -51,7 +51,7 @@ const ask = async (messages: readonly ChatMessage[]): Promise<Answer> => {
 };
 
 /**
- * A button in the bottom-right corner that opens `ask_me.exe`, where visitors
+ * A button in the bottom-right corner that opens `ask_me.bot`, where visitors
  * ask a chat bot about who I am.
  */
 export const ChatWindow = () => {
@@ -108,7 +108,7 @@ export const ChatWindow = () => {
   return (
     <div className="chat-dock">
       {open && (
-        <Window className="chat-window" label="Ask about me" title="ask_me.exe">
+        <Window className="chat-window" label="Ask about me" title="ask_me.bot">
           <ol aria-live="polite" className="chat-log" ref={log}>
             <li className="chat-msg is-assistant">{GREETING}</li>
             {messages.map((m, i) => (

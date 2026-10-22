@@ -10,7 +10,7 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
-      "irma's apps live in launcher.exe now",
+      "irma's apps live in launcher.exe now, and the chat is ask_me.bot",
       "the arrows under the apps change colour when you point at them",
       "and the clock is paris.local again, like before",
     ],

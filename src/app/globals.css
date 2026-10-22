@@ -1504,7 +1504,7 @@ input:focus-visible {
 }
 
 /* ---------- chat ----------
-   A button in the bottom-right corner opening ask_me.exe above it. Over
+   A button in the bottom-right corner opening ask_me.bot above it. Over
    Tokkae, so it never walks between the visitor and the text box. */
 .chat-dock {
   position: fixed;
