@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 22 October 2026
+
+- **#59 The updated CV:** the CV to download names the chat bot, the multiplayer games and the private sites among the App Hub's apps, Vite, Hono and OpenRouter in its stack, and LLM Integration among the concepts.
+
 ## 21 October 2026
 
 - **#57 The apps' header, and dark mode:** the page opens with the same header as the apps: the gecko icon, irmahs.dev by Irma HS, the playmate switch and city toggle in the middle, and the sun/moon toggle and the sign-in pill at the end. Dark Matcha joins Light Matcha, following the device until a visitor picks one with the toggle; the choice is set before the first paint. The sign-in button takes the apps' pill style.
