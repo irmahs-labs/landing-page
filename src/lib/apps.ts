@@ -11,7 +11,7 @@ export interface AppLink {
 
 export const APPS: readonly AppLink[] = [
   {
-    desc: "Pick a game and play, starting with a Wheel of Fortune",
+    desc: "Little browser games to play alone or with friends",
     href: "https://minigames.irmahs.dev",
     icon: {
       bg: "#dde87e",
