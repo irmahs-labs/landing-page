@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 22 October 2026
 
+- **#62 A general description for Mini Games:** its tile reads "Little browser games to play alone or with friends" instead of naming only the Wheel of Fortune.
 - **#61 Dark screenshots, and the Mini Games hub:** the apps window shows Mini Games, the Album Cover Maker and the pantry spinner in Dark Matcha, and the Mini Games tile is its hub, with its three games, instead of the Wheel of Fortune.
 - **#58 Real file extensions, and fresh app screenshots:** every window's name is a file with an extension that exists: the chat is `ask_me.exe` and the clock is `paris.ics` or `phnom_penh.ics` (the rest already were). The apps window shows new screenshots of Mini Games, the Album Cover Maker and the pantry spinner, each with the apps' shared header, sun/moon toggle and sign-in pill.
 - **#60 A footer:** the page ends with the gecko icon and "Landing Page by Irma HS" on a small pill, as the apps end with their own name by Irma HS. On a phone it sits clear of the chat button.
