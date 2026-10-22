@@ -69,16 +69,16 @@ const SITE_ICON = [
 ] as const;
 
 /**
- * The site's 40 × 40 icon in the Header: Tokkae with its flower, the same
+ * The site's icon, 40 × 40 in the Header: Tokkae with its flower, the same
  * drawing as the favicon, in its own colours in both themes
  */
-export const SiteIcon = () => (
+export const SiteIcon = ({ size = 40 }: { size?: number }) => (
   <svg
     aria-hidden="true"
     className="site-icon"
-    height="40"
+    height={size}
     viewBox="2 -1 9 9"
-    width="40"
+    width={size}
   >
     {SITE_ICON.map(({ fill, px }) => (
       <path d={px} fill={fill} key={fill} />

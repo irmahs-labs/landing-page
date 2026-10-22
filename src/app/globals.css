@@ -300,6 +300,23 @@ fieldset {
   background-color: var(--panel);
 }
 
+/* ---------- footer ----------
+   The page's last line, as the apps end: the icon, then who made it. A pill
+   at the bottom, so it reads over any sky. */
+.app-footer {
+  margin: auto 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background-color: var(--panel);
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: background-color 0.8s var(--ease);
+}
+
 /* ---------- desk: the windows ----------
    Weather and profile side by side over the apps, the player in
    a column beside them. Windows keep their own sizes, so resizing the apps
@@ -1699,6 +1716,10 @@ input:focus-visible {
   .desk-side {
     flex: none;
     width: 100%;
+  }
+  /* Clear of the chat button, fixed in the bottom corner */
+  .app-footer {
+    margin-bottom: 80px;
   }
   .chat-dock {
     right: 16px;
