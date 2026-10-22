@@ -14,6 +14,7 @@ import { AppsWindow } from "./apps-window";
 import { ChatWindow } from "./chat-window";
 import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
+import { Footer } from "./footer";
 import { Header } from "./header";
 import { Player } from "./player";
 import { PlaymateSwitch } from "./playmate-switch";
@@ -129,6 +130,8 @@ export const Landing = () => {
             <SocialsWindow />
           </div>
         </main>
+
+        <Footer />
       </div>
 
       <ChatWindow />
