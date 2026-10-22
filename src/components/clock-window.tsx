@@ -99,7 +99,7 @@ export const ClockWindow = ({
       label="Date and weather"
       title={
         <>
-          <span>{city.file}</span>
+          <span>{city.host}</span>
           <span className="km" hidden={cityId !== "phnom-penh"}>
             {" "}
             · ភ្នំពេញ
