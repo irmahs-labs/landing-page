@@ -10,6 +10,14 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "every window has a real file name now: the chat is ask_me.exe and the clock is paris.ics",
+      "fresh pictures of irma's apps, in their new headers",
+    ],
+    date: "2026-10-22",
+    title: "real file names",
+  },
+  {
+    changes: [
       "my desk has a proper header now, like irma's apps, with me in the corner!",
       "press the moon up top for dark matcha, and the sun to come back",
       "until you pick one, i follow what your device likes",
