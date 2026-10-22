@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 22 October 2026
+
+- **#58 Real file extensions, and fresh app screenshots:** every window's name is a file with an extension that exists: the chat is `ask_me.exe` and the clock is `paris.ics` or `phnom_penh.ics` (the rest already were). The apps window shows new screenshots of Mini Games, the Album Cover Maker and the pantry spinner, each with the apps' shared header, sun/moon toggle and sign-in pill.
+
 ## 21 October 2026
 
 - **#57 The apps' header, and dark mode:** the page opens with the same header as the apps: the gecko icon, irmahs.dev by Irma HS, the playmate switch and city toggle in the middle, and the sun/moon toggle and the sign-in pill at the end. Dark Matcha joins Light Matcha, following the device until a visitor picks one with the toggle; the choice is set before the first paint. The sign-in button takes the apps' pill style.
