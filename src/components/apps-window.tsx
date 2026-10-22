@@ -121,7 +121,7 @@ export const AppsWindow = () => {
       className="apps-window"
       label="My apps"
       meta={`${APPS.length} items`}
-      title="my_apps.app"
+      title="launcher.exe"
     >
       <div className="apps-body">
         <div

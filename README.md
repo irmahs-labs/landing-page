@@ -4,7 +4,7 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 
 ## What's on the page
 
-- **Windows you can move.** Every window has the same title bar (its name on the left, a filename with an extension that exists, such as `profile.exe` or `paris.ics`; the + − × buttons on the right). On desktop and tablet you can drag it by the title bar, and the window you press comes to the front. Only the apps window resizes. On phones the windows stack instead.
+- **Windows you can move.** Every window has the same title bar (its name on the left, a filename such as `profile.exe`, `launcher.exe` or `paris.local`; the + − × buttons on the right). On desktop and tablet you can drag it by the title bar, and the window you press comes to the front. Only the apps window resizes. On phones the windows stack instead.
 - **Weather and clock** for Paris or Phnom Penh: local time and date, sunrise and sunset, and the current weather. The sky follows the time of day there, with the sun or moon rising and setting, stars, rain and night tint.
 - **Profile:** name, role, studies, location and languages.
 - **Apps:** Mini Games, the Album Cover Maker, the pantry spinner, Alsace Arena and the portfolio, each with a screenshot and opening in a new tab, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.

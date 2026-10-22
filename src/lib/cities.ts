@@ -1,12 +1,12 @@
 export const CITIES = {
   paris: {
-    file: "paris.ics",
+    host: "paris.local",
     lat: 48.8566,
     lon: 2.3522,
     tz: "Europe/Paris",
   },
   "phnom-penh": {
-    file: "phnom_penh.ics",
+    host: "phnom_penh.local",
     lat: 11.5564,
     lon: 104.9282,
     tz: "Asia/Phnom_Penh",
