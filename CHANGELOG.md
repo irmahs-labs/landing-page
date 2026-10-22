@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 22 October 2026
 
+- **#60 A footer:** the page ends with the gecko icon and "Landing Page by Irma HS" on a small pill, as the apps end with their own name by Irma HS. On a phone it sits clear of the chat button.
 - **#59 The updated CV:** the CV to download names the chat bot, the multiplayer games and the private sites among the App Hub's apps, Vite, Hono and OpenRouter in its stack, and LLM Integration among the concepts.
 
 ## 21 October 2026
