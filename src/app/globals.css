@@ -806,6 +806,9 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 .pager-btn svg {
   width: 18px;
@@ -815,6 +818,12 @@ input:focus-visible {
   stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+/* The arrows turn a deeper matcha under the pointer, set off from the
+   window's lime body in both themes */
+.pager-btn:hover:not(:disabled) {
+  background-color: var(--accent-soft);
+  color: var(--on-accent);
 }
 .pager-btn:active,
 .ctl:active {
@@ -1495,7 +1504,7 @@ input:focus-visible {
 }
 
 /* ---------- chat ----------
-   A button in the bottom-right corner opening ask_me.exe above it. Over
+   A button in the bottom-right corner opening ask_me.bot above it. Over
    Tokkae, so it never walks between the visitor and the text box. */
 .chat-dock {
   position: fixed;

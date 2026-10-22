@@ -90,7 +90,7 @@ describe("AppsWindow", () => {
     render(<AppsWindow />);
     const region = screen.getByRole("region", { name: "My apps" });
     expect(region.querySelector(".titlebar-text")?.textContent).toBe(
-      "my_apps.app"
+      "launcher.exe"
     );
   });
 
