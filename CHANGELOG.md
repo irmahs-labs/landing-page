@@ -5,6 +5,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 ## 22 October 2026
 
 - **#58 Real file extensions, and fresh app screenshots:** every window's name is a file with an extension that exists: the chat is `ask_me.exe` and the clock is `paris.ics` or `phnom_penh.ics` (the rest already were). The apps window shows new screenshots of Mini Games, the Album Cover Maker and the pantry spinner, each with the apps' shared header, sun/moon toggle and sign-in pill.
+- **#59 The updated CV:** the CV to download names the chat bot, the multiplayer games and the private sites among the App Hub's apps, Vite, Hono and OpenRouter in its stack, and LLM Integration among the concepts.
 
 ## 21 October 2026
 
