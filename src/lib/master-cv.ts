@@ -123,13 +123,13 @@ Agile team with a daily stand-up every morning to split test campaigns client by
 
 My personal lab: a GitHub organization (9 public repos and 1 private) holding web apps, all hosted on irmahs.dev with one app per subdomain, plus the platform pieces they share. Set up from scratch from October 2 to 5, 2026, and extended continuously since. Built with substantial help from Claude Code. Every procedure (first deployment, new app, private app, migration, rename, removal, tests, chat bot) is documented in my Obsidian notes.
 
-**Stack**: TypeScript, React 19, Next.js 16, Vite, Hono, zod, PostgreSQL 17, dbmate, Docker, Docker Compose, Caddy, Hetzner server, Cloudflare, GitHub Actions, OpenRouter (GPT-4o)
+**Stack**: TypeScript, React 19, Next.js 16, Vite, Hono, zod, PostgreSQL 17, dbmate, Docker, Docker Compose, Caddy, Hetzner server, Cloudflare, GitHub Actions, OpenRouter (Auto Router)
 
 #### Apps
 
 - **irmahs.dev** (landing-page repo): retro-desktop home page in Next.js 16: draggable windows, weather (Open-Meteo), time and an animated sky for Paris or Phnom Penh, now playing through the Spotify API (with a 10-second cache), profile, socials and downloadable CV, sign-in through the SSO, a resizable apps window, Tokkae (a pixel art gecko I drew, with its own behaviors, an in-app changelog and Coq the rooster as an optional playmate), respects reduced-motion settings. The Spotify and OpenRouter keys stay on the server (server-only fails the build if they ever reach the browser). Vitest and React Testing Library tests, plus a smoke test of the built server in CI.
 - **"Ask me" chat bot on irmahs.dev** (LLM integration, October 20, 2026): visitors ask questions about my background and an LLM answers from my CV.
-  - Server-side Next.js route /api/chat calling OpenRouter (openai/gpt-4o by default, switchable through an environment variable), in OpenAI's chat completions format
+  - Server-side Next.js route /api/chat calling OpenRouter (its Auto Router by default, which picks a model for each question; switchable through an environment variable), in OpenAI's chat completions format
   - System prompt built from my profile (experience, projects, skills, apps and socials, the last two generated automatically from the page's app list) with rules: answer only from the profile, in the visitor's language, in 2 to 4 sentences, decline off-topic questions and private details, ignore any prompt injection attempt
   - Safeguards: strict validation of the conversation before any call (400), 8 questions per minute per visitor (429), only the last 12 messages sent, max_tokens capped at 400, a spending limit on the key, Cache-Control: no-store on answers, graceful fallback when OpenRouter is down (502)
   - ask_me.bot window: greeting, three suggested questions, input capped at 500 characters, clear error messages
@@ -275,7 +275,7 @@ Bachelor's degree, ICT (Information and Communication Technology): mobile and we
 - **Accessibility**: RGAA, responsive design, accessibility referent
 - **Tools and methods**: Git, Jira, Confluence, Squash, Microsoft Teams, Agile / Scrum / SAFe, retrospectives, UML, design patterns, BPMN, REST APIs
 - **Systems and security**: Linux, networks, virtualization, encryption certificates
-- **AI**: AI-assisted development (Claude Code, GitHub Copilot, ChatGPT); LLM (Large Language Model) integration: "ask me" chat bot on irmahs.dev (OpenRouter, GPT-4o, system prompt, rate limiting, prompt injection defense) and the Claude API reading scoreboard screenshots in the Alsace Arena app
+- **AI**: AI-assisted development (Claude Code, GitHub Copilot, ChatGPT); LLM (Large Language Model) integration: "ask me" chat bot on irmahs.dev (OpenRouter Auto Router, system prompt, rate limiting, prompt injection defense) and the Claude API reading scoreboard screenshots in the Alsace Arena app
 - **Data and BI (academic)**: Machine Learning, Big Data, BI, data visualization, data warehousing
 
 **Demonstrated soft skills**: adaptability (stack, language, team size, country), leadership (leading retrospectives), initiative, technical argumentation, multi-stakeholder coordination, cross-cultural communication (offshore teams in Morocco and India), fast self-learning.

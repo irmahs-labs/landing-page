@@ -44,7 +44,7 @@ describe("POST /api/chat", () => {
     expect(url).toBe("https://openrouter.ai/api/v1/chat/completions");
     expect(init.headers.Authorization).toBe("Bearer test-key");
     const sent = JSON.parse(init.body);
-    expect(sent.model).toBe("openai/gpt-4o");
+    expect(sent.model).toBe("openrouter/auto");
     expect(sent.messages[0].role).toBe("system");
     expect(sent.messages[0].content).toContain("Irma Houver Sing");
     expect(sent.messages.slice(1)).toEqual(QUESTION.messages);
