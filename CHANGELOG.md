@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 24 October 2026
+
+- **#64 The chat bot asks OpenRouter's Auto Router:** `ask_me.bot` calls `openrouter/auto` instead of `openai/gpt-4o`, so OpenRouter picks a model for each question. `OPENROUTER_MODEL` still overrides it, and the master CV names the Auto Router.
+
 ## 22 October 2026
 
 - **#62 A general description for Mini Games:** its tile reads "Little browser games to play alone or with friends" instead of naming only the Wheel of Fortune.
