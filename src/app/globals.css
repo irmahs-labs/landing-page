@@ -1257,6 +1257,20 @@ input:focus-visible {
   font-weight: 500;
   color: var(--muted);
 }
+/* Only for Irma, signed in: a pill to upload a new CV, and how it went */
+.cv-replace {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+/* Straight on the lime window, so in its own text colour */
+.cv-replace__note {
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--on-accent);
+}
 
 /* ---------- tokkae ----------
    The pixel gecko and its props, above the windows. Only the patch notes
