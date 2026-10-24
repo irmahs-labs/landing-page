@@ -83,7 +83,7 @@ Then open http://localhost:3000.
 | --- | --- |
 | `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN` | Read what's playing on Spotify. Without them the player shows Tokkae singing. |
 | `OPENROUTER_API_KEY` | The chat bot's answers, from [OpenRouter](https://openrouter.ai/keys). Without it the chat says it can't answer. |
-| `OPENROUTER_MODEL` | Optional, for trying another model locally: the OpenRouter model the chat bot uses. Defaults to `openai/gpt-4o`, which is what the deploy uses. |
+| `OPENROUTER_MODEL` | Optional, for trying another model locally: the OpenRouter model the chat bot uses. Defaults to `openrouter/auto`, OpenRouter's Auto Router, which picks a model for each question; that is what the deploy uses. |
 | `NEXT_PUBLIC_AUTH_URL` | The account service for sign in. Defaults to `https://auth.irmahs.dev`. |
 
 On `localhost` the sign-in check is blocked by CORS, since the account service only allows `*.irmahs.dev`. The button simply doesn't appear, which is expected.

@@ -2,7 +2,8 @@ import "server-only";
 import { SYSTEM_PROMPT } from "./about-me";
 import type { ChatMessage } from "./chat";
 
-const DEFAULT_MODEL = "openai/gpt-4o";
+// OpenRouter's Auto Router, which picks a model for each question
+const DEFAULT_MODEL = "openrouter/auto";
 
 // Keeps answers short, and each question's cost bounded
 const MAX_TOKENS = 400;
