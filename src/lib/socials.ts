@@ -28,9 +28,11 @@ export const SOCIALS: readonly Social[] = [
   },
 ];
 
-/** My CV, served from public/ and downloaded under this name */
+/**
+ * My CV, downloaded under this name. The built-in one is in cv/, and I can
+ * replace it from the page once signed in (src/app/api/cv)
+ */
 export const CV = {
   file: "Irma_Houver_Sing_CV.pdf",
   href: "/cv/Irma_Houver_Sing_CV.pdf",
-  size: "PDF · 110 KB",
 } as const;

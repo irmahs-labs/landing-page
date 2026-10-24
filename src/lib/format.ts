@@ -6,6 +6,12 @@ export const fmtMinutes = (x: number) =>
 export const fmtSeconds = (s: number) =>
   `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
+/** A file's size as people read it: 110 KB, 1.2 MB */
+export const fmtSize = (bytes: number) =>
+  bytes < 1024 * 1024
+    ? `${Math.max(1, Math.round(bytes / 1024))} KB`
+    : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+
 // The design's reference canvas, used to turn its px positions into %
 export const W0 = 1440;
 export const H0 = 900;

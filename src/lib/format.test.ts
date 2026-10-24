@@ -1,12 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { fmtMinutes, fmtSeconds, pct, rand } from "./format";
+import { fmtMinutes, fmtSeconds, fmtSize, pct, rand } from "./format";
 
 describe("fmtMinutes", () => {
   it("writes minutes since midnight as HH:MM", () => {
     expect(fmtMinutes(0)).toBe("00:00");
     expect(fmtMinutes(7 * 60 + 5)).toBe("07:05");
     expect(fmtMinutes(23 * 60 + 59)).toBe("23:59");
+  });
+});
+
+describe("fmtSize", () => {
+  it("writes a file's size in KB, then in MB", () => {
+    expect(fmtSize(200)).toBe("1 KB");
+    expect(fmtSize(112_640)).toBe("110 KB");
+    expect(fmtSize(1_258_291)).toBe("1.2 MB");
   });
 });
 
