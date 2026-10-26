@@ -6,9 +6,15 @@ services:
     image: landing-page-web
     restart: unless-stopped
     env_file: .env
+    # The CV uploaded from the page, kept across deploys
+    volumes:
+      - cv:/app/data
     networks:
       proxy:
         aliases: [landing-page]
+
+volumes:
+  cv:
 
 networks:
   proxy:

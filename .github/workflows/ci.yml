@@ -48,6 +48,9 @@ jobs:
           curl -s localhost:3000/ | grep -q "Irma Houver Sing"
           test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/apps/portfolio.jpg)" = 200
           test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/cv/Irma_Houver_Sing_CV.pdf)" = 200
+          # signed out, nobody may replace the CV
+          curl -s localhost:3000/api/cv | grep -q '"canReplace":false'
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H 'Origin: http://localhost:3000' --data-binary '%PDF-' localhost:3000/api/cv)" = 403
           # dummy credentials can't reach Spotify, so expect the 502 fallback
           test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
           test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'

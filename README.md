@@ -10,7 +10,7 @@ The landing page of Irma Houver Sing: a little retro desktop in matcha greens, l
 - **Apps:** Mini Games, the Album Cover Maker, the pantry spinner, Alsace Arena and the portfolio, each with a screenshot and opening in a new tab, paged with ← → arrows. The window opens on one app. Resize it from its bottom-right corner and it shows 2, 4 or 6 at once, as many as fit at 380 × 240 px each.
 - **Now playing:** what Irma is listening to on Spotify, with the album cover and progress. When nothing is playing, Tokkae sings into a mic stand in the cover, on loop until music plays, and previous and next pick one of its ten songs, each shown as a track by Tokkae: for you, with joy (a little sun), happily (a rainbow), with love (hearts), heartbroken (a breaking heart), angrily (a thunderstorm), in a rage (little flames), under dark clouds, through tears, and peacefully (flowers drifting down). Clicking the song opens it on Spotify. While music plays, the control buttons are for show.
 - **Ask about me:** a chat button in the bottom-right corner opens `ask_me.bot`, where visitors ask a chat bot about Irma: her work, studies, skills and apps. It answers from her CV and this page ([`src/lib/about-me.ts`](src/lib/about-me.ts)) through [OpenRouter](https://openrouter.ai), called from the server so the API key never reaches the browser. Each visitor can ask 8 questions a minute.
-- **Socials,** under the player: GitHub and LinkedIn, each opening in a new tab, and Irma’s CV to download (`public/cv/`).
+- **Socials,** under the player: GitHub and LinkedIn, each opening in a new tab, and Irma’s CV to download. Signed in with her own Google account, Irma sees a **replace my CV** button there and uploads a new PDF straight from the page, with no pull request: `PUT /api/cv` takes it only from this site's own page, only if the account service lets her open Alma Housila (the same admin list as Mini Games), and only a PDF under 10 MB. It is kept in the `cv` Docker volume, so it outlasts every deploy; until one is uploaded, the page serves the built-in one in `cv/`.
 - **Playmate:** a switch, top left, that brings Tokkae its friend Coq, a pixel French rooster (see below). Off by default, and the page remembers it.
 - **Sign in** with Google through the IrmaHS Labs account service ([irmahs-labs/auth](https://github.com/irmahs-labs/auth)). The session is shared by every `*.irmahs.dev` site.
 - **Tokkae**, described below.
@@ -51,12 +51,12 @@ There are two:
 
 ```
 src/
-  app/          layout, page, global styles, tab icon, /api/now-playing, /api/chat
+  app/          layout, page, global styles, tab icon, /api/now-playing, /api/chat, /api/cv, the CV download
   components/   the page's pieces: windows, header controls, scene, Tokkae
   hooks/        clock, viewport, reduced motion, saved choices, session, Spotify
   lib/          apps, socials, cities, sky maths, weather, Spotify, the chat bot, changelog, Tokkae
 public/apps/    the apps' screenshots
-public/cv/      the CV to download
+cv/             the built-in CV, until one is uploaded from the page
 ```
 
 ## Running it locally
@@ -85,6 +85,7 @@ Then open http://localhost:3000.
 | `OPENROUTER_API_KEY` | The chat bot's answers, from [OpenRouter](https://openrouter.ai/keys). Without it the chat says it can't answer. |
 | `OPENROUTER_MODEL` | Optional, for trying another model locally: the OpenRouter model the chat bot uses. Defaults to `openrouter/auto`, OpenRouter's Auto Router, which picks a model for each question; that is what the deploy uses. |
 | `NEXT_PUBLIC_AUTH_URL` | The account service for sign in. Defaults to `https://auth.irmahs.dev`. |
+| `CV_DIR` | Optional: where a CV uploaded from the page is kept. Defaults to `data/`, which is the `cv` volume in production. |
 
 On `localhost` the sign-in check is blocked by CORS, since the account service only allows `*.irmahs.dev`. The button simply doesn't appear, which is expected.
 
@@ -105,7 +106,7 @@ On `localhost` the sign-in check is blocked by CORS, since the account service o
 The tests sit next to what they test, as `*.test.ts` and `*.test.tsx` under `src/`, and run with [Vitest](https://vitest.dev) in jsdom, set up as in Next.js's Vitest guide ([`vitest.config.mts`](vitest.config.mts)). They cover:
 
 - **Data:** every app links over https and has a screenshot in `public/`, and the changelog is dated and in order.
-- **Pure logic:** the sky maths, weather codes, Spotify's answers and its ten-second cache, the now-playing route and its fallback, the chat route (what it sends OpenRouter, malformed questions, the rate limit and its fallback), and the sign-in link.
+- **Pure logic:** the sky maths, weather codes, Spotify's answers and its ten-second cache, the now-playing route and its fallback, the chat route (what it sends OpenRouter, malformed questions, the rate limit and its fallback), the CV routes (who may replace it, other sites' pages, PDFs only, the size limit, and the built-in fallback), and the sign-in link.
 - **Tokkae and Coq:** their frames, how Tokkae reacts and how often it plays each game, and how Coq moves, faces and picks its animation.
 - **Components,** with React Testing Library: the apps window's 1, 2, 4 or 6 apps, the playmate switch, Tokkae and Coq, the player, the singing emote, the chat and the windows.
 

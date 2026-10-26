@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 24 October 2026
 
+- **#65 Replace the CV from the page:** signed in as an admin (whoever may open Alma Housila, as for Mini Games), Irma sees a "replace my CV" pill in `socials.lnk` and uploads a new PDF without a pull request. `PUT /api/cv` takes only a PDF under 10 MB, only from this site's own page, and keeps it in the `cv` Docker volume across deploys; the window shows its real size. Until one is uploaded, the built-in CV (moved from `public/cv/` to `cv/`) is served.
 - **#64 The chat bot asks OpenRouter's Auto Router:** `ask_me.bot` calls `openrouter/auto` instead of `openai/gpt-4o`, so OpenRouter picks a model for each question. `OPENROUTER_MODEL` still overrides it, and the master CV names the Auto Router.
 
 ## 22 October 2026
