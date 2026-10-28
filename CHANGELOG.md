@@ -4,7 +4,8 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 28 October 2026
 
-- **Paris Live first in the apps:** `launcher.exe` opens on Paris Live (irma-in-paris.irmahs.dev): the weather, the next metro, Vélib' and line status, and the restaurants Irma has eaten at, with photos. Its tile has the app's metro train icon on matcha and a Dark Matcha screenshot of its Météo screen, and the apps window now holds six, its most. Tokkae announces it.
+- **#67 Paris Live first in the apps:** `launcher.exe` opens on Paris Live (irma-in-paris.irmahs.dev): the weather, the next metro, Vélib' and line status, and the restaurants Irma has eaten at, with photos. Its tile has the app's metro train icon on matcha and a Dark Matcha screenshot of its Météo screen, and the apps window now holds six, its most. Tokkae announces it. Its tile's "Updated" date comes from irma-in-paris's Deploy workflow.
+- **#68 When each app was last deployed:** every tile in `launcher.exe` shows "Updated" and the date of the app's last successful deploy on GitHub (its Deploy workflow, or Vercel's Production deployments for Alsace Arena) on a pill across from its icon. `/api/app-deploys` asks GitHub and keeps the answer for 15 minutes.
 
 ## 26 October 2026
 

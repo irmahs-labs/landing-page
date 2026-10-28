@@ -744,6 +744,24 @@ input:focus-visible {
   border-radius: 9px;
   box-shadow: var(--shadow-soft);
 }
+/* When the app was last deployed, in the corner opposite its icon */
+.app-updated {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  max-width: calc(100% - 80px);
+  padding: 4px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background-color: var(--panel);
+  box-shadow: var(--shadow-soft);
+  color: var(--text);
+  font: 600 12px/1.2 var(--font-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.8s var(--ease);
+}
 .has-shot .app-icon svg {
   width: 24px;
   height: 24px;
