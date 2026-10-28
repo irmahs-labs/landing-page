@@ -9,9 +9,7 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
-    changes: [
-      "irma's paris app has its real name now: irma in paris!",
-    ],
+    changes: ["irma's paris app has its real name now: irma in paris!"],
     date: "2026-10-28",
     title: "irma in paris",
   },
