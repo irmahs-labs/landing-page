@@ -21,7 +21,6 @@ const ICONS = {
     "M4 11 V9 A3 3 0 0 1 7 6 H19 M16 3 L19 6 L16 9 M20 13 V15 A3 3 0 0 1 17 18 H5 M8 21 L5 18 L8 15",
   shuffle:
     "M3 7 H7 C11 7 13 17 17 17 H21 M18 14 L21 17 L18 20 M3 17 H7 C8.5 17 9.6 15.6 10.6 14 M13.4 10 C14.4 8.4 15.5 7 17 7 H21 M18 4 L21 7 L18 10",
-  volume: "M4 9 H8 L13 5 V19 L8 15 H4 Z M16 9 C17.5 10.5 17.5 13.5 16 15",
 };
 
 // The controls are for show while music plays: they press, but don't change
@@ -252,12 +251,6 @@ export const Player = ({ now }: { now: Date | null }) => {
         </div>
 
         <Controls playing={playing} songs={songs} />
-
-        <label className="volume" title={SOON}>
-          <Icon d={ICONS.volume} />
-          <span className="sr-only">Volume</span>
-          <input defaultValue={70} max={100} min={0} type="range" />
-        </label>
       </div>
     </Window>
   );
