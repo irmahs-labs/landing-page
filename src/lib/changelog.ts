@@ -9,6 +9,11 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    changes: ["irma's profile window finds her visitor numbers again"],
+    date: "2026-10-28",
+    title: "a quick fix",
+  },
+  {
     changes: [
       "the eye in the footer shows how many people are here with you right now",
       "signed in, press your name up top to see your profile, and sign out from there",
