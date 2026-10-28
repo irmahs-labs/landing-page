@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useNow } from "@/hooks/use-now";
+import { usePresence } from "@/hooks/use-presence";
 import { useStoredChoice } from "@/hooks/use-stored-choice";
 import { CITIES, CITY_IDS, DEFAULT_CITY } from "@/lib/cities";
 import type { CityId } from "@/lib/cities";
@@ -34,6 +35,7 @@ const setRootVar = (k: string, v: string) =>
 
 export const Landing = () => {
   const now = useNow();
+  const online = usePresence();
 
   const [playmate, savePlaymate] = useStoredChoice(
     "playmate",
@@ -131,7 +133,7 @@ export const Landing = () => {
           </div>
         </main>
 
-        <Footer />
+        <Footer online={online} />
       </div>
 
       <ChatWindow />
