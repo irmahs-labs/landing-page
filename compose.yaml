@@ -6,6 +6,10 @@ services:
     image: landing-page-web
     restart: unless-stopped
     env_file: .env
+    environment:
+      # Asks who's an admin of the account service directly, not through
+      # Cloudflare (irmahs-labs/auth, also on the proxy network)
+      AUTH_INTERNAL_URL: http://auth:3001
     # The CV uploaded from the page, kept across deploys
     volumes:
       - cv:/app/data
