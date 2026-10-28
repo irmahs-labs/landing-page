@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 28 October 2026
+
+- **#68 When each app was last deployed:** every tile in `launcher.exe` shows "Updated" and the date of the app's last successful deploy on GitHub (its Deploy workflow, or Vercel's Production deployments for Alsace Arena) on a pill across from its icon. `/api/app-deploys` asks GitHub and keeps the answer for 15 minutes.
+
 ## 26 October 2026
 
 - **#66 The updated CV:** the CV to download names OpenRouter instead of GPT-4o for the chat bot.
