@@ -10,6 +10,13 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "irma's paris app has its real name now: irma in paris!",
+    ],
+    date: "2026-10-28",
+    title: "irma in paris",
+  },
+  {
+    changes: [
       "irma made a new app, paris live, and it's first in launcher.exe!",
       "the weather in paris, the next metro from any stop, and vélib' bikes nearby",
       "and a map of the restaurants irma has eaten at, with photos",
