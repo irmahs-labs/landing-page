@@ -6,8 +6,10 @@ import type { DeploySource } from "./apps";
 export type Deploys = Record<string, string | null>;
 
 const API = "https://api.github.com";
+
 // GitHub allows 60 unauthenticated requests an hour; a refresh takes eight
 const TTL = 15 * 60 * 1000;
+
 // How many of the latest deployments to look through for one that succeeded
 const DEPLOYMENTS = 3;
 

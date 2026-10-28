@@ -54,9 +54,11 @@ describe("getDeploys", () => {
 
   it("asks GitHub again only after 15 minutes", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
+
     const fetch = vi.fn(
       async (url: string) => await Promise.resolve(github(url))
     );
+
     vi.stubGlobal("fetch", fetch);
     const { getDeploys } = await load();
     await getDeploys();
@@ -70,9 +72,11 @@ describe("getDeploys", () => {
 
   it("keeps the dates it had while GitHub is down", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
+
     const fetch = vi.fn(
       async (url: string) => await Promise.resolve(github(url))
     );
+
     vi.stubGlobal("fetch", fetch);
     const { getDeploys } = await load();
     const before = await getDeploys();
