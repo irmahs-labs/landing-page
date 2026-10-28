@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 28 October 2026
+
+- **Paris Live first in the apps:** `launcher.exe` opens on Paris Live (irma-in-paris.irmahs.dev): the weather, the next metro, Vélib' and line status, and the restaurants Irma has eaten at, with photos. Its tile has the app's metro train icon on matcha and a Dark Matcha screenshot of its Météo screen, and the apps window now holds six, its most. Tokkae announces it.
+
 ## 26 October 2026
 
 - **#66 The updated CV:** the CV to download names OpenRouter instead of GPT-4o for the chat bot.

@@ -11,6 +11,19 @@ export interface AppLink {
 
 export const APPS: readonly AppLink[] = [
   {
+    desc: "Paris right now: the weather, the next metro, and where I've eaten",
+    href: "https://irma-in-paris.irmahs.dev",
+    icon: {
+      bg: "#d4dd9c",
+      fg: "#2f3b34",
+      // The app's own logo: a little metro train, seen from the front
+      path: "M7 3 H17 A3 3 0 0 1 20 6 V15 A3 3 0 0 1 17 18 H7 A3 3 0 0 1 4 15 V6 A3 3 0 0 1 7 3 Z M7 7 H17 V11 H7 Z M8 14.5 H8.01 M16 14.5 H16.01 M8 18 L6 21 M16 18 L18 21",
+    },
+    name: "Paris Live",
+    shot: "/apps/irma-in-paris.jpg",
+    status: "live",
+  },
+  {
     desc: "Little browser games to play alone or with friends",
     href: "https://minigames.irmahs.dev",
     icon: {
