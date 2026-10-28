@@ -32,6 +32,17 @@ describe("APPS", () => {
     }
   });
 
+  it("says where on GitHub every app's deploys are recorded", () => {
+    for (const app of APPS) {
+      expect(app.deploys.repo).toMatch(/^[\w-]+\/[\w.-]+$/u);
+      expect(
+        "workflow" in app.deploys
+          ? app.deploys.workflow
+          : app.deploys.environment
+      ).not.toBe("");
+    }
+  });
+
   it("only points at screenshots that exist in public/", () => {
     for (const app of APPS) {
       if (app.shot) {

@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { APPS } from "@/lib/apps";
@@ -14,6 +20,11 @@ interface Size {
 let resize: (width: number, height: number) => void = vi.fn();
 
 beforeEach(() => {
+  // No dates from /api/app-deploys unless a test gives some
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue(new Response(null, { status: 502 }))
+  );
   vi.stubGlobal(
     "ResizeObserver",
     class {
@@ -103,5 +114,30 @@ describe("AppsWindow", () => {
       expect(tile.getAttribute("rel")).toBe("noreferrer");
       expect(tile.textContent).toContain("(opens in a new tab)");
     }
+  });
+
+  it("dates each app by its last deploy, once GitHub has said", async () => {
+    const [first] = APPS;
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          Response.json({ [first?.href ?? ""]: "2026-10-27T20:58:31Z" })
+        )
+    );
+    render(<AppsWindow />);
+    await waitFor(() =>
+      expect(tiles()[0]?.textContent).toContain("Updated 27 Oct 2026")
+    );
+    expect(tiles()[0]?.querySelector("time")?.getAttribute("dateTime")).toBe(
+      "2026-10-27T20:58:31Z"
+    );
+  });
+
+  it("leaves the date off when there is none", async () => {
+    render(<AppsWindow />);
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    expect(tiles()[0]?.textContent).not.toContain("Updated");
   });
 });
