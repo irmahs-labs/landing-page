@@ -1,4 +1,15 @@
+/**
+ * Where GitHub records the app's deploys: the successful runs of a deploy
+ * workflow, or the deployments to an environment (as Vercel makes them)
+ */
+export type DeploySource = { repo: string } & (
+  | { workflow: string }
+  | { environment: string }
+);
+
 export interface AppLink {
+  /** Where its last deploy is read from, for the date on its tile */
+  deploys: DeploySource;
   desc: string;
   href: string;
   /** Icon background and stroke colours */
@@ -11,6 +22,7 @@ export interface AppLink {
 
 export const APPS: readonly AppLink[] = [
   {
+    deploys: { repo: "irmahs-labs/minigames", workflow: "deploy.yml" },
     desc: "Little browser games to play alone or with friends",
     href: "https://minigames.irmahs.dev",
     icon: {
@@ -24,6 +36,7 @@ export const APPS: readonly AppLink[] = [
     status: "live",
   },
   {
+    deploys: { repo: "irmahs-labs/album-cover-maker", workflow: "deploy.yml" },
     desc: "Drop in a photo, add a title, export a 3000 × 3000 cover",
     href: "https://album-cover-maker.irmahs.dev",
     icon: {
@@ -37,6 +50,7 @@ export const APPS: readonly AppLink[] = [
     status: "live",
   },
   {
+    deploys: { repo: "irmahs-labs/pantry-spinner", workflow: "deploy.yml" },
     desc: "Pull the lever and let it pick what's for dinner",
     href: "https://pantry-spinner.irmahs.dev",
     icon: {
@@ -50,6 +64,10 @@ export const APPS: readonly AppLink[] = [
     status: "live",
   },
   {
+    deploys: {
+      environment: "Production",
+      repo: "irmahs/alsace-arena-spike-tournament",
+    },
     desc: "Seasons, matches and standings for a spike tournament",
     href: "https://alsace-arena-spike-tournament.vercel.app/",
     icon: {
@@ -62,6 +80,7 @@ export const APPS: readonly AppLink[] = [
     status: "live",
   },
   {
+    deploys: { repo: "irmahs/Portfolio", workflow: "deploy.yml" },
     desc: "Selected projects, all in one place",
     href: "https://irmahs.github.io/Portfolio/",
     icon: {

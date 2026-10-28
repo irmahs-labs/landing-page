@@ -3,12 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
+import { useAppDeploys } from "@/hooks/use-app-deploys";
 import { APPS } from "@/lib/apps";
 import type { AppLink } from "@/lib/apps";
+import { fmtDate } from "@/lib/format";
 
 import { Window } from "./window";
 
-const Tile = ({ app }: { app: AppLink }) => (
+const Tile = ({
+  app,
+  deployed,
+}: {
+  app: AppLink;
+  /** When it was last deployed, as an ISO date, once GitHub has said */
+  deployed: string | null | undefined;
+}) => (
   <a className="tile" href={app.href} rel="noreferrer" target="_blank">
     <span
       className={app.shot ? "app-shot has-shot" : "app-shot"}
@@ -29,6 +38,11 @@ const Tile = ({ app }: { app: AppLink }) => (
           <path d={app.icon.path} />
         </svg>
       </span>
+      {deployed && (
+        <span className="app-updated">
+          Updated <time dateTime={deployed}>{fmtDate(deployed)}</time>
+        </span>
+      )}
     </span>
     <span className="app-text">
       <span className="app-name">{app.name}</span>
@@ -82,6 +96,7 @@ const layoutFor = (w: number, h: number): Layout => {
  */
 export const AppsWindow = () => {
   const grid = useRef<HTMLDivElement>(null);
+  const deploys = useAppDeploys();
   const [layout, setLayout] = useState<Layout>({ cols: 1, count: 1 });
   // The first app shown, so a new page size keeps it in view
   const [first, setFirst] = useState(0);
@@ -137,7 +152,7 @@ export const AppsWindow = () => {
           }
         >
           {shown.map((app) => (
-            <Tile app={app} key={app.href} />
+            <Tile app={app} deployed={deploys[app.href]} key={app.href} />
           ))}
         </div>
         <nav aria-label="More apps" className="pager">
