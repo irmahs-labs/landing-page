@@ -1,5 +1,10 @@
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
+
 import { useSession } from "@/hooks/use-session";
-import { signInUrl } from "@/lib/auth";
+import { AUTH_URL, signInUrl } from "@/lib/auth";
+
+import { AccountWindow, Avatar } from "./account-window";
 
 // Google's own four-colour mark: never recoloured or redrawn
 const GoogleMark = () => (
@@ -23,14 +28,59 @@ const GoogleMark = () => (
   </svg>
 );
 
+/** Ends the session on the account service, then starts the page afresh */
+const signOut = async () => {
+  try {
+    await fetch(`${AUTH_URL}/api/auth/sign-out`, {
+      body: "{}",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+      method: "POST",
+    });
+  } finally {
+    window.location.reload();
+  }
+};
+
 /**
  * Cute Matcha's AccountButton, as a header pill: "sign in" with Google's
- * mark, or once signed in, your picture and first name. Either way it opens
- * the IrmaHS Labs account page, which signs in, shows who you are, or signs
- * out, then comes back here.
+ * mark, which opens the IrmaHS Labs account page to sign in and comes back
+ * here; or once signed in, your picture and first name, which opens
+ * profile.txt on top of the desk. Escape or a click outside closes it.
  */
 export const AccountButton = () => {
   const user = useSession();
+  const [open, setOpen] = useState(false);
+  // How far the pop-up moves left on a phone to sit inside the page's gutters
+  const [shift, setShift] = useState(0);
+  const menu = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    const onPointer = (e: PointerEvent) => {
+      // SAFETY: a pointer event's target is always a DOM node
+      if (!menu.current?.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [open]);
 
   // Nothing until the answer arrives, so the button never flickers between
   // states. The answer only comes in the browser, so `window` is there below.
@@ -38,11 +88,13 @@ export const AccountButton = () => {
     return null;
   }
 
-  const href = signInUrl(window.location.href);
-
   if (user === null) {
     return (
-      <a className="account" href={href} title="sign in with Google">
+      <a
+        className="account"
+        href={signInUrl(window.location.href)}
+        title="sign in with Google"
+      >
         <span className="account__icon">
           <GoogleMark />
         </span>
@@ -53,25 +105,30 @@ export const AccountButton = () => {
 
   const firstName = user.name.split(" ")[0] || user.email;
 
+  const toggle = () => {
+    setShift(16 - (menu.current?.getBoundingClientRect().left ?? 16));
+    setOpen((was) => !was);
+  };
+
   return (
-    <a className="account" href={href} title={`Signed in as ${user.email}`}>
-      <span className="account__icon">
-        {user.image ? (
-          // Google's picture host refuses requests that carry a referrer, and
-          // next/image would proxy a 30 px avatar through the server for nothing
-          // oxlint-disable-next-line next/no-img-element -- remote avatar, sized by CSS
-          <img
-            alt=""
-            height={30}
-            referrerPolicy="no-referrer"
-            src={user.image}
-            width={30}
-          />
-        ) : (
-          <span aria-hidden="true">{firstName.charAt(0).toUpperCase()}</span>
-        )}
-      </span>
-      <span className="account__text">{firstName}</span>
-    </a>
+    <div
+      className="account-menu"
+      ref={menu}
+      // SAFETY: CSSProperties has no index signature for custom properties
+      style={{ "--account-shift": `${shift}px` } as CSSProperties}
+    >
+      <button
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        className="account"
+        onClick={toggle}
+        title={`Signed in as ${user.email}`}
+        type="button"
+      >
+        <Avatar user={user} />
+        <span className="account__text">{firstName}</span>
+      </button>
+      {open ? <AccountWindow onSignOut={signOut} user={user} /> : null}
+    </div>
   );
 };

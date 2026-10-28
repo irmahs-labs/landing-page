@@ -637,6 +637,193 @@ input:focus-visible {
   object-fit: cover;
 }
 
+/* ---------- profile.txt ----------
+   The pop-up the signed-in account pill opens, on top of the desk and
+   Tokkae: who is signed in and a sign-out pill, with the visitor numbers
+   between them for an admin. On a phone it spans the page inside its
+   gutters, moved left by --account-shift. */
+.account-menu {
+  position: relative;
+  z-index: 50;
+}
+button.account {
+  cursor: pointer;
+}
+.account-window {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(430px, calc(100vw - 32px));
+  /* Wider than the pill it hangs from */
+  max-width: none;
+  max-height: calc(100vh - 120px);
+}
+.account-window__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+.account-who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.account-who .account__icon {
+  width: 40px;
+  height: 40px;
+  font-size: 17px;
+}
+.account-who__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.account-who__name {
+  font: 600 16px/1.2 var(--font);
+}
+.account-who__email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 13px/1.3 var(--font-text);
+}
+.account-signout {
+  width: 100%;
+}
+.visitor-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.visitor-tile,
+.visitor-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--raised);
+  color: var(--text);
+}
+.visitor-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 600 11px/1.3 var(--font);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.visitor-num {
+  font: 600 24px/1.1 var(--font);
+}
+.visitor-bars {
+  display: flex;
+  gap: 6px;
+  height: 92px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.visitor-bar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+  font: 500 11px/1.2 var(--font);
+}
+.visitor-bar__fill {
+  width: 100%;
+  min-height: 2px;
+  max-height: 52px;
+  border: 1.5px solid var(--line);
+  border-radius: 4px 4px 0 0;
+  background-color: var(--accent-soft);
+}
+.visitor-bar.is-today .visitor-bar__fill {
+  background-color: var(--moss);
+}
+.visitor-map {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.visitor-map__land {
+  fill: var(--panel);
+  stroke: var(--line);
+  stroke-width: 0.7;
+}
+.visitor-map__land--1 {
+  fill: var(--accent);
+}
+.visitor-map__land--2 {
+  fill: var(--accent-soft);
+}
+.visitor-map__land--3 {
+  fill: var(--moss);
+}
+/* On Dark Matcha the brightest green reads as the most, so the shades turn round */
+:root[data-theme="dark"] .visitor-map__land--1 {
+  fill: var(--moss);
+}
+:root[data-theme="dark"] .visitor-map__land--3 {
+  fill: var(--accent);
+}
+.visitor-countries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 14px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font: 13px/1.3 var(--font-text);
+}
+.visitor-countries li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.visitor-code {
+  flex: none;
+  min-width: 26px;
+  padding: 1px 6px;
+  border: 1.5px solid var(--line);
+  border-radius: 4px;
+  background-color: var(--accent);
+  color: var(--on-accent);
+  font: 600 11px/1.3 var(--font);
+  text-align: center;
+}
+.visitor-country {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.visitor-share {
+  font: 600 13px/1.3 var(--font);
+}
+.visitor-note {
+  margin: 0;
+  font: 13px/1.4 var(--font-text);
+}
+/* Who's on the page now, after the footer's name */
+.app-footer__online {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 4px;
+  padding-left: 10px;
+  border-left: 1.5px solid var(--outline);
+}
+
 /* ---------- apps ---------- */
 /* The one window that resizes, from its bottom-right corner: past its column
    if need be, over the player, which it then covers */
@@ -1726,6 +1913,10 @@ input:focus-visible {
     min-height: 44px;
     padding: 0;
     justify-content: center;
+  }
+  .account-window {
+    right: auto;
+    left: var(--account-shift, 0);
   }
   .account__text {
     position: absolute;

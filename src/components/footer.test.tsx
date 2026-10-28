@@ -10,4 +10,11 @@ describe("Footer", () => {
       "Landing Page by Irma HS"
     );
   });
+
+  it("says how many are on the page, once the server has", () => {
+    render(<Footer online={3} />);
+    expect(screen.getByTitle("People on the page now").textContent).toBe(
+      " 3 online"
+    );
+  });
 });

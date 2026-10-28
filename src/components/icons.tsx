@@ -85,3 +85,35 @@ export const SiteIcon = ({ size = 40 }: { size?: number }) => (
     ))}
   </svg>
 );
+
+/** An open eye, for how many are looking at the page; it takes the text's colour */
+export const EyeIcon = ({ size = 16 }: { size?: number }) => (
+  <svg aria-hidden="true" height={size} viewBox="0 0 24 24" width={size}>
+    <g
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+    >
+      <path d="M2 12 C 5 6.5, 19 6.5, 22 12 C 19 17.5, 5 17.5, 2 12 Z" />
+      <circle cx="12" cy="12" r="3" />
+    </g>
+  </svg>
+);
+
+/** A door with an arrow leaving it, for signing out; it takes the text's colour */
+export const SignOutIcon = ({ size = 18 }: { size?: number }) => (
+  <svg aria-hidden="true" height={size} viewBox="0 0 24 24" width={size}>
+    <g
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+    >
+      <path d="M14 8 V6 a2 2 0 0 0 -2 -2 H6 a2 2 0 0 0 -2 2 v12 a2 2 0 0 0 2 2 h6 a2 2 0 0 0 2 -2 v-2" />
+      <path d="M9 12 H21 M18 9 L21 12 L18 15" />
+    </g>
+  </svg>
+);

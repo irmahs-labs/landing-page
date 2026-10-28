@@ -22,3 +22,16 @@ describe("allowRequest", () => {
     expect(allowRequest("a", 61_000)).toBe(true);
   });
 });
+
+describe("createRateLimit", () => {
+  it("keeps its own count, apart from the chat's", async () => {
+    const { allowRequest, createRateLimit } = await load();
+    const allowTwo = createRateLimit(2);
+
+    expect(allowTwo("a", 0)).toBe(true);
+    expect(allowTwo("a", 1)).toBe(true);
+    expect(allowTwo("a", 2)).toBe(false);
+    // The chat's limit hasn't been touched
+    expect(allowRequest("a", 3)).toBe(true);
+  });
+});
