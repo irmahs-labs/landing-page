@@ -1,3 +1,5 @@
+import type { Language } from "./language";
+
 /**
  * Where GitHub records the app's deploys: the successful runs of a deploy
  * workflow, or the deployments to an environment (as Vercel makes them)
@@ -10,7 +12,8 @@ export type DeploySource = { repo: string } & (
 export interface AppLink {
   /** Where its last deploy is read from, for the date on its tile */
   deploys: DeploySource;
-  desc: string;
+  /** What it does, in each of the site's languages */
+  desc: Record<Language, string>;
   href: string;
   /** Icon background and stroke colours */
   icon: { bg: string; fg: string; path: string };
@@ -23,7 +26,10 @@ export interface AppLink {
 export const APPS: readonly AppLink[] = [
   {
     deploys: { repo: "irmahs-labs/irma-in-paris", workflow: "deploy.yml" },
-    desc: "Paris right now: the weather, the next train, and where I've eaten",
+    desc: {
+      en: "Paris right now: the weather, the next train, and where I've eaten",
+      fr: "Paris en ce moment : la météo, le prochain train, et où j’ai mangé",
+    },
     href: "https://irma-in-paris.irmahs.dev",
     icon: {
       bg: "#d4dd9c",
@@ -37,7 +43,10 @@ export const APPS: readonly AppLink[] = [
   },
   {
     deploys: { repo: "irmahs-labs/minigames", workflow: "deploy.yml" },
-    desc: "Little browser games to play alone or with friends",
+    desc: {
+      en: "Little browser games to play alone or with friends",
+      fr: "De petits jeux dans le navigateur, seul ou entre amis",
+    },
     href: "https://minigames.irmahs.dev",
     icon: {
       bg: "#dde87e",
@@ -51,7 +60,10 @@ export const APPS: readonly AppLink[] = [
   },
   {
     deploys: { repo: "irmahs-labs/album-cover-maker", workflow: "deploy.yml" },
-    desc: "Drop in a photo, add a title, export a 3000 × 3000 cover",
+    desc: {
+      en: "Drop in a photo, add a title, export a 3000 × 3000 cover",
+      fr: "Glissez une photo, ajoutez un titre, exportez une pochette de 3000 × 3000",
+    },
     href: "https://album-cover-maker.irmahs.dev",
     icon: {
       bg: "#b8d970",
@@ -65,7 +77,10 @@ export const APPS: readonly AppLink[] = [
   },
   {
     deploys: { repo: "irmahs-labs/pantry-spinner", workflow: "deploy.yml" },
-    desc: "Pull the lever and let it pick what's for dinner",
+    desc: {
+      en: "Pull the lever and let it pick what's for dinner",
+      fr: "Tirez le levier et laissez-le choisir le dîner",
+    },
     href: "https://pantry-spinner.irmahs.dev",
     icon: {
       bg: "#b8d970",
@@ -82,7 +97,10 @@ export const APPS: readonly AppLink[] = [
       environment: "Production",
       repo: "irmahs/alsace-arena-spike-tournament",
     },
-    desc: "Seasons, matches and standings for a spike tournament",
+    desc: {
+      en: "Seasons, matches and standings for a spike tournament",
+      fr: "Saisons, matchs et classements d’un tournoi Spike",
+    },
     href: "https://alsace-arena-spike-tournament.vercel.app/",
     icon: {
       bg: "#f0675c",
@@ -95,7 +113,10 @@ export const APPS: readonly AppLink[] = [
   },
   {
     deploys: { repo: "irmahs/Portfolio", workflow: "deploy.yml" },
-    desc: "Selected projects, all in one place",
+    desc: {
+      en: "Selected projects, all in one place",
+      fr: "Une sélection de projets, réunis au même endroit",
+    },
     href: "https://irmahs.github.io/Portfolio/",
     icon: {
       bg: "#5c8f48",

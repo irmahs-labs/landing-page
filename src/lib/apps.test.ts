@@ -25,7 +25,8 @@ describe("APPS", () => {
   it("gives every app a name, a description and an icon", () => {
     for (const app of APPS) {
       expect(app.name.trim()).not.toBe("");
-      expect(app.desc.trim()).not.toBe("");
+      expect(app.desc.en.trim()).not.toBe("");
+      expect(app.desc.fr.trim()).not.toBe("");
       expect(app.icon.bg).toMatch(HEX);
       expect(app.icon.fg).toMatch(HEX);
       expect(app.icon.path.startsWith("M")).toBe(true);

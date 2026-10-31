@@ -39,7 +39,9 @@ export const viewport: Viewport = {
 };
 
 // Light or Dark Matcha before the first paint: the saved choice, or else the
-// device's setting. src/lib/theme.ts takes over from here.
+// device's setting. src/lib/theme.ts takes over from here. And <html lang>
+// from the visitor's language, shared by every irmahs.dev app, which
+// src/lib/language.ts keeps.
 const THEME_SCRIPT = `try {
   var saved = localStorage.getItem("theme");
   document.documentElement.dataset.theme =
@@ -50,7 +52,12 @@ const THEME_SCRIPT = `try {
         : "light";
 } catch (e) {
   document.documentElement.dataset.theme = "light";
-}`;
+}
+try {
+  var lang = (document.cookie.match(/(?:^|; )lang=(en|fr)(?:;|$)/) || [])[1] ||
+    localStorage.getItem("lang");
+  if (lang === "en" || lang === "fr") document.documentElement.lang = lang;
+} catch (e) {}`;
 
 // The script sets data-theme on <html> before React hydrates, hence
 // suppressHydrationWarning there

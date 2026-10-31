@@ -18,9 +18,15 @@ describe("CHANGELOG", () => {
     expect(dates.toSorted().toReversed()).toEqual(dates);
   });
 
+  it("has the entry Tokkae announces in French too", () => {
+    expect(CHANGELOG[0]?.fr?.changes.length).toBe(CHANGELOG[0]?.changes.length);
+  });
+
   it("speaks in Tokkae's lowercase voice", () => {
     for (const entry of CHANGELOG) {
-      for (const line of [entry.title, ...entry.changes]) {
+      const french = entry.fr ? [entry.fr.title, ...entry.fr.changes] : [];
+
+      for (const line of [entry.title, ...entry.changes, ...french]) {
         expect(line).toBe(line.toLowerCase());
       }
     }

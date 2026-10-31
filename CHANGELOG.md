@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 31 October 2026
+
+- **English and French:** the site reads in English or French. The header has an EN/FR pill beside the sun/moon toggle, and the EN and FR pills in `profile.exe` are buttons that switch the same choice (KH stays a pill). Every window, the chat's greeting and suggestions, the weather, the dates, the visitor numbers and Tokkae's newest patch notes follow it. The choice is kept in localStorage and in a `lang` cookie on `irmahs.dev`, which the apps read too, so a visitor who picks French here finds Mini Games, Irma in Paris, the pantry spinner and the Album Cover Maker in French as well.
+
 ## 28 October 2026
 
 - **#72 The admin check stays inside the server:** the landing page asks the account service who's an admin at `AUTH_INTERNAL_URL` (`http://auth:3001` on the Docker network, set in `compose.yaml`), as Mini Games does, instead of through Cloudflare at auth.irmahs.dev, which turned the server away. Signed in as Irma, `profile.txt` shows the visitor numbers and `socials.lnk` the "replace my CV" pill again.

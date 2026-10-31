@@ -1,3 +1,6 @@
+import { LOCALES } from "./language";
+import type { Language } from "./language";
+
 /** Minutes since midnight as HH:MM */
 export const fmtMinutes = (x: number) =>
   `${String(Math.floor(x / 60)).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`;
@@ -20,11 +23,19 @@ export const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(2)}%`;
 
 export const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-const DAY = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
+const DAYS = {
+  en: new Intl.DateTimeFormat(LOCALES.en, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }),
+  fr: new Intl.DateTimeFormat(LOCALES.fr, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }),
+};
 
-/** An ISO date as "27 Oct 2026", in the visitor's time zone */
-export const fmtDate = (iso: string) => DAY.format(new Date(iso));
+/** An ISO date as "27 Oct 2026" (or "27 oct. 2026"), in the visitor's time zone */
+export const fmtDate = (iso: string, language: Language = "en") =>
+  DAYS[language].format(new Date(iso));

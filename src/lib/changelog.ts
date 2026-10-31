@@ -4,10 +4,30 @@ export interface ChangelogEntry {
   changes: readonly string[];
   /** ISO date the release went out */
   date: string;
+  /**
+   * The same notes in French, for visitors reading the site in French. Only
+   * the newest entry is ever announced, so older ones can do without.
+   */
+  fr?: { changes: readonly string[]; title: string };
   title: string;
 }
 
 export const CHANGELOG: readonly ChangelogEntry[] = [
+  {
+    changes: [
+      "the site speaks french now! press fr up top, or fr in irma's profile",
+      "your pick follows you into irma's apps too",
+    ],
+    date: "2026-10-31",
+    fr: {
+      changes: [
+        "le site parle français ! appuie sur fr en haut, ou sur fr dans le profil d’irma",
+        "ton choix te suit aussi dans les apps d’irma",
+      ],
+      title: "bonjour !",
+    },
+    title: "bonjour!",
+  },
   {
     changes: ["irma's profile window finds her visitor numbers again"],
     date: "2026-10-28",

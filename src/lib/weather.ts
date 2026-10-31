@@ -1,31 +1,39 @@
 import { CITIES } from "./cities";
 import type { CityId } from "./cities";
+import type { Language } from "./language";
 
 export interface Weather {
   at: number;
-  cond: string;
+  /** The sky in words, in each of the site's languages */
+  cond: Record<Language, string>;
   rainy: boolean;
   temp: string;
 }
 
 // WMO weather interpretation codes, as returned by Open-Meteo
-const WEATHER_CODES: readonly [readonly number[], string, boolean][] = [
-  [[0], "Clear sky", false],
-  [[1], "Mostly clear", false],
-  [[2], "Partly cloudy", false],
-  [[3], "Overcast", false],
-  [[45, 48], "Foggy", false],
-  [[51, 53, 55, 56, 57], "Drizzle", true],
-  [[61, 63, 65, 66, 67], "Rain", true],
-  [[71, 73, 75, 77, 85, 86], "Snow", false],
-  [[80, 81, 82], "Rain showers", true],
-  [[95, 96, 99], "Thunderstorms", true],
+const WEATHER_CODES: readonly [
+  readonly number[],
+  Record<Language, string>,
+  boolean,
+][] = [
+  [[0], { en: "Clear sky", fr: "Ciel dégagé" }, false],
+  [[1], { en: "Mostly clear", fr: "Plutôt dégagé" }, false],
+  [[2], { en: "Partly cloudy", fr: "Partiellement nuageux" }, false],
+  [[3], { en: "Overcast", fr: "Couvert" }, false],
+  [[45, 48], { en: "Foggy", fr: "Brouillard" }, false],
+  [[51, 53, 55, 56, 57], { en: "Drizzle", fr: "Bruine" }, true],
+  [[61, 63, 65, 66, 67], { en: "Rain", fr: "Pluie" }, true],
+  [[71, 73, 75, 77, 85, 86], { en: "Snow", fr: "Neige" }, false],
+  [[80, 81, 82], { en: "Rain showers", fr: "Averses" }, true],
+  [[95, 96, 99], { en: "Thunderstorms", fr: "Orages" }, true],
 ];
 
-const describe = (code: number): [string, boolean] => {
+const UNKNOWN = { en: "—", fr: "—" };
+
+const describe = (code: number): [Record<Language, string>, boolean] => {
   const hit = WEATHER_CODES.find(([codes]) => codes.includes(code));
 
-  return hit ? [hit[1], hit[2]] : ["—", false];
+  return hit ? [hit[1], hit[2]] : [UNKNOWN, false];
 };
 
 interface OpenMeteoResponse {

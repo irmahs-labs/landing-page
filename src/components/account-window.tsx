@@ -1,11 +1,45 @@
 import { useVisitors } from "@/hooks/use-visitors";
 import type { SessionUser } from "@/lib/auth";
+import { useCopy, useLanguage } from "@/lib/language";
 import { countryName, dayLabel, fmtShare } from "@/lib/visitors";
 import type { VisitorStats } from "@/lib/visitors";
 
 import { EyeIcon, SignOutIcon } from "./icons";
 import { VisitorMap } from "./visitor-map";
 import { Window } from "./window";
+
+const COPY = {
+  en: {
+    admin: "admin",
+    countries: "where they came from",
+    days: "7 days",
+    label: "Your profile",
+    lastWeek: "last 7 days",
+    lastWeekLabel: "Last 7 days",
+    noNumbers:
+      "No numbers from Cloudflare yet: check CLOUDFLARE_API_TOKEN and CLOUDFLARE_ZONE_ID.",
+    online: "online",
+    signOut: "sign out",
+    today: "today",
+    visitors: (day: string, n: number) => `${day}: ${n} visitors`,
+    whereLabel: "Where they came from",
+  },
+  fr: {
+    admin: "admin",
+    countries: "d’où ils viennent",
+    days: "7 jours",
+    label: "Votre profil",
+    lastWeek: "les 7 derniers jours",
+    lastWeekLabel: "Les 7 derniers jours",
+    noNumbers:
+      "Pas encore de chiffres de Cloudflare : vérifiez CLOUDFLARE_API_TOKEN et CLOUDFLARE_ZONE_ID.",
+    online: "en ligne",
+    signOut: "se déconnecter",
+    today: "aujourd’hui",
+    visitors: (day: string, n: number) => `${day} : ${n} visiteurs`,
+    whereLabel: "D’où ils viennent",
+  },
+};
 
 interface AccountWindowProps {
   onSignOut: () => void;
@@ -39,6 +73,8 @@ export const Avatar = ({ user }: { user: SessionUser }) => {
 /** Online now, today and the week, the last seven days as bars, and the map */
 const VisitorNumbers = ({ stats }: { stats: VisitorStats }) => {
   const { history, online } = stats;
+  const language = useLanguage();
+  const t = COPY[language];
   const days = history?.days ?? [];
   const most = Math.max(1, ...days.map((d) => d.visitors));
   const week = days.reduce((sum, d) => sum + d.visitors, 0);
@@ -48,33 +84,34 @@ const VisitorNumbers = ({ stats }: { stats: VisitorStats }) => {
       <div className="visitor-tiles">
         <div className="visitor-tile">
           <span className="visitor-label">
-            <EyeIcon size={13} /> online
+            <EyeIcon size={13} /> {t.online}
           </span>
           <span className="visitor-num">{online}</span>
         </div>
         <div className="visitor-tile">
-          <span className="visitor-label">today</span>
+          <span className="visitor-label">{t.today}</span>
           <span className="visitor-num">
             {history ? (days.at(-1)?.visitors ?? 0) : "–"}
           </span>
         </div>
         <div className="visitor-tile">
-          <span className="visitor-label">7 days</span>
+          <span className="visitor-label">{t.days}</span>
           <span className="visitor-num">{history ? week : "–"}</span>
         </div>
       </div>
 
       {history ? (
         <>
-          <section aria-label="Last 7 days" className="visitor-box">
-            <span className="visitor-label">last 7 days</span>
+          <section aria-label={t.lastWeekLabel} className="visitor-box">
+            <span className="visitor-label">{t.lastWeek}</span>
             <ol className="visitor-bars">
               {days.map((d, i) => {
                 const today = i === days.length - 1;
+                const day = dayLabel(d.date, today, language);
 
                 return (
                   <li
-                    aria-label={`${dayLabel(d.date, today)}: ${d.visitors} visitors`}
+                    aria-label={t.visitors(day, d.visitors)}
                     className={today ? "visitor-bar is-today" : "visitor-bar"}
                     key={d.date}
                   >
@@ -83,23 +120,23 @@ const VisitorNumbers = ({ stats }: { stats: VisitorStats }) => {
                       className="visitor-bar__fill"
                       style={{ height: `${(d.visitors / most) * 100}%` }}
                     />
-                    <span className="visitor-bar__day">
-                      {dayLabel(d.date, today)}
-                    </span>
+                    <span className="visitor-bar__day">{day}</span>
                   </li>
                 );
               })}
             </ol>
           </section>
 
-          <section aria-label="Where they came from" className="visitor-box">
-            <span className="visitor-label">where they came from</span>
+          <section aria-label={t.whereLabel} className="visitor-box">
+            <span className="visitor-label">{t.countries}</span>
             <VisitorMap countries={history.countries} />
             <ul className="visitor-countries">
               {history.countries.map((c) => (
                 <li key={c.code}>
                   <span className="visitor-code">{c.code}</span>
-                  <span className="visitor-country">{countryName(c.code)}</span>
+                  <span className="visitor-country">
+                    {countryName(c.code, language)}
+                  </span>
                   <span className="visitor-share">{fmtShare(c.share)}</span>
                 </li>
               ))}
@@ -107,10 +144,7 @@ const VisitorNumbers = ({ stats }: { stats: VisitorStats }) => {
           </section>
         </>
       ) : (
-        <p className="visitor-note">
-          No numbers from Cloudflare yet: check CLOUDFLARE_API_TOKEN and
-          CLOUDFLARE_ZONE_ID.
-        </p>
+        <p className="visitor-note">{t.noNumbers}</p>
       )}
     </>
   );
@@ -123,9 +157,10 @@ const VisitorNumbers = ({ stats }: { stats: VisitorStats }) => {
 export const AccountWindow = ({ onSignOut, user }: AccountWindowProps) => {
   const visitors = useVisitors(true);
   const admin = visitors.status === "ready";
+  const t = useCopy(COPY);
 
   return (
-    <Window className="account-window" label="Your profile" title="profile.txt">
+    <Window className="account-window" label={t.label} title="profile.txt">
       <div className="account-window__body">
         <div className="account-who">
           <Avatar user={user} />
@@ -133,7 +168,7 @@ export const AccountWindow = ({ onSignOut, user }: AccountWindowProps) => {
             <span className="account-who__name">{user.name}</span>
             <span className="account-who__email">{user.email}</span>
           </span>
-          {admin ? <span className="visitor-code">admin</span> : null}
+          {admin ? <span className="visitor-code">{t.admin}</span> : null}
         </div>
 
         {admin ? <VisitorNumbers stats={visitors.stats} /> : null}
@@ -143,7 +178,7 @@ export const AccountWindow = ({ onSignOut, user }: AccountWindowProps) => {
           onClick={onSignOut}
           type="button"
         >
-          <SignOutIcon /> sign out
+          <SignOutIcon /> {t.signOut}
         </button>
       </div>
     </Window>

@@ -1,3 +1,5 @@
+import type { Language } from "./language";
+
 /**
  * Tokkae, the pixel gecko, from the Tokkae design system: a 12 × 13 sprite
  * drawn into an 18 × 17 frame that leaves room for its props (the bug, the
@@ -701,20 +703,27 @@ export const ANIMS: Record<Anim, number[]> = {
 
 /**
  * Tokkae's songs for the music window while Spotify is quiet, in the order
- * previous and next step through them, each with how it sings.
+ * previous and next step through them, each with how it sings, in English
+ * and in French.
  */
 export const SONGS = [
-  { anim: "sing", mood: "for you" },
-  { anim: "singJoy", mood: "with joy" },
-  { anim: "singHappiness", mood: "happily" },
-  { anim: "singLove", mood: "with love" },
-  { anim: "singHeartbreak", mood: "heartbroken" },
-  { anim: "singAnger", mood: "angrily" },
-  { anim: "singRage", mood: "in a rage" },
-  { anim: "singDepression", mood: "under dark clouds" },
-  { anim: "singSadness", mood: "through tears" },
-  { anim: "singPeaceful", mood: "peacefully" },
-] as const satisfies readonly { anim: Anim; mood: string }[];
+  { anim: "sing", mood: { en: "for you", fr: "pour vous" } },
+  { anim: "singJoy", mood: { en: "with joy", fr: "avec joie" } },
+  { anim: "singHappiness", mood: { en: "happily", fr: "joyeusement" } },
+  { anim: "singLove", mood: { en: "with love", fr: "avec amour" } },
+  { anim: "singHeartbreak", mood: { en: "heartbroken", fr: "le cœur brisé" } },
+  { anim: "singAnger", mood: { en: "angrily", fr: "en colère" } },
+  { anim: "singRage", mood: { en: "in a rage", fr: "avec rage" } },
+  {
+    anim: "singDepression",
+    mood: { en: "under dark clouds", fr: "sous les nuages noirs" },
+  },
+  { anim: "singSadness", mood: { en: "through tears", fr: "en pleurant" } },
+  { anim: "singPeaceful", mood: { en: "peacefully", fr: "paisiblement" } },
+] as const satisfies readonly {
+  anim: Anim;
+  mood: Record<Language, string>;
+}[];
 
 const isPaletteKey = (ch: string): ch is keyof typeof PALETTE =>
   Object.hasOwn(PALETTE, ch);
