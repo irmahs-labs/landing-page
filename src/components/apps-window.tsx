@@ -7,8 +7,30 @@ import { useAppDeploys } from "@/hooks/use-app-deploys";
 import { APPS } from "@/lib/apps";
 import type { AppLink } from "@/lib/apps";
 import { fmtDate } from "@/lib/format";
+import { useCopy, useLanguage } from "@/lib/language";
 
 import { Window } from "./window";
+
+const COPY = {
+  en: {
+    items: (n: number) => `${n} items`,
+    label: "My apps",
+    more: "More apps",
+    newTab: "(opens in a new tab)",
+    next: "Next apps",
+    previous: "Previous apps",
+    updated: "Updated",
+  },
+  fr: {
+    items: (n: number) => `${n} éléments`,
+    label: "Mes apps",
+    more: "Plus d’apps",
+    newTab: "(s’ouvre dans un nouvel onglet)",
+    next: "Apps suivantes",
+    previous: "Apps précédentes",
+    updated: "Mise à jour le",
+  },
+};
 
 const Tile = ({
   app,
@@ -17,40 +39,46 @@ const Tile = ({
   app: AppLink;
   /** When it was last deployed, as an ISO date, once GitHub has said */
   deployed: string | null | undefined;
-}) => (
-  <a className="tile" href={app.href} rel="noreferrer" target="_blank">
-    <span
-      className={app.shot ? "app-shot has-shot" : "app-shot"}
-      // SAFETY: CSSProperties has no index signature for custom properties
-      style={
-        {
-          "--ic-bg": app.icon.bg,
-          "--ic-fg": app.icon.fg,
-        } as CSSProperties
-      }
-    >
-      {app.shot && (
-        // oxlint-disable-next-line next/no-img-element -- pre-sized screenshot, cropped by CSS
-        <img alt="" height={600} src={app.shot} width={960} />
-      )}
-      <span className="app-icon">
-        <svg aria-hidden="true" viewBox="0 0 24 24">
-          <path d={app.icon.path} />
-        </svg>
-      </span>
-      {deployed && (
-        <span className="app-updated">
-          Updated <time dateTime={deployed}>{fmtDate(deployed)}</time>
+}) => {
+  const language = useLanguage();
+  const t = COPY[language];
+
+  return (
+    <a className="tile" href={app.href} rel="noreferrer" target="_blank">
+      <span
+        className={app.shot ? "app-shot has-shot" : "app-shot"}
+        // SAFETY: CSSProperties has no index signature for custom properties
+        style={
+          {
+            "--ic-bg": app.icon.bg,
+            "--ic-fg": app.icon.fg,
+          } as CSSProperties
+        }
+      >
+        {app.shot && (
+          // oxlint-disable-next-line next/no-img-element -- pre-sized screenshot, cropped by CSS
+          <img alt="" height={600} src={app.shot} width={960} />
+        )}
+        <span className="app-icon">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d={app.icon.path} />
+          </svg>
         </span>
-      )}
-    </span>
-    <span className="app-text">
-      <span className="app-name">{app.name}</span>
-      <span className="app-desc">{app.desc}</span>
-      <span className="sr-only">(opens in a new tab)</span>
-    </span>
-  </a>
-);
+        {deployed && (
+          <span className="app-updated">
+            {t.updated}{" "}
+            <time dateTime={deployed}>{fmtDate(deployed, language)}</time>
+          </span>
+        )}
+      </span>
+      <span className="app-text">
+        <span className="app-name">{app.name}</span>
+        <span className="app-desc">{app.desc[language]}</span>
+        <span className="sr-only">{t.newTab}</span>
+      </span>
+    </a>
+  );
+};
 
 const Arrow = ({ d }: { d: string }) => (
   <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -97,6 +125,7 @@ const layoutFor = (w: number, h: number): Layout => {
 export const AppsWindow = () => {
   const grid = useRef<HTMLDivElement>(null);
   const deploys = useAppDeploys();
+  const t = useCopy(COPY);
   const [layout, setLayout] = useState<Layout>({ cols: 1, count: 1 });
   // The first app shown, so a new page size keeps it in view
   const [first, setFirst] = useState(0);
@@ -134,8 +163,8 @@ export const AppsWindow = () => {
   return (
     <Window
       className="apps-window"
-      label="My apps"
-      meta={`${APPS.length} items`}
+      label={t.label}
+      meta={t.items(APPS.length)}
       title="launcher.exe"
     >
       <div className="apps-body">
@@ -155,9 +184,9 @@ export const AppsWindow = () => {
             <Tile app={app} deployed={deploys[app.href]} key={app.href} />
           ))}
         </div>
-        <nav aria-label="More apps" className="pager">
+        <nav aria-label={t.more} className="pager">
           <button
-            aria-label="Previous apps"
+            aria-label={t.previous}
             className="btn pager-btn"
             disabled={pages < 2}
             onClick={() => go(-1)}
@@ -169,7 +198,7 @@ export const AppsWindow = () => {
             {page + 1} / {pages}
           </span>
           <button
-            aria-label="Next apps"
+            aria-label={t.next}
             className="btn pager-btn"
             disabled={pages < 2}
             onClick={() => go(1)}

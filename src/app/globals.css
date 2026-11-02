@@ -300,6 +300,39 @@ fieldset {
   background-color: var(--panel);
 }
 
+/* The language pill beside it: EN and FR, the page's language pressed */
+.lang-toggle {
+  min-height: 40px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background-color: var(--raised);
+}
+.lang-toggle__option {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--text);
+  font: 700 13px/1 var(--font-text);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+.lang-toggle__option:hover {
+  background-color: var(--panel);
+}
+.lang-toggle__option[aria-pressed="true"] {
+  border-color: var(--outline);
+  background-color: var(--selected);
+  color: var(--on-selected);
+}
+
 /* ---------- footer ----------
    The page's last line, as the apps end: the icon, then who made it. A pill
    at the bottom, so it reads over any sky. */
@@ -371,6 +404,8 @@ fieldset {
 }
 .btn:focus-visible,
 .tile:focus-visible,
+.lang-toggle__option:focus-visible,
+.lang:focus-visible,
 input:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
@@ -1376,7 +1411,18 @@ button.account {
     background-color 0.8s var(--ease),
     color 0.8s var(--ease);
 }
-.lang.is-current {
+/* English and French switch the site's language: controls, so raised until
+   chosen */
+button.lang {
+  margin: 0;
+  background-color: var(--raised);
+  color: var(--text);
+}
+button.lang:hover {
+  background-color: var(--raised-hover);
+}
+.lang.is-current,
+button.lang.is-current {
   background-color: var(--selected);
   color: var(--on-selected);
 }

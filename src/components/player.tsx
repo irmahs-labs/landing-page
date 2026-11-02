@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { useNowPlaying } from "@/hooks/use-now-playing";
 import { fmtSeconds } from "@/lib/format";
+import { useLanguage } from "@/lib/language";
 import type { Anim } from "@/lib/tokkae";
 import { SONGS } from "@/lib/tokkae";
 
@@ -23,9 +24,43 @@ const ICONS = {
     "M3 7 H7 C11 7 13 17 17 17 H21 M18 14 L21 17 L18 20 M3 17 H7 C8.5 17 9.6 15.6 10.6 14 M13.4 10 C14.4 8.4 15.5 7 17 7 H21 M18 4 L21 7 L18 10",
 };
 
+const COPY = {
+  en: {
+    label: "Now playing on Spotify",
+    like: "Like",
+    nextSong: "Next song",
+    nextTrack: "Next track",
+    open: "Open in Spotify",
+    pause: "Pause",
+    play: "Play",
+    prevSong: "Previous song",
+    prevTrack: "Previous track",
+    repeat: "Repeat",
+    shuffle: "Shuffle",
+    sings: (mood: string) => `Sings ${mood}`,
+    soon: "coming soon",
+  },
+  fr: {
+    label: "En écoute sur Spotify",
+    like: "J’aime",
+    nextSong: "Chanson suivante",
+    nextTrack: "Titre suivant",
+    open: "Ouvrir dans Spotify",
+    pause: "Pause",
+    play: "Lecture",
+    prevSong: "Chanson précédente",
+    prevTrack: "Titre précédent",
+    repeat: "Répéter",
+    shuffle: "Aléatoire",
+    sings: (mood: string) => `Chante ${mood}`,
+    soon: "bientôt",
+  },
+};
+
+type Copy = (typeof COPY)["en"];
+
 // The controls are for show while music plays: they press, but don't change
 // playback. While Spotify is quiet, previous and next pick Tokkae's song.
-const SOON = "coming soon";
 
 const Icon = ({ d, filled }: { d: string; filled?: boolean }) => (
   <svg
@@ -44,18 +79,21 @@ const Control = ({
   filled,
   label,
   onClick,
+  soon,
 }: {
   className?: string;
   d: string;
   filled?: boolean;
   label: string;
   onClick?: () => void;
+  /** Its title while it's only for show */
+  soon: string;
 }) => (
   <button
     aria-label={label}
     className={className}
     onClick={onClick}
-    title={onClick ? label : SOON}
+    title={onClick ? label : soon}
     type="button"
   >
     <Icon d={d} filled={filled} />
@@ -71,31 +109,36 @@ interface SongSteps {
 const Controls = ({
   playing,
   songs,
+  t,
 }: {
   playing: boolean;
   songs: SongSteps | null;
+  t: Copy;
 }) => (
   <div className="controls">
-    <Control d={ICONS.shuffle} label="Shuffle" />
+    <Control d={ICONS.shuffle} label={t.shuffle} soon={t.soon} />
     <Control
       d={ICONS.prev}
       filled
-      label={songs ? "Previous song" : "Previous track"}
+      label={songs ? t.prevSong : t.prevTrack}
       onClick={songs?.prev}
+      soon={t.soon}
     />
     <Control
       className="btn ctl ctl-main"
       d={playing ? ICONS.pause : ICONS.play}
       filled={!playing}
-      label={playing ? "Pause" : "Play"}
+      label={playing ? t.pause : t.play}
+      soon={t.soon}
     />
     <Control
       d={ICONS.next}
       filled
-      label={songs ? "Next song" : "Next track"}
+      label={songs ? t.nextSong : t.nextTrack}
       onClick={songs?.next}
+      soon={t.soon}
     />
-    <Control d={ICONS.repeat} label="Repeat" />
+    <Control d={ICONS.repeat} label={t.repeat} soon={t.soon} />
   </div>
 );
 
@@ -181,6 +224,8 @@ const useTokkaeSong = (quiet: boolean) => {
  */
 export const Player = ({ now }: { now: Date | null }) => {
   const { data, fetchedAt } = useNowPlaying();
+  const language = useLanguage();
+  const t = COPY[language];
   const track = data && "title" in data ? data : null;
   const playing = Boolean(track?.playing);
   const url = track ? (track.url ?? "https://open.spotify.com") : null;
@@ -204,7 +249,7 @@ export const Player = ({ now }: { now: Date | null }) => {
   return (
     <Window
       className={`player-window${state}`}
-      label="Now playing on Spotify"
+      label={t.label}
       title="now_playing.mp3"
     >
       <div className="player-body">
@@ -217,7 +262,7 @@ export const Player = ({ now }: { now: Date | null }) => {
               href={url}
               rel="noreferrer"
               target="_blank"
-              title="Open in Spotify"
+              title={t.open}
             >
               <span className="track-title">{track.title}</span>
               <span className="track-artist">{track.artist ?? ""}</span>
@@ -225,12 +270,17 @@ export const Player = ({ now }: { now: Date | null }) => {
           ) : (
             <div className="track">
               <span aria-live="polite" className="track-title">
-                Sings {song.mood}
+                {t.sings(song.mood[language])}
               </span>
               <span className="track-artist">Tokkae</span>
             </div>
           )}
-          <Control className="btn ctl like" d={ICONS.heart} label="Like" />
+          <Control
+            className="btn ctl like"
+            d={ICONS.heart}
+            label={t.like}
+            soon={t.soon}
+          />
         </div>
 
         <div className="progress">
@@ -250,7 +300,7 @@ export const Player = ({ now }: { now: Date | null }) => {
           </div>
         </div>
 
-        <Controls playing={playing} songs={songs} />
+        <Controls playing={playing} songs={songs} t={t} />
       </div>
     </Window>
   );

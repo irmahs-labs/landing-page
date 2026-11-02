@@ -13,13 +13,17 @@ describe("fetchWeather", () => {
     vi.stubGlobal("fetch", fetch);
     const wx = await fetchWeather("paris");
     expect(String(fetch.mock.calls[0]?.at(0))).toContain("api.open-meteo.com");
-    expect(wx).toMatchObject({ cond: "Overcast", rainy: false, temp: "17°" });
+    expect(wx).toMatchObject({
+      cond: { en: "Overcast", fr: "Couvert" },
+      rainy: false,
+      temp: "17°",
+    });
   });
 
   it("knows rain when it sees it", async () => {
     vi.stubGlobal("fetch", () => Promise.resolve(answer(12, 63)));
     expect(await fetchWeather("paris")).toMatchObject({
-      cond: "Rain",
+      cond: { en: "Rain", fr: "Pluie" },
       rainy: true,
     });
   });
@@ -27,7 +31,7 @@ describe("fetchWeather", () => {
   it("shows a dash for a code it doesn't know", async () => {
     vi.stubGlobal("fetch", () => Promise.resolve(answer(30, 1234)));
     const wx = await fetchWeather("phnom-penh");
-    expect(wx?.cond).toBe("—");
+    expect(wx?.cond.en).toBe("—");
   });
 
   it("gives up quietly when the request fails", async () => {

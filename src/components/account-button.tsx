@@ -3,8 +3,22 @@ import type { CSSProperties } from "react";
 
 import { useSession } from "@/hooks/use-session";
 import { AUTH_URL, signInUrl } from "@/lib/auth";
+import { useCopy } from "@/lib/language";
 
 import { AccountWindow, Avatar } from "./account-window";
+
+const COPY = {
+  en: {
+    signIn: "sign in",
+    signedInAs: (email: string) => `Signed in as ${email}`,
+    withGoogle: "sign in with Google",
+  },
+  fr: {
+    signIn: "se connecter",
+    signedInAs: (email: string) => `Compte connecté : ${email}`,
+    withGoogle: "se connecter avec Google",
+  },
+};
 
 // Google's own four-colour mark: never recoloured or redrawn
 const GoogleMark = () => (
@@ -50,6 +64,7 @@ const signOut = async () => {
  */
 export const AccountButton = () => {
   const user = useSession();
+  const t = useCopy(COPY);
   const [open, setOpen] = useState(false);
   // How far the pop-up moves left on a phone to sit inside the page's gutters
   const [shift, setShift] = useState(0);
@@ -93,12 +108,12 @@ export const AccountButton = () => {
       <a
         className="account"
         href={signInUrl(window.location.href)}
-        title="sign in with Google"
+        title={t.withGoogle}
       >
         <span className="account__icon">
           <GoogleMark />
         </span>
-        <span className="account__text">sign in</span>
+        <span className="account__text">{t.signIn}</span>
       </a>
     );
   }
@@ -122,7 +137,7 @@ export const AccountButton = () => {
         aria-haspopup="dialog"
         className="account"
         onClick={toggle}
-        title={`Signed in as ${user.email}`}
+        title={t.signedInAs(user.email)}
         type="button"
       >
         <Avatar user={user} />

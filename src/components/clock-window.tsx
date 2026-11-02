@@ -1,10 +1,27 @@
 import { CITIES } from "@/lib/cities";
 import type { CityId } from "@/lib/cities";
 import { fmtMinutes } from "@/lib/format";
+import { LOCALES, useLanguage } from "@/lib/language";
+import type { Language } from "@/lib/language";
 import type { SkyPhase } from "@/lib/sky";
 import type { Weather } from "@/lib/weather";
 
 import { Window } from "./window";
+
+const COPY = {
+  en: {
+    label: "Date and weather",
+    moon: (rise: string, set: string) => `moonrise ${rise} · moonset ${set}`,
+    sun: (rise: string, set: string) => `sunrise ${rise} · sunset ${set}`,
+  },
+  fr: {
+    label: "Date et météo",
+    moon: (rise: string, set: string) =>
+      `lever de lune ${rise} · coucher de lune ${set}`,
+    sun: (rise: string, set: string) =>
+      `lever du soleil ${rise} · coucher du soleil ${set}`,
+  },
+};
 
 const CLOUD =
   "M7 20 H17 A4 4 0 0 0 16.5 12 A5.5 5.5 0 0 0 6 13.5 A3.3 3.3 0 0 0 7 20 Z";
@@ -61,11 +78,17 @@ const WeatherIcon = ({ isDay, rainy }: { isDay: boolean; rainy: boolean }) => {
   );
 };
 
-const formatIn = (tz: string, opts: Intl.DateTimeFormatOptions, d: Date) => {
+const formatIn = (
+  language: Language,
+  tz: string,
+  opts: Intl.DateTimeFormatOptions,
+  d: Date
+) => {
   try {
-    return new Intl.DateTimeFormat("en-GB", { ...opts, timeZone: tz }).format(
-      d
-    );
+    return new Intl.DateTimeFormat(LOCALES[language], {
+      ...opts,
+      timeZone: tz,
+    }).format(d);
   } catch {
     return "";
   }
@@ -85,18 +108,20 @@ export const ClockWindow = ({
   weather,
 }: ClockWindowProps) => {
   const city = CITIES[cityId];
+  const language = useLanguage();
+  const t = COPY[language];
   let sunLine = "";
 
   if (phase) {
     sunLine = phase.isDay
-      ? `sunrise ${fmtMinutes(phase.riseM)} · sunset ${fmtMinutes(phase.setM)}`
-      : `moonrise ${fmtMinutes(phase.setM)} · moonset ${fmtMinutes(phase.riseM)}`;
+      ? t.sun(fmtMinutes(phase.riseM), fmtMinutes(phase.setM))
+      : t.moon(fmtMinutes(phase.setM), fmtMinutes(phase.riseM));
   }
 
   return (
     <Window
       className="clock-window"
-      label="Date and weather"
+      label={t.label}
       title={
         <>
           <span>{city.host}</span>
@@ -112,6 +137,7 @@ export const ClockWindow = ({
           <span className="clock-time">
             {now
               ? formatIn(
+                  language,
                   city.tz,
                   { hour: "2-digit", hour12: false, minute: "2-digit" },
                   now
@@ -121,6 +147,7 @@ export const ClockWindow = ({
           <span className="clock-date">
             {now
               ? formatIn(
+                  language,
                   city.tz,
                   {
                     day: "numeric",
@@ -141,7 +168,7 @@ export const ClockWindow = ({
           />
           <div className="weather-text">
             <span className="temp">{weather?.temp ?? "--°"}</span>
-            <span className="cond">{weather?.cond ?? " "}</span>
+            <span className="cond">{weather?.cond[language] ?? " "}</span>
           </div>
         </div>
       </div>

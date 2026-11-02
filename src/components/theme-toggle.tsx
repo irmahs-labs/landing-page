@@ -2,7 +2,21 @@
 
 import { useLayoutEffect } from "react";
 
+import { useCopy } from "@/lib/language";
 import { chooseTheme, restoreTheme, useTheme } from "@/lib/theme";
+
+const COPY = {
+  en: {
+    dark: "dark",
+    light: "light",
+    switchTo: (name: string) => `Switch to ${name} mode`,
+  },
+  fr: {
+    dark: "sombre",
+    light: "clair",
+    switchTo: (name: string) => `Passer en mode ${name}`,
+  },
+};
 
 // Line glyphs on a 24 × 24 grid, drawn in the pill's text colour
 const GLYPHS = {
@@ -17,12 +31,13 @@ const GLYPHS = {
 export const ThemeToggle = () => {
   const theme = useTheme();
   const next = theme === "dark" ? "light" : "dark";
+  const t = useCopy(COPY);
 
   useLayoutEffect(restoreTheme, []);
 
   return (
     <button
-      aria-label={`Switch to ${next} mode`}
+      aria-label={t.switchTo(t[next])}
       className="btn btn--pill"
       onClick={() => chooseTheme(next)}
       type="button"
@@ -42,7 +57,7 @@ export const ThemeToggle = () => {
           <path d={d} key={d} />
         ))}
       </svg>
-      {next}
+      {t[next]}
     </button>
   );
 };

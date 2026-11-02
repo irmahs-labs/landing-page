@@ -7,6 +7,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { CHANGELOG } from "@/lib/changelog";
 import { COQ_FRAMES, coqAnim, coqFrame } from "@/lib/coq";
 import type { CoqAnim } from "@/lib/coq";
+import { useLanguage } from "@/lib/language";
 import { FRAMES, HEART, runsOf } from "@/lib/tokkae";
 import { Brain } from "@/lib/tokkae-brain";
 import type { Action, Nudge, Pointer, World } from "@/lib/tokkae-brain";
@@ -132,26 +133,36 @@ const releaseHeart = (
   layer.append(heart);
 };
 
+const PATCH_COPY = {
+  en: { label: "What's new", ok: "got it!" },
+  fr: { label: "Quoi de neuf", ok: "compris !" },
+};
+
 const PatchNotes = ({ onClose }: { onClose: () => void }) => {
+  const language = useLanguage();
   const [latest] = CHANGELOG;
 
   if (!latest) {
     return null;
   }
 
+  const t = PATCH_COPY[language];
+  // French visitors read the French notes, when this release has them
+  const notes = (language === "fr" && latest.fr) || latest;
+
   return (
-    <Window className="patch-notes" label="What's new" title="patch_notes.txt">
+    <Window className="patch-notes" label={t.label} title="patch_notes.txt">
       <div className="patch-body">
         <p className="patch-title">
-          <span>tok-kae!</span> {latest.title}
+          <span>tok-kae!</span> {notes.title}
         </p>
         <ul>
-          {latest.changes.map((change) => (
+          {notes.changes.map((change) => (
             <li key={change}>{change}</li>
           ))}
         </ul>
         <button className="btn patch-ok" onClick={onClose} type="button">
-          got it!
+          {t.ok}
         </button>
       </div>
     </Window>

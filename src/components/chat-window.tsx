@@ -5,28 +5,55 @@ import type { FormEvent } from "react";
 
 import { MAX_HISTORY, MAX_MESSAGE_LENGTH } from "@/lib/chat";
 import type { ChatMessage } from "@/lib/chat";
+import { useCopy } from "@/lib/language";
 
 import { Window } from "./window";
 
-const GREETING =
-  "Hi! Ask me anything about Irma: her work, her studies, her apps…";
-
-const SUGGESTIONS = [
-  "Who is Irma?",
-  "What has she built?",
-  "How can I contact her?",
-];
+const COPY = {
+  en: {
+    busy: "That's a lot of questions! Give me a minute and ask again.",
+    close: "close chat",
+    failed: "Sorry, I couldn't answer that just now. Try again in a moment.",
+    greeting:
+      "Hi! Ask me anything about Irma: her work, her studies, her apps…",
+    label: "Ask about me",
+    open: "ask about me",
+    placeholder: "Ask about Irma…",
+    question: "Your question",
+    send: "Send",
+    suggestions: [
+      "Who is Irma?",
+      "What has she built?",
+      "How can I contact her?",
+    ],
+    thinking: "Thinking",
+  },
+  fr: {
+    busy: "Ça fait beaucoup de questions ! Laissez-moi une minute et redemandez.",
+    close: "fermer le chat",
+    failed:
+      "Désolé, je n’ai pas pu répondre tout de suite. Réessayez dans un instant.",
+    greeting:
+      "Bonjour ! Posez-moi vos questions sur Irma : son travail, ses études, ses apps…",
+    label: "Posez-moi vos questions",
+    open: "posez-moi vos questions",
+    placeholder: "Une question sur Irma…",
+    question: "Votre question",
+    send: "Envoyer",
+    suggestions: [
+      "Qui est Irma ?",
+      "Qu’a-t-elle créé ?",
+      "Comment la contacter ?",
+    ],
+    thinking: "Réflexion",
+  },
+};
 
 // A speech bubble with three dots
 const CHAT_ICON =
   "M4 5 H20 A1 1 0 0 1 21 6 V16 A1 1 0 0 1 20 17 H10 L6 20 V17 H4 A1 1 0 0 1 3 16 V6 A1 1 0 0 1 4 5 Z M8 11 H8.01 M12 11 H12.01 M16 11 H16.01";
 
-const errorText = (status: number) =>
-  status === 429
-    ? "That's a lot of questions! Give me a minute and ask again."
-    : "Sorry, I couldn't answer that just now. Try again in a moment.";
-
-type Answer = { ok: true; reply: string } | { error: string; ok: false };
+type Answer = { ok: true; reply: string } | { ok: false; status: number };
 
 /** The visitor's question, answered by the chat bot through /api/chat */
 const ask = async (messages: readonly ChatMessage[]): Promise<Answer> => {
@@ -38,7 +65,7 @@ const ask = async (messages: readonly ChatMessage[]): Promise<Answer> => {
     });
 
     if (!res.ok) {
-      return { error: errorText(res.status), ok: false };
+      return { ok: false, status: res.status };
     }
 
     // SAFETY: our own /api/chat route answers a 200 with { reply }
@@ -46,7 +73,7 @@ const ask = async (messages: readonly ChatMessage[]): Promise<Answer> => {
 
     return { ok: true, reply };
   } catch {
-    return { error: errorText(0), ok: false };
+    return { ok: false, status: 0 };
   }
 };
 
@@ -55,11 +82,13 @@ const ask = async (messages: readonly ChatMessage[]): Promise<Answer> => {
  * ask a chat bot about who I am.
  */
 export const ChatWindow = () => {
+  const t = useCopy(COPY);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // The failed answer's status, worded in the page's language as it shows
+  const [error, setError] = useState<number | null>(null);
   const log = useRef<HTMLOListElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
@@ -96,7 +125,7 @@ export const ChatWindow = () => {
     if (answer.ok) {
       setMessages([...next, { content: answer.reply, role: "assistant" }]);
     } else {
-      setError(answer.error);
+      setError(answer.status);
     }
   };
 
@@ -108,9 +137,9 @@ export const ChatWindow = () => {
   return (
     <div className="chat-dock">
       {open && (
-        <Window className="chat-window" label="Ask about me" title="ask_me.bot">
+        <Window className="chat-window" label={t.label} title="ask_me.bot">
           <ol aria-live="polite" className="chat-log" ref={log}>
-            <li className="chat-msg is-assistant">{GREETING}</li>
+            <li className="chat-msg is-assistant">{t.greeting}</li>
             {messages.map((m, i) => (
               <li
                 className={`chat-msg is-${m.role}`}
@@ -123,13 +152,13 @@ export const ChatWindow = () => {
             {pending && (
               <li className="chat-msg is-assistant is-typing">
                 <span aria-hidden="true">…</span>
-                <span className="sr-only">Thinking</span>
+                <span className="sr-only">{t.thinking}</span>
               </li>
             )}
           </ol>
           {messages.length === 0 && (
             <div className="chat-suggestions">
-              {SUGGESTIONS.map((s) => (
+              {t.suggestions.map((s) => (
                 <button
                   className="chat-chip"
                   key={s}
@@ -141,14 +170,14 @@ export const ChatWindow = () => {
               ))}
             </div>
           )}
-          {error && (
+          {error === null ? null : (
             <p className="chat-error" role="alert">
-              {error}
+              {error === 429 ? t.busy : t.failed}
             </p>
           )}
           <form className="chat-form" onSubmit={submit}>
             <label className="sr-only" htmlFor="chat-input">
-              Your question
+              {t.question}
             </label>
             <input
               autoComplete="off"
@@ -156,7 +185,7 @@ export const ChatWindow = () => {
               id="chat-input"
               maxLength={MAX_MESSAGE_LENGTH}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Ask about Irma…"
+              placeholder={t.placeholder}
               ref={input}
               value={draft}
             />
@@ -165,7 +194,7 @@ export const ChatWindow = () => {
               disabled={pending || !draft.trim()}
               type="submit"
             >
-              Send
+              {t.send}
             </button>
           </form>
         </Window>
@@ -179,7 +208,7 @@ export const ChatWindow = () => {
         <svg aria-hidden="true" viewBox="0 0 24 24">
           <path d={CHAT_ICON} />
         </svg>
-        <span>{open ? "close chat" : "ask about me"}</span>
+        <span>{open ? t.close : t.open}</span>
       </button>
     </div>
   );

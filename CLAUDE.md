@@ -31,6 +31,10 @@ npm run build
 
 The PostToolUse hook in `.claude/hooks/ultracite.sh` runs Ultracite and the typecheck on every file you edit.
 
+## Languages
+
+The site reads in English or French. The choice is `src/lib/language.ts`: kept in localStorage and in a `lang` cookie on `irmahs.dev` that every irmahs.dev app reads and writes, so one pick carries across the apps. The header's EN/FR pill (`src/components/language-toggle.tsx`) and the EN and FR pills in `profile.exe` both switch it. Every string a visitor sees has both versions, in a `COPY = { en, fr }` object beside the component that shows it (`useCopy(COPY)`), and dates go through `LOCALES`. Tokkae's newest changelog entry carries its French in `fr`.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know

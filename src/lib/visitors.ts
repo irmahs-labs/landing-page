@@ -1,3 +1,6 @@
+import { LOCALES } from "./language";
+import type { Language } from "./language";
+
 /** One day of visits, as Cloudflare counts them (UTC days) */
 export interface VisitorDay {
   /** ISO date, such as 2026-10-28 */
@@ -29,33 +32,52 @@ export interface VisitorStats {
   online: number;
 }
 
-const REGION = new Intl.DisplayNames(["en"], { type: "region" });
+const REGIONS = {
+  en: new Intl.DisplayNames(["en"], { type: "region" }),
+  fr: new Intl.DisplayNames(["fr"], { type: "region" }),
+};
 
-/** A country's name in English, from Cloudflare's code */
-export const countryName = (code: string) => {
+const UNKNOWN = { en: "Unknown", fr: "Inconnu" };
+
+/** A country's name in the page's language, from Cloudflare's code */
+export const countryName = (code: string, language: Language = "en") => {
   if (code === "T1") {
     return "Tor";
   }
 
   if (code === "XX") {
-    return "Unknown";
+    return UNKNOWN[language];
   }
 
   try {
-    return REGION.of(code) ?? code;
+    return REGIONS[language].of(code) ?? code;
   } catch {
     return code;
   }
 };
 
-const WEEKDAY = new Intl.DateTimeFormat("en-GB", {
-  timeZone: "UTC",
-  weekday: "short",
-});
+const WEEKDAYS = {
+  en: new Intl.DateTimeFormat(LOCALES.en, {
+    timeZone: "UTC",
+    weekday: "short",
+  }),
+  fr: new Intl.DateTimeFormat(LOCALES.fr, {
+    timeZone: "UTC",
+    weekday: "short",
+  }),
+};
+
+const TODAY = { en: "today", fr: "auj." };
 
 /** A day's label under its bar: "Mon", or "today" for the last one */
-export const dayLabel = (date: string, isToday: boolean) =>
-  isToday ? "today" : WEEKDAY.format(new Date(`${date}T00:00:00Z`));
+export const dayLabel = (
+  date: string,
+  isToday: boolean,
+  language: Language = "en"
+) =>
+  isToday
+    ? TODAY[language]
+    : WEEKDAYS[language].format(new Date(`${date}T00:00:00Z`));
 
 /** How strongly to shade a country on the map, 1 to 3, by its share of the top one's */
 export const shadeOf = (share: number, top: number) => {
