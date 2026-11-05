@@ -22,7 +22,7 @@ export const useAppDeploys = () => {
       }
     };
 
-    load();
+    void load();
 
     return () => {
       alive = false;

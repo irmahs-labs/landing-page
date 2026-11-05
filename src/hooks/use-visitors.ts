@@ -58,7 +58,7 @@ export const useVisitors = (open: boolean) => {
       }
     };
 
-    load();
+    void load();
     const id = setInterval(load, POLL_MS);
 
     return () => {

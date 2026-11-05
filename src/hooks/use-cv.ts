@@ -36,7 +36,7 @@ export const useCv = () => {
       }
     };
 
-    load();
+    void load();
 
     return () => {
       alive = false;

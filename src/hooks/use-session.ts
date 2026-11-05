@@ -38,7 +38,7 @@ export const useSession = () => {
       }
     };
 
-    load();
+    void load();
 
     return () => {
       alive = false;
