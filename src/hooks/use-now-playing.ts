@@ -30,7 +30,7 @@ export const useNowPlaying = () => {
       }
     };
 
-    load();
+    void load();
     const id = setInterval(load, POLL_MS);
 
     return () => {

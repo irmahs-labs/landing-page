@@ -88,7 +88,7 @@ export const Landing = () => {
     const cached = weatherCache.current[cityId];
 
     if (!cached || Date.now() - cached.at >= WEATHER_TTL) {
-      load();
+      void load();
     }
 
     const id = setInterval(load, WEATHER_TTL);

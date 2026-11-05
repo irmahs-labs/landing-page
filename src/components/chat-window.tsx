@@ -131,7 +131,7 @@ export const ChatWindow = () => {
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    send(draft);
+    void send(draft);
   };
 
   return (

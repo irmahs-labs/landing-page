@@ -42,7 +42,7 @@ export const usePresence = () => {
 
     const start = () => {
       clearInterval(timer);
-      here();
+      void here();
       timer = setInterval(here, PING_MS);
     };
 
@@ -60,7 +60,7 @@ export const usePresence = () => {
       if (document.visibilityState === "visible") {
         start();
       } else {
-        leave();
+        void leave();
       }
     };
 
