@@ -4,7 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 12 November 2026
 
-- **#PR A CV in each language, and a chosen language you can see:** `socials.lnk` downloads the French CV (`Irma_Houver_Sing_CV_FR.pdf`) while the page is in French and the English one otherwise, each with its own size. "replace my CV" replaces the one in the page's language: `/api/cv?lang=fr` keeps the French upload as `cv.fr.pdf` beside the English `cv.pdf` in the `cv` volume, and each falls back to its built-in PDF in `cv/`. In `profile.exe` the chosen language is the dark pill in both themes (`strong` on Light Matcha, `raised` on Dark Matcha), no longer the lime of the dark window's body or the green of the KH pill. The title reads "Fullstack Software Engineer" or "Développeuse fullstack", and the studies in French "Master en MIAGE".
+- **#78 A CV in each language, and a chosen language you can see:** `socials.lnk` downloads the French CV (`Irma_Houver_Sing_CV_FR.pdf`) while the page is in French and the English one otherwise, each with its own size. "replace my CV" replaces the one in the page's language: `/api/cv?lang=fr` keeps the French upload as `cv.fr.pdf` beside the English `cv.pdf` in the `cv` volume, and each falls back to its built-in PDF in `cv/`. In `profile.exe` the chosen language is the dark pill in both themes (`strong` on Light Matcha, `raised` on Dark Matcha), no longer the lime of the dark window's body or the green of the KH pill. The title reads "Fullstack Software Engineer" or "Développeuse fullstack", and the studies in French "Master en MIAGE".
 
 ## 11 November 2026
 
