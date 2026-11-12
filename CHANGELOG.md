@@ -4,7 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 11 November 2026
 
-- **The new Cute Matcha, with yellow icons:** the page takes the design system's November update. Every icon tile (each app's in `launcher.exe`, GitHub, LinkedIn and the CV in `socials.lnk`) sits on the new yellow accent, `pop`, with its glyph in the dark ink, in both themes. App tiles are `panel` cards with 20px corners, 12px of padding and an 8px screenshot, and the name has an arrow at the end of its row. Dark Matcha is a touch deeper (`#405045` page, `#4b5c51` panels) and secondary text a touch stronger in both themes, so every pair clears 5.4:1. Boxes inside a window (the weather, the photo, the cover, the social rows, the chat field) take the 2px inner radius, every screen icon is drawn at 2px, and the temperature and visitor numbers use tabular figures.
+- **#77 The new Cute Matcha, with yellow icons:** the page takes the design system's November update. Every icon tile (each app's in `launcher.exe`, GitHub, LinkedIn and the CV in `socials.lnk`) sits on the new yellow accent, `pop`, with its glyph in the dark ink, in both themes. App tiles are `panel` cards with 20px corners, 12px of padding and an 8px screenshot, and the name has an arrow at the end of its row. Dark Matcha is a touch deeper (`#405045` page, `#4b5c51` panels) and secondary text a touch stronger in both themes, so every pair clears 5.4:1. Boxes inside a window (the weather, the photo, the cover, the social rows, the chat field) take the 2px inner radius, every screen icon is drawn at 2px, and the temperature and visitor numbers use tabular figures.
 
 ## 31 October 2026
 
