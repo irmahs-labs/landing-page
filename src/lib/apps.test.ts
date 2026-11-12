@@ -5,8 +5,6 @@ import { describe, expect, it } from "vitest";
 
 import { APPS } from "./apps";
 
-const HEX = /^#[0-9a-f]{6}$/iu;
-
 describe("APPS", () => {
   it("fits the apps window's biggest page of six", () => {
     expect(APPS.length).toBeGreaterThan(0);
@@ -27,9 +25,7 @@ describe("APPS", () => {
       expect(app.name.trim()).not.toBe("");
       expect(app.desc.en.trim()).not.toBe("");
       expect(app.desc.fr.trim()).not.toBe("");
-      expect(app.icon.bg).toMatch(HEX);
-      expect(app.icon.fg).toMatch(HEX);
-      expect(app.icon.path.startsWith("M")).toBe(true);
+      expect(app.icon.startsWith("M")).toBe(true);
     }
   });
 

@@ -15,6 +15,21 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "every icon wears butter yellow now, irma's new accent colour",
+      "app cards got rounder corners, and dark mode is a deeper matcha",
+    ],
+    date: "2026-11-11",
+    fr: {
+      changes: [
+        "chaque icône porte du jaune beurre, la nouvelle couleur d’accent d’irma",
+        "les cartes des apps ont des coins plus ronds, et le mode sombre est un matcha plus profond",
+      ],
+      title: "une touche de jaune",
+    },
+    title: "a dash of yellow",
+  },
+  {
+    changes: [
       "the site speaks french now! press fr up top, or fr in irma's profile",
       "your pick follows you into irma's apps too",
     ],

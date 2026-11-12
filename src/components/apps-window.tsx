@@ -32,6 +32,12 @@ const COPY = {
   },
 };
 
+const Arrow = ({ d }: { d: string }) => (
+  <svg aria-hidden="true" viewBox="0 0 24 24">
+    <path d={d} />
+  </svg>
+);
+
 const Tile = ({
   app,
   deployed,
@@ -45,23 +51,14 @@ const Tile = ({
 
   return (
     <a className="tile" href={app.href} rel="noreferrer" target="_blank">
-      <span
-        className={app.shot ? "app-shot has-shot" : "app-shot"}
-        // SAFETY: CSSProperties has no index signature for custom properties
-        style={
-          {
-            "--ic-bg": app.icon.bg,
-            "--ic-fg": app.icon.fg,
-          } as CSSProperties
-        }
-      >
+      <span className={app.shot ? "app-shot has-shot" : "app-shot"}>
         {app.shot && (
           // oxlint-disable-next-line next/no-img-element -- pre-sized screenshot, cropped by CSS
           <img alt="" height={600} src={app.shot} width={960} />
         )}
         <span className="app-icon">
           <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d={app.icon.path} />
+            <path d={app.icon} />
           </svg>
         </span>
         {deployed && (
@@ -72,19 +69,16 @@ const Tile = ({
         )}
       </span>
       <span className="app-text">
-        <span className="app-name">{app.name}</span>
+        <span className="app-name">
+          <span className="app-name__text">{app.name}</span>
+          <Arrow d="M5 12 H19 M13 6 L19 12 L13 18" />
+        </span>
         <span className="app-desc">{app.desc[language]}</span>
         <span className="sr-only">{t.newTab}</span>
       </span>
     </a>
   );
 };
-
-const Arrow = ({ d }: { d: string }) => (
-  <svg aria-hidden="true" viewBox="0 0 24 24">
-    <path d={d} />
-  </svg>
-);
 
 /** The smallest a tile gets before the window shows fewer apps */
 const TILE = { h: 240, w: 380 };
