@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 11 November 2026
+
+- **#77 The new Cute Matcha, with yellow icons:** the page takes the design system's November update. Every icon tile (each app's in `launcher.exe`, GitHub, LinkedIn and the CV in `socials.lnk`) sits on the new yellow accent, `pop`, with its glyph in the dark ink, in both themes. App tiles are `panel` cards with 20px corners, 12px of padding and an 8px screenshot, and the name has an arrow at the end of its row. Dark Matcha is a touch deeper (`#405045` page, `#4b5c51` panels) and secondary text a touch stronger in both themes, so every pair clears 5.4:1. Boxes inside a window (the weather, the photo, the cover, the social rows, the chat field) take the 2px inner radius, every screen icon is drawn at 2px, and the temperature and visitor numbers use tabular figures.
+
 ## 31 October 2026
 
 - **English and French:** the site reads in English or French. The header has an EN/FR pill beside the sun/moon toggle, and the EN and FR pills in `profile.exe` are buttons that switch the same choice (KH stays a pill). Every window, the chat's greeting and suggestions, the weather, the dates, the visitor numbers and Tokkae's newest patch notes follow it. The choice is kept in localStorage and in a `lang` cookie on `irmahs.dev`, which the apps read too, so a visitor who picks French here finds Mini Games, Irma in Paris, the pantry spinner and the Album Cover Maker in French as well.

@@ -64,8 +64,8 @@ export const SocialsWindow = () => {
               rel="noreferrer"
               target="_blank"
             >
-              <span className="social-icon" style={{ backgroundColor: s.bg }}>
-                <svg aria-hidden="true" stroke={s.fg} viewBox="0 0 24 24">
+              <span className="social-icon">
+                <svg aria-hidden="true" viewBox="0 0 24 24">
                   <path d={s.path} />
                 </svg>
               </span>
@@ -83,11 +83,8 @@ export const SocialsWindow = () => {
             download={CV.file}
             href={CV.href}
           >
-            <span
-              className="social-icon"
-              style={{ backgroundColor: "#f2d27a" }}
-            >
-              <svg aria-hidden="true" stroke="#2f3b34" viewBox="0 0 24 24">
+            <span className="social-icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
                 <path d={CV_ICON} />
               </svg>
             </span>
