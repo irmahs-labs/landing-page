@@ -1456,8 +1456,24 @@ button.lang:hover {
 }
 .lang.is-current,
 button.lang.is-current {
-  background-color: var(--selected);
-  color: var(--on-selected);
+  /* Not the selected green: Khmer's pill beside it is that same green, and
+     it can't be chosen. The dark pill is the one the site is in. */
+  background-color: var(--strong);
+  color: var(--on-strong);
+}
+/* On Dark Matcha the window's body is the selected lime itself, so a chosen
+   pill would vanish into it and the other one look pressed. Here the chosen
+   language takes the dark button well, and the other rests on the lime. */
+:root[data-theme="dark"] button.lang {
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+:root[data-theme="dark"] button.lang:hover {
+  background-color: var(--accent-soft);
+}
+:root[data-theme="dark"] button.lang.is-current {
+  background-color: var(--raised);
+  color: var(--text);
 }
 
 /* ---------- socials ---------- */

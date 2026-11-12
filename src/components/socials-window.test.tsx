@@ -1,10 +1,11 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { CV } from "@/lib/socials";
+import { chooseLanguage } from "@/lib/language";
+import { CVS } from "@/lib/socials";
 
 import { SocialsWindow } from "./socials-window";
 
@@ -24,6 +25,10 @@ const cvApi = (canReplace: boolean, upload?: Response) => {
 
   return fetch;
 };
+
+afterEach(() => {
+  act(() => chooseLanguage("en"));
+});
 
 describe("SocialsWindow", () => {
   it("links GitHub and LinkedIn in a new tab", () => {
@@ -50,9 +55,45 @@ describe("SocialsWindow", () => {
       name: "Download my CV (PDF · 110 KB)",
     });
 
-    expect(cv.getAttribute("href")).toBe(CV.href);
-    expect(cv.getAttribute("download")).toBe(CV.file);
-    expect(existsSync(path.join(process.cwd(), "cv", CV.file))).toBe(true);
+    expect(cv.getAttribute("href")).toBe(CVS.en.href);
+    expect(cv.getAttribute("download")).toBe(CVS.en.file);
+    expect(existsSync(path.join(process.cwd(), "cv", CVS.en.file))).toBe(true);
+  });
+
+  it("downloads and replaces the French CV while the page is in French", async () => {
+    const fetch = cvApi(false);
+    // A new answer each time: a Response can be read only once
+    fetch.mockImplementation(() =>
+      Promise.resolve(
+        Response.json({ bytes: 108_544, canReplace: true, updatedAt: "" })
+      )
+    );
+    render(<SocialsWindow />);
+    await screen.findByText("PDF · 110 KB");
+
+    act(() => chooseLanguage("fr"));
+
+    const cv = await screen.findByRole("link", {
+      name: "Télécharger mon CV (PDF · 106 KB)",
+    });
+
+    expect(cv.getAttribute("href")).toBe(CVS.fr.href);
+    expect(cv.getAttribute("download")).toBe(CVS.fr.file);
+    expect(existsSync(path.join(process.cwd(), "cv", CVS.fr.file))).toBe(true);
+    expect(fetch).toHaveBeenLastCalledWith("/api/cv?lang=fr", {
+      cache: "no-store",
+    });
+
+    const file = new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" });
+    fireEvent.change(screen.getByLabelText("Nouveau CV, en PDF"), {
+      target: { files: [file] },
+    });
+
+    expect(await screen.findByText("CV remplacé")).toBeTruthy();
+    expect(fetch).toHaveBeenLastCalledWith(
+      "/api/cv?lang=fr",
+      expect.objectContaining({ body: file, method: "PUT" })
+    );
   });
 
   it("offers nobody but an admin to replace it", async () => {
@@ -79,7 +120,7 @@ describe("SocialsWindow", () => {
     expect(await screen.findByText("CV replaced")).toBeTruthy();
     expect(screen.getByText("PDF · 1.2 MB")).toBeTruthy();
     expect(fetch).toHaveBeenLastCalledWith(
-      "/api/cv",
+      "/api/cv?lang=en",
       expect.objectContaining({ body: file, method: "PUT" })
     );
   });

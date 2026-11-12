@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 12 November 2026
+
+- **#78 A CV in each language, and a chosen language you can see:** `socials.lnk` downloads the French CV (`Irma_Houver_Sing_CV_FR.pdf`) while the page is in French and the English one otherwise, each with its own size. "replace my CV" replaces the one in the page's language: `/api/cv?lang=fr` keeps the French upload as `cv.fr.pdf` beside the English `cv.pdf` in the `cv` volume, and each falls back to its built-in PDF in `cv/`. In `profile.exe` the chosen language is the dark pill in both themes (`strong` on Light Matcha, `raised` on Dark Matcha), no longer the lime of the dark window's body or the green of the KH pill. The title reads "Fullstack Software Engineer" or "Développeuse fullstack", and the studies in French "Master en MIAGE".
+
 ## 11 November 2026
 
 - **#77 The new Cute Matcha, with yellow icons:** the page takes the design system's November update. Every icon tile (each app's in `launcher.exe`, GitHub, LinkedIn and the CV in `socials.lnk`) sits on the new yellow accent, `pop`, with its glyph in the dark ink, in both themes. App tiles are `panel` cards with 20px corners, 12px of padding and an 8px screenshot, and the name has an arrow at the end of its row. Dark Matcha is a touch deeper (`#405045` page, `#4b5c51` panels) and secondary text a touch stronger in both themes, so every pair clears 5.4:1. Boxes inside a window (the weather, the photo, the cover, the social rows, the chat field) take the 2px inner radius, every screen icon is drawn at 2px, and the temperature and visitor numbers use tabular figures.

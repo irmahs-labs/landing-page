@@ -36,10 +36,10 @@ describe("LanguageToggle", () => {
     // The profile's French pill puts the page, the header included, in French
     fireEvent.click(screen.getByRole("button", { name: "French" }));
     expect(pressed("Français")).toEqual(["true", "true"]);
-    expect(screen.getByText("Ingénieure logiciel")).toBeDefined();
+    expect(screen.getByText("Développeuse fullstack")).toBeDefined();
     // And the header's English button brings the profile back to English
     fireEvent.click(screen.getByRole("button", { name: "English" }));
     expect(pressed("English")).toEqual(["true", "true"]);
-    expect(screen.getByText("Software Engineer")).toBeDefined();
+    expect(screen.getByText("Fullstack Software Engineer")).toBeDefined();
   });
 });

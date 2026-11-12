@@ -1,3 +1,5 @@
+import type { Language } from "./language";
+
 /** Where else to find me, in the socials window */
 export interface Social {
   handle: string;
@@ -23,10 +25,20 @@ export const SOCIALS: readonly Social[] = [
 ];
 
 /**
- * My CV, downloaded under this name. The built-in one is in cv/, and I can
- * replace it from the page once signed in (src/app/api/cv)
+ * My CV in each language, downloaded under these names: the page offers the
+ * one in the language it is read in. The built-in ones are in cv/, and I can
+ * replace either from the page once signed in (src/app/api/cv)
  */
-export const CV = {
-  file: "Irma_Houver_Sing_CV.pdf",
-  href: "/cv/Irma_Houver_Sing_CV.pdf",
-} as const;
+export const CVS = {
+  en: {
+    file: "Irma_Houver_Sing_CV.pdf",
+    href: "/cv/Irma_Houver_Sing_CV.pdf",
+  },
+  fr: {
+    file: "Irma_Houver_Sing_CV_FR.pdf",
+    href: "/cv/Irma_Houver_Sing_CV_FR.pdf",
+  },
+} as const satisfies Record<Language, { file: string; href: string }>;
+
+/** The English one, where only one can be named */
+export const CV = CVS.en;

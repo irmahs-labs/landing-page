@@ -5,6 +5,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GET as download } from "../../cv/Irma_Houver_Sing_CV.pdf/route";
+import { GET as downloadFrench } from "../../cv/Irma_Houver_Sing_CV_FR.pdf/route";
 import { GET, PUT } from "./route";
 
 const PDF = Buffer.from("%PDF-1.7 a newer CV");
@@ -28,10 +29,10 @@ const accountService = (status: number) => {
   return fetch;
 };
 
-/** What GET /api/cv answers this cookie */
-const info = async (cookie?: string) => {
+/** What GET /api/cv answers this cookie, about the CV in this language */
+const info = async (cookie?: string, lang = "") => {
   const res = await GET(
-    new Request("https://irmahs.dev/api/cv", {
+    new Request(`https://irmahs.dev/api/cv${lang}`, {
       headers: cookie ? { cookie } : {},
     })
   );
@@ -46,19 +47,19 @@ const info = async (cookie?: string) => {
 /** What PUT /api/cv answers these bytes, sent from this page */
 const upload = (
   bytes: Buffer,
-  { cookie = "session=irma", origin = "https://irmahs.dev" } = {}
+  { cookie = "session=irma", lang = "", origin = "https://irmahs.dev" } = {}
 ) =>
   PUT(
-    new Request("https://irmahs.dev/api/cv", {
+    new Request(`https://irmahs.dev/api/cv${lang}`, {
       body: new Uint8Array(bytes),
       headers: { cookie, host: "irmahs.dev", origin },
       method: "PUT",
     })
   );
 
-/** What /cv/Irma_Houver_Sing_CV.pdf downloads */
-const downloaded = async () => {
-  const res = await download();
+/** What /cv/Irma_Houver_Sing_CV.pdf downloads, or the French one */
+const downloaded = async (route = download) => {
+  const res = await route();
 
   return { bytes: Buffer.from(await res.arrayBuffer()), res };
 };
@@ -118,6 +119,24 @@ describe("PUT /api/cv", () => {
     expect(bytes).toEqual(PDF);
   });
 
+  it("replaces the French CV alone when asked for it", async () => {
+    accountService(204);
+    const english = await downloaded();
+    const res = await upload(PDF, { lang: "?lang=fr" });
+    expect(res.status).toBe(200);
+    expect(await readFile(path.join(dir, "cv.fr.pdf"))).toEqual(PDF);
+
+    const french = await downloaded(downloadFrench);
+    const stillEnglish = await downloaded();
+    expect(french.bytes).toEqual(PDF);
+    expect(stillEnglish.bytes).toEqual(english.bytes);
+
+    const frenchInfo = await info(undefined, "?lang=fr");
+    const englishInfo = await info();
+    expect(frenchInfo.body.bytes).toBe(PDF.length);
+    expect(englishInfo.body.bytes).toBe(english.bytes.length);
+  });
+
   it("refuses anyone the account service doesn't list", async () => {
     accountService(403);
     const res = await upload(PDF);
@@ -156,5 +175,13 @@ describe("GET /cv/Irma_Houver_Sing_CV.pdf", () => {
     const { bytes, res } = await downloaded();
     expect(res.headers.get("Cache-Control")).toBe("no-cache");
     expect(bytes.subarray(0, 5).toString("latin1")).toBe("%PDF-");
+  });
+
+  it("has a French one beside it, a different file", async () => {
+    const french = await downloaded(downloadFrench);
+    expect(french.res.headers.get("Content-Type")).toBe("application/pdf");
+    expect(french.bytes.subarray(0, 5).toString("latin1")).toBe("%PDF-");
+    const english = await downloaded();
+    expect(french.bytes).not.toEqual(english.bytes);
   });
 });
