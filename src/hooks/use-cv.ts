@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
+import type { Language } from "@/lib/language";
+
 export interface CvState {
   bytes: number;
   canReplace: boolean;
@@ -13,11 +15,12 @@ const parse = async (res: Response) =>
   res.ok ? ((await res.json()) as CvState) : null;
 
 /**
- * The CV's size, and whether the visitor may replace it, asked once of
- * /api/cv. Only an admin is told `canReplace`; the server checks again on
+ * The size of the CV in this language, and whether the visitor may replace
+ * it, asked of /api/cv each time the language changes. Only an admin is told `canReplace`; the server checks again on
  * every upload.
  */
-export const useCv = () => {
+export const useCv = (language: Language) => {
+  const api = `/api/cv?lang=${language}`;
   const [cv, setCv] = useState<CvState | null>(null);
   const [upload, setUpload] = useState<UploadState>("idle");
 
@@ -26,7 +29,7 @@ export const useCv = () => {
 
     const load = async () => {
       try {
-        const next = await parse(await fetch("/api/cv", { cache: "no-store" }));
+        const next = await parse(await fetch(api, { cache: "no-store" }));
 
         if (alive) {
           setCv(next);
@@ -41,29 +44,32 @@ export const useCv = () => {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [api]);
 
-  const replace = useCallback(async (file: File) => {
-    setUpload("uploading");
+  const replace = useCallback(
+    async (file: File) => {
+      setUpload("uploading");
 
-    try {
-      const next = await parse(
-        await fetch("/api/cv", {
-          body: file,
-          headers: { "Content-Type": "application/pdf" },
-          method: "PUT",
-        })
-      );
+      try {
+        const next = await parse(
+          await fetch(api, {
+            body: file,
+            headers: { "Content-Type": "application/pdf" },
+            method: "PUT",
+          })
+        );
 
-      if (next) {
-        setCv(next);
+        if (next) {
+          setCv(next);
+        }
+
+        setUpload(next ? "done" : "failed");
+      } catch {
+        setUpload("failed");
       }
-
-      setUpload(next ? "done" : "failed");
-    } catch {
-      setUpload("failed");
-    }
-  }, []);
+    },
+    [api]
+  );
 
   return { cv, replace, upload };
 };

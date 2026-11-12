@@ -3,8 +3,8 @@ import { useRef } from "react";
 import { useCv } from "@/hooks/use-cv";
 import type { UploadState } from "@/hooks/use-cv";
 import { fmtSize } from "@/lib/format";
-import { useCopy } from "@/lib/language";
-import { CV, SOCIALS } from "@/lib/socials";
+import { useCopy, useLanguage } from "@/lib/language";
+import { CVS, SOCIALS } from "@/lib/socials";
 
 import { Window } from "./window";
 
@@ -45,10 +45,15 @@ const COPY = {
   },
 };
 
-/** Where else to find me, each opening in a new tab, and my CV to download */
+/**
+ * Where else to find me, each opening in a new tab, and my CV to download:
+ * the French one while the page is in French, else the English one
+ */
 export const SocialsWindow = () => {
-  const { cv, replace, upload } = useCv();
+  const language = useLanguage();
+  const { cv, replace, upload } = useCv(language);
   const t = useCopy(COPY);
+  const mine = CVS[language];
   const picker = useRef<HTMLInputElement>(null);
   const size = cv ? `PDF · ${fmtSize(cv.bytes)}` : "PDF";
 
@@ -80,8 +85,8 @@ export const SocialsWindow = () => {
           <a
             aria-label={t.download(size)}
             className="btn social"
-            download={CV.file}
-            href={CV.href}
+            download={mine.file}
+            href={mine.href}
           >
             <span className="social-icon">
               <svg aria-hidden="true" viewBox="0 0 24 24">

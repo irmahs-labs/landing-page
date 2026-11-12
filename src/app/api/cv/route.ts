@@ -1,5 +1,11 @@
 import { isAdmin } from "@/lib/admin";
-import { cvInfo, isPdf, MAX_CV_BYTES, saveCv } from "@/lib/cv-store";
+import {
+  cvInfo,
+  cvLanguage,
+  isPdf,
+  MAX_CV_BYTES,
+  saveCv,
+} from "@/lib/cv-store";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
@@ -20,17 +26,21 @@ const fromOwnPage = (request: Request) => {
   }
 };
 
+// Which CV: ?lang=fr for the French one, else the English one
+const asked = (request: Request) =>
+  cvLanguage(new URL(request.url).searchParams.get("lang"));
+
 /** How big the CV is, when it last changed, and whether the visitor may replace it */
 export const GET = async (request: Request) => {
   const [info, canReplace] = await Promise.all([
-    cvInfo(),
+    cvInfo(asked(request)),
     isAdmin(request.headers.get("cookie")),
   ]);
 
   return Response.json({ ...info, canReplace }, { headers: NO_STORE });
 };
 
-/** Replaces the CV with the PDF sent as the body, for an admin */
+/** Replaces the CV in the asked language with the PDF sent as the body, for an admin */
 export const PUT = async (request: Request) => {
   if (!fromOwnPage(request)) {
     return refuse("wrong origin", 403);
@@ -54,8 +64,10 @@ export const PUT = async (request: Request) => {
     return refuse("not a pdf", 415);
   }
 
+  const language = asked(request);
+
   try {
-    await saveCv(bytes);
+    await saveCv(language, bytes);
   } catch (error) {
     console.error(error);
 
@@ -63,7 +75,7 @@ export const PUT = async (request: Request) => {
   }
 
   return Response.json(
-    { ...(await cvInfo()), canReplace: true },
+    { ...(await cvInfo(language)), canReplace: true },
     { headers: NO_STORE }
   );
 };
