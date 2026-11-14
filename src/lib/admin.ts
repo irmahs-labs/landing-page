@@ -3,14 +3,14 @@ import { AUTH_URL } from "./auth";
 
 /**
  * The app whose list in the account service's APP_ACCESS secret makes
- * someone an admin here. As Mini Games does, it reuses Alma Housila's list,
+ * someone an admin here. As Irma's Playground does, it reuses Alma Housila's list,
  * Irma's own, so the secret needs no entry of its own.
  */
 export const ADMIN_APP = "alma-housila";
 
 /**
  * Where the server asks: AUTH_INTERNAL_URL, the account service on the
- * Docker network (http://auth:3001 in production, as Mini Games asks), so
+ * Docker network (http://auth:3001 in production, as Irma's Playground asks), so
  * the question never goes out through Cloudflare, which turns away requests
  * from the server itself. Without it, the public AUTH_URL.
  */

@@ -28,11 +28,13 @@ export interface AppLink {
  */
 const hosted = (
   slug: string,
-  app: Pick<AppLink, "desc" | "icon" | "name">
+  app: Pick<AppLink, "desc" | "icon" | "name">,
+  // The subdomain, when it is not the repo's name
+  subdomain = slug
 ): AppLink => ({
   ...app,
   deploys: { repo: `irmahs-labs/${slug}`, workflow: "deploy.yml" },
-  href: `https://${slug}.irmahs.dev`,
+  href: `https://${subdomain}.irmahs.dev`,
   shot: `/apps/${slug}.jpg`,
 });
 
@@ -46,15 +48,20 @@ export const APPS: readonly AppLink[] = [
     icon: "M7 3 H17 A3 3 0 0 1 20 6 V15 A3 3 0 0 1 17 18 H7 A3 3 0 0 1 4 15 V6 A3 3 0 0 1 7 3 Z M7 7 H17 V11 H7 Z M8 14.5 H8.01 M16 14.5 H16.01 M8 18 L6 21 M16 18 L18 21",
     name: "Irma in Paris",
   }),
-  hosted("minigames", {
-    desc: {
-      en: "Little browser games to play alone or with friends",
-      fr: "De petits jeux dans le navigateur, seul ou entre amis",
+  // The minigames repo, renamed Irma's Playground at its own address
+  hosted(
+    "minigames",
+    {
+      desc: {
+        en: "Little browser games to play alone or with friends",
+        fr: "De petits jeux dans le navigateur, seul ou entre amis",
+      },
+      // The app's own logo: a die showing five
+      icon: "M7 3 H17 A4 4 0 0 1 21 7 V17 A4 4 0 0 1 17 21 H7 A4 4 0 0 1 3 17 V7 A4 4 0 0 1 7 3 Z M8 8 H8.01 M16 8 H16.01 M12 12 H12.01 M8 16 H8.01 M16 16 H16.01",
+      name: "Irma’s Playground",
     },
-    // The app's own logo: a die showing five
-    icon: "M7 3 H17 A4 4 0 0 1 21 7 V17 A4 4 0 0 1 17 21 H7 A4 4 0 0 1 3 17 V7 A4 4 0 0 1 7 3 Z M8 8 H8.01 M16 8 H16.01 M12 12 H12.01 M8 16 H8.01 M16 16 H16.01",
-    name: "Mini Games",
-  }),
+    "playground"
+  ),
   hosted("album-cover-maker", {
     desc: {
       en: "Drop in a photo, add a title, export a 3000 × 3000 cover",

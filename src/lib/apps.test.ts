@@ -56,6 +56,16 @@ describe("APPS", () => {
     expect(maker?.shot).toBe("/apps/album-cover-maker.jpg");
   });
 
+  it("sends Irma's Playground to its own address, deployed from the minigames repo", () => {
+    const playground = APPS.find((app) => app.name === "Irma’s Playground");
+
+    expect(playground?.href).toBe("https://playground.irmahs.dev");
+    expect(playground?.deploys).toEqual({
+      repo: "irmahs-labs/minigames",
+      workflow: "deploy.yml",
+    });
+  });
+
   it("leaves GitHub and LinkedIn to the socials window", () => {
     for (const app of APPS) {
       expect(app.href).not.toMatch(/github\.com|linkedin\.com/u);
@@ -65,7 +75,7 @@ describe("APPS", () => {
   it("lists the apps in Irma's order", () => {
     expect(APPS.map((app) => app.name)).toEqual([
       "Irma in Paris",
-      "Mini Games",
+      "Irma’s Playground",
       "Album Cover Maker",
       "What's in my pantry?",
       "Alsace Arena",
