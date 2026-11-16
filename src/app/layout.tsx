@@ -26,7 +26,7 @@ const kantumruy = Kantumruy_Pro({
 export const metadata: Metadata = {
   description:
     "Irma Houver Sing, fullstack developer based in Paris. Pick an app to try.",
-  title: "Irma Houver Sing",
+  title: "Home · Irma Houver Sing",
 };
 
 // The browser's bar in the page's colours: Light Matcha's ground, and Dark

@@ -15,6 +15,23 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "a festival calendar sits beside the apps now: moons and festivals from around the world",
+      "prefer irma's music? the switch on top swaps it back to spotify",
+      "two new apps up front: realms and tools",
+    ],
+    date: "2026-11-16",
+    fr: {
+      changes: [
+        "un calendrier des fêtes est à côté des apps : lunes et fêtes du monde entier",
+        "tu préfères la musique d’irma ? le bouton en haut remet spotify",
+        "deux nouvelles apps en tête : realms et tools",
+      ],
+      title: "des lunes et des fêtes",
+    },
+    title: "moons and festivals",
+  },
+  {
+    changes: [
       "every icon wears butter yellow now, irma's new accent colour",
       "app cards got rounder corners, and dark mode is a deeper matcha",
     ],

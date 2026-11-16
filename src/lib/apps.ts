@@ -37,6 +37,24 @@ const hosted = (
 });
 
 export const APPS: readonly AppLink[] = [
+  hosted("realms", {
+    desc: {
+      en: "Worlds to step into: the Book of Shadows and the Court of Draconia",
+      fr: "Des mondes où entrer : le Livre des ombres et la Cour de Draconia",
+    },
+    // The app's own logo: an arched portal, a star shining through it
+    icon: "M6 21 V11 A6 6 0 0 1 18 11 V21 M4 21 H20 M12 11 L12.9 13.1 L15 14 L12.9 14.9 L12 17 L11.1 14.9 L9 14 L11.1 13.1 Z",
+    name: "Realms",
+  }),
+  hosted("tools", {
+    desc: {
+      en: "Handy little makers, starting with album covers in 3000 × 3000",
+      fr: "De petits outils pratiques, à commencer par des pochettes en 3000 × 3000",
+    },
+    // The app's own logo: a toolbox, its handle on top and its latch in front
+    icon: "M9 7 V5.5 A1.5 1.5 0 0 1 10.5 4 H13.5 A1.5 1.5 0 0 1 15 5.5 V7 M6 7 H18 A2 2 0 0 1 20 9 V18 A2 2 0 0 1 18 20 H6 A2 2 0 0 1 4 18 V9 A2 2 0 0 1 6 7 Z M4 12 H20 M10.5 11 H13.5 V14 H10.5 Z",
+    name: "Tools",
+  }),
   hosted("irma-in-paris", {
     desc: {
       en: "Paris right now: the weather, the next train, and where I've eaten",
@@ -54,15 +72,6 @@ export const APPS: readonly AppLink[] = [
     // The app's own logo: a die showing five
     icon: "M7 3 H17 A4 4 0 0 1 21 7 V17 A4 4 0 0 1 17 21 H7 A4 4 0 0 1 3 17 V7 A4 4 0 0 1 7 3 Z M8 8 H8.01 M16 8 H16.01 M12 12 H12.01 M8 16 H8.01 M16 16 H16.01",
     name: "Mini Games",
-  }),
-  hosted("album-cover-maker", {
-    desc: {
-      en: "Drop in a photo, add a title, export a 3000 × 3000 cover",
-      fr: "Glissez une photo, ajoutez un titre, exportez une pochette de 3000 × 3000",
-    },
-    // A record in its sleeve
-    icon: "M3 3 H21 V21 H3 Z M12 7 A5 5 0 1 0 12 17 A5 5 0 1 0 12 7 Z M12 11 A1 1 0 1 0 12 13 A1 1 0 1 0 12 11 Z",
-    name: "Album Cover Maker",
   }),
   hosted("pantry-spinner", {
     desc: {

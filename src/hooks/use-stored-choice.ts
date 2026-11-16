@@ -4,7 +4,8 @@ import { store } from "@/lib/storage";
 
 const EVENT = "stored-choice";
 
-const subscribe = (onChange: () => void) => {
+/** Listens for a saved choice changing, in this tab or another */
+export const subscribeStored = (onChange: () => void) => {
   window.addEventListener("storage", onChange);
   window.addEventListener(EVENT, onChange);
 
@@ -12,6 +13,12 @@ const subscribe = (onChange: () => void) => {
     window.removeEventListener("storage", onChange);
     window.removeEventListener(EVENT, onChange);
   };
+};
+
+/** Saves a choice, and tells every hook reading it in this tab */
+export const saveStored = (key: string, value: string) => {
+  store.set(key, value);
+  window.dispatchEvent(new Event(EVENT));
 };
 
 /**
@@ -24,18 +31,12 @@ export const useStoredChoice = <T extends string>(
   fallback: T
 ) => {
   const value = useSyncExternalStore(
-    subscribe,
+    subscribeStored,
     () => options.find((o) => o === store.get(key)) ?? fallback,
     () => fallback
   );
 
-  const set = useCallback(
-    (next: T) => {
-      store.set(key, next);
-      window.dispatchEvent(new Event(EVENT));
-    },
-    [key]
-  );
+  const set = useCallback((next: T) => saveStored(key, next), [key]);
 
   return [value, set] as const;
 };

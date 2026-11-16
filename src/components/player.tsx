@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 import { useNowPlaying } from "@/hooks/use-now-playing";
 import { fmtSeconds } from "@/lib/format";
@@ -222,7 +223,14 @@ const useTokkaeSong = (quiet: boolean) => {
  * What's playing on Spotify right now; `now` drives the progress between
  * polls. The cover and the title open the song on Spotify in a new tab.
  */
-export const Player = ({ now }: { now: Date | null }) => {
+export const Player = ({
+  now,
+  pick,
+}: {
+  now: Date | null;
+  /** The switch to the calendar, at the top of the window */
+  pick?: ReactNode;
+}) => {
   const { data, fetchedAt } = useNowPlaying();
   const language = useLanguage();
   const t = COPY[language];
@@ -253,6 +261,7 @@ export const Player = ({ now }: { now: Date | null }) => {
       title="now_playing.mp3"
     >
       <div className="player-body">
+        {pick}
         <Cover image={track?.image ?? null} song={song.anim} url={url} />
 
         <div className="track-row">

@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 16 November 2026
+
+- **The festival calendar beside the apps, Realms and Tools in the launcher:** the slot beside the apps holds the Festival Calendar, moved over from Mini Games (`calendar.ics`: the month's moons and the festivals of the calendars you pick, a day's list, and "add to your calendar", with `/api/festival-calendar/:id/:file` for iPhones). A switch at its top swaps it for `now_playing.mp3`, and both choices are kept in the browser. `launcher.exe` opens on Realms and Tools, the Album Cover Maker leaves (it lives in Tools now), Mini Games has a fresh screenshot, and the window holds up to eight. The tab reads "Home · Irma Houver Sing".
+
 ## 12 November 2026
 
 - **#78 A CV in each language, and a chosen language you can see:** `socials.lnk` downloads the French CV (`Irma_Houver_Sing_CV_FR.pdf`) while the page is in French and the English one otherwise, each with its own size. "replace my CV" replaces the one in the page's language: `/api/cv?lang=fr` keeps the French upload as `cv.fr.pdf` beside the English `cv.pdf` in the `cv` volume, and each falls back to its built-in PDF in `cv/`. In `profile.exe` the chosen language is the dark pill in both themes (`strong` on Light Matcha, `raised` on Dark Matcha), no longer the lime of the dark window's body or the green of the KH pill. The title reads "Fullstack Software Engineer" or "Développeuse fullstack", and the studies in French "Master en MIAGE".

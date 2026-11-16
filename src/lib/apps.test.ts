@@ -6,9 +6,9 @@ import { describe, expect, it } from "vitest";
 import { APPS } from "./apps";
 
 describe("APPS", () => {
-  it("fits the apps window's biggest page of six", () => {
+  it("fits the apps window's biggest page of eight", () => {
     expect(APPS.length).toBeGreaterThan(0);
-    expect(APPS.length).toBeLessThanOrEqual(6);
+    expect(APPS.length).toBeLessThanOrEqual(8);
   });
 
   it("links every app once, over https", () => {
@@ -50,10 +50,19 @@ describe("APPS", () => {
     }
   });
 
-  it("lists the Album Cover Maker, with its screenshot", () => {
-    const maker = APPS.find((app) => app.name === "Album Cover Maker");
-    expect(maker?.href).toBe("https://album-cover-maker.irmahs.dev");
-    expect(maker?.shot).toBe("/apps/album-cover-maker.jpg");
+  it("lists Realms and Tools, with their screenshots", () => {
+    const realms = APPS.find((app) => app.name === "Realms");
+    const tools = APPS.find((app) => app.name === "Tools");
+    expect(realms?.href).toBe("https://realms.irmahs.dev");
+    expect(realms?.shot).toBe("/apps/realms.jpg");
+    expect(tools?.href).toBe("https://tools.irmahs.dev");
+    expect(tools?.shot).toBe("/apps/tools.jpg");
+  });
+
+  it("leaves the Album Cover Maker to Tools, where it moved", () => {
+    expect(APPS.map((app) => app.href)).not.toContain(
+      "https://album-cover-maker.irmahs.dev"
+    );
   });
 
   it("leaves GitHub and LinkedIn to the socials window", () => {
@@ -64,9 +73,10 @@ describe("APPS", () => {
 
   it("lists the apps in Irma's order", () => {
     expect(APPS.map((app) => app.name)).toEqual([
+      "Realms",
+      "Tools",
       "Irma in Paris",
       "Mini Games",
-      "Album Cover Maker",
       "What's in my pantry?",
       "Alsace Arena",
       "Portfolio",
