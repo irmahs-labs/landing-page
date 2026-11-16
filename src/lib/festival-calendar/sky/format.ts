@@ -1,4 +1,4 @@
-import { LOCALES, currentLanguage } from "@/lib/language";
+import { LOCALES, currentLanguage } from "@/lib/language-state";
 
 import { parseDay } from "./time";
 

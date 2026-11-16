@@ -46,9 +46,9 @@ const COPY = {
     empty: "Pick a calendar to see its days.",
     label: "Festival calendar",
     next: "Next month",
-    nothing: "Nothing on this day.",
+    nothing: (day: string, more: boolean) =>
+      `${day}: nothing on this day.${more ? " Coming up:" : ""}`,
     previous: "Previous month",
-    soon: "Coming up",
     today: "today",
     weekdays: ["M", "T", "W", "T", "F", "S", "S"],
     weekdaysLong: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -62,9 +62,9 @@ const COPY = {
     empty: "Choisissez un calendrier pour voir ses jours.",
     label: "Calendrier des fêtes",
     next: "Mois suivant",
-    nothing: "Rien ce jour-là.",
+    nothing: (day: string, more: boolean) =>
+      `${day} : rien ce jour-là.${more ? " À venir :" : ""}`,
     previous: "Mois précédent",
-    soon: "À venir",
     today: "aujourd’hui",
     weekdays: ["L", "M", "M", "J", "V", "S", "D"],
     weekdaysLong: ["lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim."],
@@ -91,6 +91,12 @@ const CalendarIcon = () => (
   </svg>
 );
 
+/** Adds or takes off a calendar, from what is saved right now, so presses quicker than a render all count */
+const toggleSaved = (id: CalendarId) => {
+  const latest = calendarsFrom(store.get(CALENDARS_KEY));
+  saveStored(CALENDARS_KEY, JSON.stringify(toggleCalendar(latest, id)));
+};
+
 /** The calendars the visitor picked, kept in this browser */
 const useCalendars = () => {
   const saved = useSyncExternalStore(
@@ -101,10 +107,7 @@ const useCalendars = () => {
 
   const chosen = useMemo(() => calendarsFrom(saved), [saved]);
 
-  const toggle = (id: CalendarId) =>
-    saveStored(CALENDARS_KEY, JSON.stringify(toggleCalendar(chosen, id)));
-
-  return { chosen, toggle };
+  return { chosen, toggle: toggleSaved };
 };
 
 /** A festival on the list: its mark, name, days, and a way to add it */
@@ -303,12 +306,20 @@ const DayList = ({
     ? occasions.filter(({ start }) => start > day).slice(0, SOON)
     : [];
 
+  // On a quiet day, the Moon's next phase this month is coming up too
+  const nextMoon = quiet
+    ? moons?.find((m) => m.key > day && m.exact)
+    : undefined;
+
   let hint: string | null = null;
 
   if (chosen.length === 0) {
     hint = t.empty;
   } else if (quiet) {
-    hint = `${formatDay(day, SHORT)}: ${t.nothing}${soon.length > 0 ? ` ${t.soon}:` : ""}`;
+    hint = t.nothing(
+      formatDay(day, SHORT),
+      soon.length > 0 || Boolean(nextMoon)
+    );
   }
 
   return (
@@ -316,6 +327,7 @@ const DayList = ({
       {hint ? <p className="cal-hint">{hint}</p> : null}
       <ul className="cal-items">
         {moon ? <PhaseRow day={moon} timeZone={timeZone} /> : null}
+        {nextMoon ? <PhaseRow day={nextMoon} timeZone={timeZone} /> : null}
         {[...on, ...soon].map((occasion) => (
           <OccasionRow
             key={`${occasion.festival.id}|${occasion.start}`}

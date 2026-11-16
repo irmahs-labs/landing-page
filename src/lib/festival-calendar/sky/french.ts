@@ -1,4 +1,4 @@
-import { currentLanguage } from "@/lib/language";
+import { currentLanguage } from "@/lib/language-state";
 
 import { BUDDHIST_CALENDAR } from "./french/buddhist-calendar";
 import { MOON } from "./french/moon";
