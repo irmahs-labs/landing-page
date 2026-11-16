@@ -28,6 +28,9 @@ describe("SideWidget", () => {
     ).toBeTruthy();
     expect(screen.getByText("November 2026")).toBeTruthy();
     expect(days()).toHaveLength(30);
+    // Six whole weeks under the weekdays, blanks around the month, so every
+    // month draws the same grid
+    expect(document.querySelectorAll(".cal-grid > li")).toHaveLength(7 + 42);
 
     const today = days().find(
       (day) => day.getAttribute("aria-current") === "date"

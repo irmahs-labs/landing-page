@@ -74,6 +74,9 @@ const COPY = {
 /** "Sat 10 Oct" */
 const SHORT = { day: "numeric", month: "short", weekday: "short" } as const;
 
+/** The weeks a month's grid always shows: enough for the longest month */
+const WEEKS = 6;
+
 /** How many festivals "coming up" lists when the day picked has none */
 const SOON = 3;
 
@@ -229,6 +232,8 @@ const MonthGrid = ({
   const length = daysInMonth(shown.year, shown.month);
   // Monday is 0: how many blank cells come before the 1st
   const lead = (weekdayOf(keyOf(shown.year, shown.month, 1)) + 6) % 7;
+  // Always six weeks, so every month is the same height and its lines close
+  const trail = WEEKS * 7 - lead - length;
 
   return (
     <ol className="cal-grid">
@@ -241,6 +246,9 @@ const MonthGrid = ({
         >
           {weekday}
         </li>
+      ))}
+      {Array.from({ length: lead }, (_, i) => (
+        <li aria-hidden="true" className="cal-grid__blank" key={`lead-${i}`} />
       ))}
       {Array.from({ length }, (_, i) => {
         const key = keyOf(shown.year, shown.month, i + 1);
@@ -258,10 +266,7 @@ const MonthGrid = ({
         ];
 
         return (
-          <li
-            key={key}
-            style={i === 0 ? { gridColumnStart: lead + 1 } : undefined}
-          >
+          <li key={key}>
             <button
               aria-current={key === today ? "date" : undefined}
               aria-label={label.filter(Boolean).join(", ")}
@@ -279,6 +284,9 @@ const MonthGrid = ({
           </li>
         );
       })}
+      {Array.from({ length: trail }, (_, i) => (
+        <li aria-hidden="true" className="cal-grid__blank" key={`trail-${i}`} />
+      ))}
     </ol>
   );
 };

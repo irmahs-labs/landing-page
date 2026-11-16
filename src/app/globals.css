@@ -369,6 +369,7 @@ fieldset {
    moves its neighbours rather than squeezing them. */
 .desk {
   --top-h: 172px;
+  --widget-h: 560px;
   --apps-h: clamp(320px, calc(100vh - 420px), 520px);
   /* Dragged windows stack among themselves, under Tokkae and its playmate */
   isolation: isolate;
@@ -1411,6 +1412,18 @@ button.account {
 .calendar-window {
   width: 280px;
 }
+/* The calendar and the player are the same height, so switching one for
+   the other never moves the launcher, which stretches to the side column
+   (and would fit a second app beside a taller widget). What doesn't fit
+   scrolls inside. A phone stacks them at their own height instead. */
+.calendar-window,
+.player-window {
+  height: var(--widget-h);
+}
+.player-window .player-body {
+  flex: 1;
+  justify-content: space-between;
+}
 .side-body {
   display: flex;
   flex-direction: column;
@@ -1431,18 +1444,31 @@ button.account {
   font: 600 17px/1.2 var(--font);
   text-align: center;
 }
+/* The month as a wall calendar: lines between every day. The lines are the
+   outline showing through 1px gaps between cells of the window's own lime */
 .cal-grid {
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 2px;
+  gap: 1px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-xs);
+  background-color: var(--line);
+  overflow: hidden;
+}
+.cal-grid > li {
+  background-color: var(--body);
 }
 .cal-grid__weekday {
+  padding: 3px 0;
   font-size: 11px;
   font-weight: 700;
   text-align: center;
+}
+.cal-grid > .cal-grid__weekday {
+  background-color: var(--alt);
 }
 .cal-day {
   width: 100%;
@@ -1452,8 +1478,8 @@ button.account {
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  border: 1.5px solid transparent;
-  border-radius: var(--radius-xs);
+  border: 0;
+  border-radius: 0;
   background-color: transparent;
   color: var(--on-accent);
   font: 600 12px/1 var(--font-text);
@@ -1466,12 +1492,12 @@ button.account {
 .cal-day[aria-current="date"] {
   background-color: var(--raised);
   color: var(--text);
-  border-color: var(--line);
+  box-shadow: inset 0 0 0 1.5px var(--line);
 }
 .cal-day[aria-pressed="true"] {
   background-color: var(--pop);
   color: var(--on-pop);
-  border-color: var(--line);
+  box-shadow: inset 0 0 0 1.5px var(--line);
 }
 .cal-day:focus-visible,
 .cal-chip:focus-visible,
