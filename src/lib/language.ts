@@ -104,6 +104,9 @@ const subscribe = (onChange: () => void) => {
   };
 };
 
+/** The page's language right now, for code outside React (dates, the calendar's words) */
+export const currentLanguage = (): Language => snapshot();
+
 export const useLanguage = () =>
   useSyncExternalStore(subscribe, snapshot, serverSnapshot);
 

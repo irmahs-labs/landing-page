@@ -17,10 +17,10 @@ import { CityToggle } from "./city-toggle";
 import { ClockWindow } from "./clock-window";
 import { Footer } from "./footer";
 import { Header } from "./header";
-import { Player } from "./player";
 import { PlaymateSwitch } from "./playmate-switch";
 import { ProfileWindow } from "./profile-window";
 import { Scene } from "./scene";
+import { SideWidget } from "./side-widget";
 import { SocialsWindow } from "./socials-window";
 import { Tokkae } from "./tokkae";
 import type { PlaymateNudge } from "./tokkae";
@@ -128,7 +128,7 @@ export const Landing = () => {
             <AppsWindow />
           </div>
           <div className="desk-side">
-            <Player now={now} />
+            <SideWidget now={now} />
             <SocialsWindow />
           </div>
         </main>

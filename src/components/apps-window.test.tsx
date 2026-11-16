@@ -58,7 +58,7 @@ describe("AppsWindow", () => {
     expect(tiles()[0]?.getAttribute("href")).toBe(APPS.at(-1)?.href);
   });
 
-  it("shows 2, 4 or 6 apps as the window grows", () => {
+  it("shows 2, 4, 6 or 8 apps as the window grows", () => {
     render(<AppsWindow />);
     resize(745, 375);
     expect(tiles()).toHaveLength(1);
@@ -68,6 +68,10 @@ describe("AppsWindow", () => {
     expect(tiles()).toHaveLength(4);
     resize(1200, 500);
     expect(tiles()).toHaveLength(Math.min(6, APPS.length));
+    resize(1600, 500);
+    expect(tiles()).toHaveLength(Math.min(8, APPS.length));
+    resize(800, 1000);
+    expect(tiles()).toHaveLength(Math.min(8, APPS.length));
   });
 
   it("stacks two apps in a tall, narrow window", () => {
@@ -78,7 +82,7 @@ describe("AppsWindow", () => {
 
   it("turns off the arrows when every app fits", () => {
     render(<AppsWindow />);
-    resize(1200, 500);
+    resize(1600, 500);
     expect(label()).toBe("1 / 1");
     expect(screen.getByRole("button", { name: "Next apps" })).toHaveProperty(
       "disabled",
@@ -107,7 +111,7 @@ describe("AppsWindow", () => {
 
   it("opens every app in a new tab", () => {
     render(<AppsWindow />);
-    resize(1200, 500);
+    resize(1600, 500);
 
     for (const tile of tiles()) {
       expect(tile.getAttribute("target")).toBe("_blank");

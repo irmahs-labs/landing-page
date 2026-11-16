@@ -86,16 +86,20 @@ const GAP = 12;
 
 interface Layout {
   cols: number;
-  count: 1 | 2 | 4 | 6;
+  count: 1 | 2 | 4 | 6 | 8;
 }
 
 const fit = (room: number, min: number) =>
   Math.floor((room + GAP) / (min + GAP));
 
-/** As many apps as fit at their smallest: 1, 2, 4 or 6 */
+/** As many apps as fit at their smallest: 1, 2, 4, 6 or 8 */
 const layoutFor = (w: number, h: number): Layout => {
   const cols = fit(w, TILE.w);
   const rows = fit(h, TILE.h);
+
+  if ((cols >= 4 && rows >= 2) || (cols >= 2 && rows >= 4)) {
+    return { cols: cols >= 4 ? 4 : 2, count: 8 };
+  }
 
   if ((cols >= 3 && rows >= 2) || (cols >= 2 && rows >= 3)) {
     return { cols: cols >= 3 ? 3 : 2, count: 6 };
@@ -114,7 +118,7 @@ const layoutFor = (w: number, h: number): Layout => {
 
 /**
  * The apps, a page at a time, paged with the arrows below; the pages wrap
- * around. It opens on one app, and resizing the window shows 2, 4 or 6.
+ * around. It opens on one app, and resizing the window shows 2, 4, 6 or 8.
  */
 export const AppsWindow = () => {
   const grid = useRef<HTMLDivElement>(null);
