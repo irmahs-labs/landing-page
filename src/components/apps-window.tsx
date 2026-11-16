@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import { useState } from "react";
 
 import { useAppDeploys } from "@/hooks/use-app-deploys";
 import { APPS } from "@/lib/apps";
@@ -17,8 +16,8 @@ const COPY = {
     label: "My apps",
     more: "More apps",
     newTab: "(opens in a new tab)",
-    next: "Next apps",
-    previous: "Previous apps",
+    next: "Next app",
+    previous: "Previous app",
     updated: "Updated",
   },
   fr: {
@@ -26,8 +25,8 @@ const COPY = {
     label: "Mes apps",
     more: "Plus d’apps",
     newTab: "(s’ouvre dans un nouvel onglet)",
-    next: "Apps suivantes",
-    previous: "Apps précédentes",
+    next: "App suivante",
+    previous: "App précédente",
     updated: "Mise à jour le",
   },
 };
@@ -80,83 +79,19 @@ const Tile = ({
   );
 };
 
-/** The smallest a tile gets before the window shows fewer apps */
-const TILE = { h: 240, w: 380 };
-const GAP = 12;
-
-interface Layout {
-  cols: number;
-  count: 1 | 2 | 4 | 6 | 8;
-}
-
-const fit = (room: number, min: number) =>
-  Math.floor((room + GAP) / (min + GAP));
-
-/** As many apps as fit at their smallest: 1, 2, 4, 6 or 8 */
-const layoutFor = (w: number, h: number): Layout => {
-  const cols = fit(w, TILE.w);
-  const rows = fit(h, TILE.h);
-
-  if ((cols >= 4 && rows >= 2) || (cols >= 2 && rows >= 4)) {
-    return { cols: cols >= 4 ? 4 : 2, count: 8 };
-  }
-
-  if ((cols >= 3 && rows >= 2) || (cols >= 2 && rows >= 3)) {
-    return { cols: cols >= 3 ? 3 : 2, count: 6 };
-  }
-
-  if (cols >= 2 && rows >= 2) {
-    return { cols: 2, count: 4 };
-  }
-
-  if (cols >= 2 || rows >= 2) {
-    return { cols: cols >= 2 ? 2 : 1, count: 2 };
-  }
-
-  return { cols: 1, count: 1 };
-};
-
 /**
- * The apps, a page at a time, paged with the arrows below; the pages wrap
- * around. It opens on one app, and resizing the window shows 2, 4, 6 or 8.
+ * The apps one at a time, paged with the arrows below; the pages wrap
+ * around. One app always fills the window, whatever its size: resizing it
+ * only makes that one bigger.
  */
 export const AppsWindow = () => {
-  const grid = useRef<HTMLDivElement>(null);
   const deploys = useAppDeploys();
   const t = useCopy(COPY);
-  const [layout, setLayout] = useState<Layout>({ cols: 1, count: 1 });
-  // The first app shown, so a new page size keeps it in view
-  const [first, setFirst] = useState(0);
-  const { cols, count } = layout;
-  const pages = Math.ceil(APPS.length / count);
-  const page = Math.floor(first / count);
-  const shown = APPS.slice(page * count, page * count + count);
+  const [index, setIndex] = useState(0);
+  const app = APPS[index] ?? APPS[0];
 
   const go = (step: number) =>
-    setFirst(((page + step + pages) % pages) * count);
-
-  useEffect(() => {
-    const el = grid.current;
-
-    if (!el) {
-      return;
-    }
-
-    const observer = new ResizeObserver(([entry]) => {
-      if (!entry) {
-        return;
-      }
-
-      const next = layoutFor(entry.contentRect.width, entry.contentRect.height);
-      setLayout((prev) =>
-        prev.cols === next.cols && prev.count === next.count ? prev : next
-      );
-    });
-
-    observer.observe(el);
-
-    return () => observer.disconnect();
-  }, []);
+    setIndex((current) => (current + step + APPS.length) % APPS.length);
 
   return (
     <Window
@@ -166,39 +101,28 @@ export const AppsWindow = () => {
       title="launcher.exe"
     >
       <div className="apps-body">
-        <div
-          className="apps-grid"
-          data-count={count}
-          ref={grid}
-          // SAFETY: CSSProperties has no index signature for custom properties
-          style={
-            {
-              "--cols": cols,
-              "--rows": Math.ceil(count / cols),
-            } as CSSProperties
-          }
-        >
-          {shown.map((app) => (
+        <div className="apps-grid">
+          {app ? (
             <Tile app={app} deployed={deploys[app.href]} key={app.href} />
-          ))}
+          ) : null}
         </div>
         <nav aria-label={t.more} className="pager">
           <button
             aria-label={t.previous}
             className="btn pager-btn"
-            disabled={pages < 2}
+            disabled={APPS.length < 2}
             onClick={() => go(-1)}
             type="button"
           >
             <Arrow d="M19 12 H5 M11 6 L5 12 L11 18" />
           </button>
           <span aria-live="polite" className="pager-label">
-            {page + 1} / {pages}
+            {index + 1} / {APPS.length}
           </span>
           <button
             aria-label={t.next}
             className="btn pager-btn"
-            disabled={pages < 2}
+            disabled={APPS.length < 2}
             onClick={() => go(1)}
             type="button"
           >

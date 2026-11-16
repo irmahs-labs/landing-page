@@ -1,40 +1,15 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { APPS } from "@/lib/apps";
 
 import { AppsWindow } from "./apps-window";
 
-// jsdom never lays anything out, so the grid's size comes from here
-interface Size {
-  height: number;
-  width: number;
-}
-
-let resize: (width: number, height: number) => void = vi.fn();
-
 beforeEach(() => {
   // No dates from /api/app-deploys unless a test gives some
   vi.stubGlobal(
     "fetch",
     vi.fn().mockResolvedValue(new Response(null, { status: 502 }))
-  );
-  vi.stubGlobal(
-    "ResizeObserver",
-    class {
-      disconnect = vi.fn();
-      observe = vi.fn();
-      constructor(listener: (entries: { contentRect: Size }[]) => void) {
-        resize = (width, height) =>
-          act(() => listener([{ contentRect: { height, width } }]));
-      }
-    }
   );
 });
 
@@ -49,56 +24,16 @@ describe("AppsWindow", () => {
     expect(tiles()[0]?.querySelector("img")).not.toBeNull();
   });
 
-  it("flips through the apps with the arrows, wrapping round", () => {
+  it("flips through the apps one at a time, wrapping round", () => {
     render(<AppsWindow />);
-    fireEvent.click(screen.getByRole("button", { name: "Next apps" }));
-    expect(tiles()[0]?.getAttribute("href")).toBe(APPS[1]?.href);
-    fireEvent.click(screen.getByRole("button", { name: "Previous apps" }));
-    fireEvent.click(screen.getByRole("button", { name: "Previous apps" }));
-    expect(tiles()[0]?.getAttribute("href")).toBe(APPS.at(-1)?.href);
-  });
-
-  it("shows 2, 4, 6 or 8 apps as the window grows", () => {
-    render(<AppsWindow />);
-    resize(745, 375);
+    fireEvent.click(screen.getByRole("button", { name: "Next app" }));
     expect(tiles()).toHaveLength(1);
-    resize(800, 375);
-    expect(tiles()).toHaveLength(2);
-    resize(800, 500);
-    expect(tiles()).toHaveLength(4);
-    resize(1200, 500);
-    expect(tiles()).toHaveLength(Math.min(6, APPS.length));
-    resize(1600, 500);
-    expect(tiles()).toHaveLength(Math.min(8, APPS.length));
-    resize(800, 1000);
-    expect(tiles()).toHaveLength(Math.min(8, APPS.length));
-  });
-
-  it("stacks two apps in a tall, narrow window", () => {
-    render(<AppsWindow />);
-    resize(400, 500);
-    expect(tiles()).toHaveLength(2);
-  });
-
-  it("turns off the arrows when every app fits", () => {
-    render(<AppsWindow />);
-    resize(1600, 500);
-    expect(label()).toBe("1 / 1");
-    expect(screen.getByRole("button", { name: "Next apps" })).toHaveProperty(
-      "disabled",
-      true
-    );
-  });
-
-  it("keeps the first app in view when the page size changes", () => {
-    render(<AppsWindow />);
-
-    for (let i = 0; i < 3; i += 1) {
-      fireEvent.click(screen.getByRole("button", { name: "Next apps" }));
-    }
-
-    resize(800, 375);
-    expect(tiles().map((a) => a.getAttribute("href"))).toContain(APPS[3]?.href);
+    expect(tiles()[0]?.getAttribute("href")).toBe(APPS[1]?.href);
+    expect(label()).toBe(`2 / ${APPS.length}`);
+    fireEvent.click(screen.getByRole("button", { name: "Previous app" }));
+    fireEvent.click(screen.getByRole("button", { name: "Previous app" }));
+    expect(tiles()).toHaveLength(1);
+    expect(tiles()[0]?.getAttribute("href")).toBe(APPS.at(-1)?.href);
   });
 
   it("is titled like a file, as every window is", () => {
@@ -109,14 +44,18 @@ describe("AppsWindow", () => {
     );
   });
 
-  it("opens every app in a new tab", () => {
+  it("opens every app in a new tab, showing only that one", () => {
     render(<AppsWindow />);
-    resize(1600, 500);
 
-    for (const tile of tiles()) {
-      expect(tile.getAttribute("target")).toBe("_blank");
-      expect(tile.getAttribute("rel")).toBe("noreferrer");
-      expect(tile.textContent).toContain("(opens in a new tab)");
+    for (const app of APPS) {
+      const shown = tiles();
+
+      expect(shown).toHaveLength(1);
+      expect(shown[0]?.getAttribute("href")).toBe(app.href);
+      expect(shown[0]?.getAttribute("target")).toBe("_blank");
+      expect(shown[0]?.getAttribute("rel")).toBe("noreferrer");
+      expect(shown[0]?.textContent).toContain("(opens in a new tab)");
+      fireEvent.click(screen.getByRole("button", { name: "Next app" }));
     }
   });
 

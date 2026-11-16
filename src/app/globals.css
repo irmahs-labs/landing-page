@@ -878,7 +878,7 @@ button.account {
 
 /* ---------- apps ---------- */
 /* The one window that resizes, from its bottom-right corner: past its column
-   if need be, over the player, which it then covers */
+   if need be, over the player, which it then covers. Its one app grows with it */
 .apps-window {
   width: min(780px, 100%);
   max-width: calc(100vw - 32px);
@@ -908,14 +908,11 @@ button.account {
   gap: 10px;
   padding: 12px 16px;
 }
-/* 1, 2, 4 or 6 tiles, as many as fit (see layoutFor in apps-window.tsx) */
+/* One app at a time, filling the window */
 .apps-grid {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
-  gap: 12px;
 }
 .tile {
   position: relative;
@@ -1109,18 +1106,6 @@ button.account {
   cursor: default;
   transform: none;
   box-shadow: var(--shadow-soft);
-}
-/* Smaller words when the tiles share the window */
-.apps-grid:not([data-count="1"]) .tile {
-  gap: 8px;
-}
-.apps-grid:not([data-count="1"]) .app-name {
-  font-size: 18px;
-}
-.apps-grid:not([data-count="1"]) .app-desc {
-  font-size: 13px;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
 }
 .pager-label {
   min-width: 64px;
