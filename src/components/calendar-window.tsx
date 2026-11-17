@@ -21,22 +21,15 @@ import {
   toggleCalendar,
 } from "@/lib/festival-calendar/groups";
 import type { CalendarId } from "@/lib/festival-calendar/groups";
-import {
-  formatClock,
-  formatDay,
-  formatMonth,
-} from "@/lib/festival-calendar/sky/format";
+import { formatClock, formatDay } from "@/lib/festival-calendar/sky/format";
 import { say } from "@/lib/festival-calendar/sky/french";
 import { fullMoonName, moonMonth } from "@/lib/festival-calendar/sky/moon";
 import type { MoonDay } from "@/lib/festival-calendar/sky/moon";
 import { MoonGlyph } from "@/lib/festival-calendar/sky/moon-glyph";
 import {
   dayKey,
-  daysInMonth,
-  keyOf,
   localTimeZone,
   wallTimeAt,
-  weekdayOf,
 } from "@/lib/festival-calendar/sky/time";
 import { useCopy, useLanguage } from "@/lib/language";
 import { store } from "@/lib/storage";
@@ -46,47 +39,33 @@ import { Window } from "./window";
 const COPY = {
   en: {
     add: (name: string) => `Add ${name} to your calendar`,
-    back: "Back to this month",
     calendars: "Calendars",
     choose: "Pick your calendars",
     done: "done",
-    empty: "Pick a calendar to see its days.",
+    empty: "Pick a calendar to see what's coming up.",
+    nothing: "Nothing coming up in your calendars.",
+    soon: "Coming up",
     label: "Festival calendar",
-    next: "Next month",
-    previous: "Previous month",
-    today: "today",
-    weekdays: ["M", "T", "W", "T", "F", "S", "S"],
-    weekdaysLong: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
   },
   fr: {
     add: (name: string) => `Ajouter ${name} à votre agenda`,
-    back: "Revenir à ce mois-ci",
     calendars: "Calendriers",
     choose: "Choisir vos calendriers",
     done: "fini",
-    empty: "Choisissez un calendrier pour voir ses jours.",
+    empty: "Choisissez un calendrier pour voir ce qui arrive.",
+    nothing: "Rien à venir dans vos calendriers.",
+    soon: "À venir",
     label: "Calendrier des fêtes",
-    next: "Mois suivant",
-    previous: "Mois précédent",
-    today: "aujourd’hui",
-    weekdays: ["L", "M", "M", "J", "V", "S", "D"],
-    weekdaysLong: ["lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim."],
   },
 };
 
 /** "Sat 10 Oct" */
 const SHORT = { day: "numeric", month: "short", weekday: "short" } as const;
 
-/** The weeks a month's grid always shows: enough for the longest month */
-const WEEKS = 6;
+/** How many months ahead the list looks, so there's always enough to fill it */
+const MONTHS_AHEAD = 3;
 
 const isGroup = (id: CalendarId): id is GroupId => id !== "moon";
-
-const Arrow = ({ d }: { d: string }) => (
-  <svg aria-hidden="true" viewBox="0 0 24 24">
-    <path d={d} />
-  </svg>
-);
 
 const CalendarIcon = () => (
   <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -168,7 +147,7 @@ const PhaseRow = ({ day, timeZone }: { day: MoonDay; timeZone: string }) => (
   </li>
 );
 
-/** The calendars to pick, in place of the month while open */
+/** The calendars to pick, in place of the list while open */
 const Picker = ({
   chosen,
   onDone,
@@ -203,91 +182,6 @@ const Picker = ({
         {t.done}
       </button>
     </fieldset>
-  );
-};
-
-interface Shown {
-  month: number;
-  year: number;
-}
-
-/** The month's days: each with its moon phase or its first festival's mark */
-const MonthGrid = ({
-  day,
-  moons,
-  occasions,
-  onPick,
-  shown,
-  today,
-}: {
-  day: string;
-  moons: readonly MoonDay[] | null;
-  occasions: readonly Occasion[];
-  onPick: (key: string) => void;
-  shown: Shown;
-  today: string;
-}) => {
-  const language = useLanguage();
-  const t = useCopy(COPY);
-  const length = daysInMonth(shown.year, shown.month);
-  // Monday is 0: how many blank cells come before the 1st
-  const lead = (weekdayOf(keyOf(shown.year, shown.month, 1)) + 6) % 7;
-  // Always six weeks, so every month is the same height and its lines close
-  const trail = WEEKS * 7 - lead - length;
-
-  return (
-    <ol className="cal-grid">
-      {t.weekdays.map((weekday, i) => (
-        <li
-          aria-hidden="true"
-          className="cal-grid__weekday"
-          key={t.weekdaysLong[i]}
-          title={t.weekdaysLong[i]}
-        >
-          {weekday}
-        </li>
-      ))}
-      {Array.from({ length: lead }, (_, i) => (
-        <li aria-hidden="true" className="cal-grid__blank" key={`lead-${i}`} />
-      ))}
-      {Array.from({ length }, (_, i) => {
-        const key = keyOf(shown.year, shown.month, i + 1);
-        const exact = moons?.[i]?.exact ? moons[i] : null;
-
-        const marks = occasions.filter(
-          ({ end, start }) => start <= key && key <= end
-        );
-
-        const label = [
-          formatDay(key, SHORT),
-          key === today ? t.today : "",
-          exact ? say(exact.phase) : "",
-          ...marks.map((mark) => mark.festival.name[language]),
-        ];
-
-        return (
-          <li key={key}>
-            <button
-              aria-current={key === today ? "date" : undefined}
-              aria-label={label.filter(Boolean).join(", ")}
-              aria-pressed={key === day}
-              className="cal-day"
-              onClick={() => onPick(key)}
-              type="button"
-            >
-              <span className="cal-day__num">{i + 1}</span>
-              <span aria-hidden="true" className="cal-day__mark">
-                {exact ? <MoonGlyph angle={exact.angle} size={12} /> : null}
-                {!exact && marks[0] ? marks[0].festival.emoji : null}
-              </span>
-            </button>
-          </li>
-        );
-      })}
-      {Array.from({ length: trail }, (_, i) => (
-        <li aria-hidden="true" className="cal-grid__blank" key={`trail-${i}`} />
-      ))}
-    </ol>
   );
 };
 
@@ -328,149 +222,81 @@ const useLinesThatFit = () => {
   return { lines, ref };
 };
 
+/** The months from this one on, as year and month */
+const monthsFrom = (year: number, month: number, count: number) =>
+  Array.from({ length: count }, (_, i) => {
+    const index = year * 12 + (month - 1) + i;
+
+    return { month: (index % 12) + 1, year: Math.floor(index / 12) };
+  });
+
 /**
- * What falls on the day picked and what's coming up after it, this month
- * and next: as many as fit under the month, so the window stays the
- * player's size.
+ * What's coming up in the calendars picked, from today: festivals and the
+ * Moon's exact phases in date order, today's first, only as many as fit the
+ * window, which is the player's size.
  */
-const DayList = ({
+const Upcoming = ({
   chosen,
-  day,
-  moons,
-  occasions,
+  now,
+  onChoose,
   timeZone,
 }: {
   chosen: readonly CalendarId[];
-  day: string;
-  moons: readonly MoonDay[];
-  occasions: readonly Occasion[];
+  now: Date;
+  onChoose: () => void;
   timeZone: string;
 }) => {
   const t = useCopy(COPY);
   const { lines, ref } = useLinesThatFit();
-  const entries = agendaFrom(day, occasions, moons).slice(0, lines);
-
-  return (
-    <div aria-live="polite" className="cal-list" ref={ref}>
-      {chosen.length === 0 ? <p className="cal-hint">{t.empty}</p> : null}
-      <ul className="cal-items">
-        {entries.map((entry) =>
-          entry.kind === "moon" ? (
-            <PhaseRow
-              day={entry.moon}
-              key={`moon|${entry.key}`}
-              timeZone={timeZone}
-            />
-          ) : (
-            <OccasionRow
-              key={`${entry.occasion.festival.id}|${entry.occasion.start}`}
-              occasion={entry.occasion}
-            />
-          )
-        )}
-      </ul>
-    </div>
-  );
-};
-
-/** A month of the calendar, with its arrows, its days and the day's list */
-const Month = ({
-  atCurrent,
-  chosen,
-  onBack,
-  onChoose,
-  onStep,
-  shown,
-  timeZone,
-  today,
-}: {
-  atCurrent: boolean;
-  chosen: readonly CalendarId[];
-  onBack: () => void;
-  onChoose: () => void;
-  onStep: (by: number) => void;
-  shown: Shown;
-  timeZone: string;
-  today: string;
-}) => {
-  const t = useCopy(COPY);
-  const { month, year } = shown;
-  const [picked, setPicked] = useState<string | null>(null);
+  const today = dayKey(now, timeZone);
+  const { month, year } = wallTimeAt(now, timeZone);
   const withMoon = chosen.includes("moon");
-
   const groups = useMemo(() => new Set(chosen.filter(isGroup)), [chosen]);
 
-  const occasions = useMemo(
-    () => occasionsIn(year, month, groups),
-    [year, month, groups]
-  );
+  const entries = useMemo(() => {
+    const months = monthsFrom(year, month, MONTHS_AHEAD);
 
-  const moons = useMemo(
-    () => (withMoon ? moonMonth(year, month, timeZone) : null),
-    [year, month, withMoon, timeZone]
-  );
+    return agendaFrom(
+      today,
+      months.flatMap((m) => occasionsIn(m.year, m.month, groups)),
+      withMoon
+        ? months.flatMap((m) => moonMonth(m.year, m.month, timeZone))
+        : []
+    );
+  }, [today, year, month, groups, withMoon, timeZone]);
 
-  // What's coming up runs on into next month
-  const next =
-    month === 12 ? { month: 1, year: year + 1 } : { month: month + 1, year };
+  let hint: string | null = null;
 
-  const ahead = useMemo(
-    () => ({
-      moons: withMoon
-        ? [...(moons ?? []), ...moonMonth(next.year, next.month, timeZone)]
-        : [],
-      occasions: [...occasions, ...occasionsIn(next.year, next.month, groups)],
-    }),
-    [moons, occasions, withMoon, next.year, next.month, timeZone, groups]
-  );
-
-  // The day the list is about: the one pressed in this month, else today
-  // in today's month and the 1st in any other
-  const first = keyOf(year, month, 1);
-  const inMonth = picked?.startsWith(first.slice(0, 8)) ? picked : null;
-  const day = inMonth ?? (atCurrent ? today : first);
+  if (chosen.length === 0) {
+    hint = t.empty;
+  } else if (entries.length === 0) {
+    hint = t.nothing;
+  }
 
   return (
     <>
-      <div className="cal-nav">
-        <button
-          aria-label={t.previous}
-          className="btn ctl"
-          onClick={() => onStep(-1)}
-          type="button"
-        >
-          <Arrow d="M15 6 L9 12 L15 18" />
-        </button>
-        <h2 aria-live="polite" className="cal-month">
-          {formatMonth(year, month)}
-        </h2>
-        <button
-          aria-label={t.next}
-          className="btn ctl"
-          onClick={() => onStep(1)}
-          type="button"
-        >
-          <Arrow d="M9 6 L15 12 L9 18" />
-        </button>
+      <h2 className="cal-heading">{t.soon}</h2>
+      <div aria-live="polite" className="cal-list" ref={ref}>
+        {hint ? <p className="cal-hint">{hint}</p> : null}
+        <ul className="cal-items">
+          {entries
+            .slice(0, lines)
+            .map((entry) =>
+              entry.kind === "moon" ? (
+                <PhaseRow
+                  day={entry.moon}
+                  key={`moon|${entry.key}`}
+                  timeZone={timeZone}
+                />
+              ) : (
+                <OccasionRow
+                  key={`${entry.occasion.festival.id}|${entry.occasion.start}`}
+                  occasion={entry.occasion}
+                />
+              )
+            )}
+        </ul>
       </div>
-
-      <MonthGrid
-        day={day}
-        moons={moons}
-        occasions={occasions}
-        onPick={setPicked}
-        shown={shown}
-        today={today}
-      />
-
-      <DayList
-        chosen={chosen}
-        day={day}
-        moons={ahead.moons}
-        occasions={ahead.occasions}
-        timeZone={timeZone}
-      />
-
       <div className="cal-foot">
         <button className="btn cal-choose" onClick={onChoose} type="button">
           {CALENDARS.filter((c) => chosen.includes(c.id))
@@ -478,26 +304,15 @@ const Month = ({
             .join("")}{" "}
           {t.calendars}
         </button>
-        {atCurrent ? null : (
-          <button
-            className="btn cal-choose"
-            onClick={onBack}
-            title={t.back}
-            type="button"
-          >
-            {t.today}
-          </button>
-        )}
       </div>
     </>
   );
 };
 
 /**
- * The Festival Calendar, which came over from Mini Games: a month of moons
- * and the festivals of the calendars the visitor picked, in the slot beside
- * the apps. Under the month, what falls on the day picked and what's coming
- * up, as much as fits.
+ * The Festival Calendar, which came over from Mini Games: what's coming up
+ * in the calendars the visitor picked (moons and festivals), in the slot
+ * beside the apps, as many as fit.
  */
 export const CalendarWindow = ({
   now,
@@ -511,18 +326,6 @@ export const CalendarWindow = ({
   const { chosen, toggle } = useCalendars();
   const timeZone = useMemo(() => localTimeZone(), []);
   const [picking, setPicking] = useState(false);
-  // The month the visitor moved to; until then, today's
-  const [moved, setMoved] = useState<Shown | null>(null);
-
-  const current = now ? wallTimeAt(now, timeZone) : null;
-  const shown = moved ?? current;
-
-  const step = (by: number) => {
-    if (shown) {
-      const index = shown.year * 12 + (shown.month - 1) + by;
-      setMoved({ month: (index % 12) + 1, year: Math.floor(index / 12) });
-    }
-  };
 
   let body: ReactNode = <div aria-busy="true" className="cal-loading" />;
 
@@ -534,18 +337,13 @@ export const CalendarWindow = ({
         onToggle={toggle}
       />
     );
-  } else if (now && shown && current) {
+  } else if (now) {
     body = (
-      <Month
-        atCurrent={shown.year === current.year && shown.month === current.month}
+      <Upcoming
         chosen={chosen}
-        key={`${shown.year}-${shown.month}`}
-        onBack={() => setMoved(null)}
+        now={now}
         onChoose={() => setPicking(true)}
-        onStep={step}
-        shown={{ month: shown.month, year: shown.year }}
         timeZone={timeZone}
-        today={dayKey(now, timeZone)}
       />
     );
   }

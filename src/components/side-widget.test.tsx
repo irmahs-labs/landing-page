@@ -29,10 +29,11 @@ beforeEach(() => {
   );
 });
 
-const days = () =>
-  screen
-    .getAllByRole("button")
-    .filter((button) => button.classList.contains("cal-day"));
+/** The names on the calendar's list, in order */
+const listed = () =>
+  [...document.querySelectorAll(".cal-item__name")].map(
+    (name) => name.textContent
+  );
 
 describe("SideWidget", () => {
   it("opens on the calendar, today pressed, and swaps to the music", () => {
@@ -41,17 +42,11 @@ describe("SideWidget", () => {
     expect(
       screen.getByRole("region", { name: "Festival calendar" })
     ).toBeTruthy();
-    expect(screen.getByText("November 2026")).toBeTruthy();
-    expect(days()).toHaveLength(30);
-    // Six whole weeks under the weekdays, blanks around the month, so every
-    // month draws the same grid
-    expect(document.querySelectorAll(".cal-grid > li")).toHaveLength(7 + 42);
-
-    const today = days().find(
-      (day) => day.getAttribute("aria-current") === "date"
-    );
-
-    expect(today?.getAttribute("aria-pressed")).toBe("true");
+    // Only what's coming up: no month grid
+    expect(screen.getByRole("heading", { name: "Coming up" })).toBeTruthy();
+    expect(document.querySelector(".cal-day")).toBeNull();
+    // Moon phases from 8 November on, the next first
+    expect(listed().length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole("button", { name: /music/u }));
     expect(
@@ -78,14 +73,14 @@ describe("SideWidget", () => {
     ).toBeTruthy();
   });
 
-  it("moves a month on, and back to this one", () => {
-    render(<SideWidget now={NOW} />);
+  it("lists what's coming up from today, in date order, past the month's end", () => {
+    render(<SideWidget now={new Date("2026-11-28T12:00:00")} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Next month" }));
-    expect(screen.getByText("December 2026")).toBeTruthy();
-    expect(days()).toHaveLength(31);
+    const dates = [...document.querySelectorAll(".cal-item__when")].map(
+      (when) => when.textContent ?? ""
+    );
 
-    fireEvent.click(screen.getByRole("button", { name: "today" }));
-    expect(screen.getByText("November 2026")).toBeTruthy();
+    // The moon's next phases fall in December
+    expect(dates.some((date) => date.includes("Dec"))).toBe(true);
   });
 });
