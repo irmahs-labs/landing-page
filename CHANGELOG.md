@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 17 November 2026
 
+- **Only what's coming up, and fresh screenshots:** `calendar.ics` drops the month and lists what's coming up in the calendars picked, from today, festivals and the Moon's phases in date order, as many as fit the player's size (looking three months ahead). The Realms, Mini Games and Tools tiles in `launcher.exe` show those apps as they are now, with their three-colour icons and the Court of Draconia's new crown.
 - **The calendar fits the player, the player is ready, and the apps in a new order:** `calendar.ics` is the player's height and lists what falls on the day picked and what's coming up after it, this month and next, only as many as fit. Spotify is asked once as the page opens and the answer is kept while the calendar shows, so switching to `now_playing.mp3` no longer flashes Tokkae on a cream cover; it polls every 15 s only while showing. In Dark Matcha, the language to switch to in `profile.exe` is a panel pill again instead of vanishing into the window. `launcher.exe` goes Irma in Paris, Realms, Mini Games, Tools, the pantry spinner, Alsace Arena, the portfolio.
 
 ## 16 November 2026
