@@ -7,4 +7,4 @@ if [[ "${CLAUDE_CODE_REMOTE:-}" != "true" ]]; then
 fi
 
 cd "$CLAUDE_PROJECT_DIR"
-npm install --ignore-scripts --no-audit --no-fund
+npm ci --ignore-scripts --no-audit --no-fund
