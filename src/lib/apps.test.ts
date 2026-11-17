@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { APPS } from "./apps";
 
 describe("APPS", () => {
-  it("fits the apps window's biggest page of eight", () => {
+  it("keeps to eight apps at most, one at a time in the launcher", () => {
     expect(APPS.length).toBeGreaterThan(0);
     expect(APPS.length).toBeLessThanOrEqual(8);
   });

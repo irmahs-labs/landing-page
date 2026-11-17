@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 16 November 2026
 
+- **One app at a time:** `launcher.exe` always shows a single app, paged with its arrows; resizing the window makes that one bigger instead of fitting two, four or more.
 - **The calendar as a wall calendar, and a launcher that stays put:** `calendar.ics` draws lines between its days, always six weeks so every month is the same size. The calendar and `now_playing.mp3` are now the same height, so switching between them no longer stretches `launcher.exe`, which sometimes showed two apps instead of one.
 - **A fresh Mini Games screenshot:** the Mini Games tile in `launcher.exe` shows its new hub, with each game's icon and what's inside it, and no Festival Calendar card now that it lives beside the apps here.
 - **The festival calendar beside the apps, Realms and Tools in the launcher:** the slot beside the apps holds the Festival Calendar, moved over from Mini Games (`calendar.ics`: the month's moons and the festivals of the calendars you pick, a day's list, and "add to your calendar", with `/api/festival-calendar/:id/:file` for iPhones). A switch at its top swaps it for `now_playing.mp3`, and both choices are kept in the browser. `launcher.exe` opens on Realms and Tools, the Album Cover Maker leaves (it lives in Tools now), Mini Games has a fresh screenshot, and the window holds up to eight. The tab reads "Home · Irma Houver Sing".
