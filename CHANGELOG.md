@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 17 November 2026
+
+- **The calendar fits the player, the player is ready, and the apps in a new order:** `calendar.ics` is the player's height and lists what falls on the day picked and what's coming up after it, this month and next, only as many as fit. Spotify is asked once as the page opens and the answer is kept while the calendar shows, so switching to `now_playing.mp3` no longer flashes Tokkae on a cream cover; it polls every 15 s only while showing. In Dark Matcha, the language to switch to in `profile.exe` is a panel pill again instead of vanishing into the window. `launcher.exe` goes Irma in Paris, Realms, Mini Games, Tools, the pantry spinner, Alsace Arena, the portfolio.
+
 ## 16 November 2026
 
 - **One app at a time:** `launcher.exe` always shows a single app, paged with its arrows; resizing the window makes that one bigger instead of fitting two, four or more.

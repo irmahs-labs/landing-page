@@ -73,10 +73,10 @@ describe("APPS", () => {
 
   it("lists the apps in Irma's order", () => {
     expect(APPS.map((app) => app.name)).toEqual([
-      "Realms",
-      "Tools",
       "Irma in Paris",
+      "Realms",
       "Mini Games",
+      "Tools",
       "What's in my pantry?",
       "Alsace Arena",
       "Portfolio",

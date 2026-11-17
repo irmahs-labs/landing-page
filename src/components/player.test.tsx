@@ -1,9 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { useNowPlaying } from "@/hooks/use-now-playing";
 import type { NowPlaying } from "@/lib/spotify";
 
 import { Player } from "./player";
+
+/** The player as the slot gives it Spotify's answers, asking while it shows */
+const Playing = () => <Player now={null} nowPlaying={useNowPlaying(true)} />;
 
 /** What /api/now-playing answers, for the player's polling */
 const nowPlaying = (body: NowPlaying) =>
@@ -12,7 +16,7 @@ const nowPlaying = (body: NowPlaying) =>
 describe("Player", () => {
   it("has Tokkae sing in the cover while nothing plays", async () => {
     nowPlaying({ playing: false });
-    const { container } = render(<Player now={null} />);
+    const { container } = render(<Playing />);
     expect(await screen.findByText("Sings for you")).toBeDefined();
     expect(screen.getByText("Tokkae")).toBeDefined();
     expect(container.querySelector(".cover .emote")).not.toBeNull();
@@ -30,7 +34,7 @@ describe("Player", () => {
       title: "A song",
       url: "https://open.spotify.com/track/1",
     });
-    const { container } = render(<Player now={null} />);
+    const { container } = render(<Playing />);
     const link = await screen.findByRole("link", { name: /A song/u });
     expect(link.getAttribute("href")).toBe("https://open.spotify.com/track/1");
     expect(link.getAttribute("target")).toBe("_blank");
@@ -53,7 +57,7 @@ describe("Player", () => {
       title: "A song",
       url: "https://open.spotify.com/track/1",
     });
-    render(<Player now={null} />);
+    render(<Playing />);
     await screen.findByText("A song");
 
     for (const name of ["Shuffle", "Previous track", "Next track", "Repeat"]) {
@@ -65,7 +69,7 @@ describe("Player", () => {
 
   it("steps through Tokkae's songs with previous and next while it's quiet", async () => {
     nowPlaying({ playing: false });
-    render(<Player now={null} />);
+    render(<Playing />);
     expect(await screen.findByText("Sings for you")).toBeDefined();
 
     const next = screen.getByRole("button", { name: "Next song" });

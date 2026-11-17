@@ -1,10 +1,17 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import type { ReactNode } from "react";
 
 import { saveStored, subscribeStored } from "@/hooks/use-stored-choice";
 import { addToCalendar } from "@/lib/festival-calendar/add-to-calendar";
+import { agendaFrom } from "@/lib/festival-calendar/agenda";
 import { occasionsIn } from "@/lib/festival-calendar/festivals";
 import type { GroupId, Occasion } from "@/lib/festival-calendar/festivals";
 import {
@@ -46,8 +53,6 @@ const COPY = {
     empty: "Pick a calendar to see its days.",
     label: "Festival calendar",
     next: "Next month",
-    nothing: (day: string, more: boolean) =>
-      `${day}: nothing on this day.${more ? " Coming up:" : ""}`,
     previous: "Previous month",
     today: "today",
     weekdays: ["M", "T", "W", "T", "F", "S", "S"],
@@ -62,8 +67,6 @@ const COPY = {
     empty: "Choisissez un calendrier pour voir ses jours.",
     label: "Calendrier des fêtes",
     next: "Mois suivant",
-    nothing: (day: string, more: boolean) =>
-      `${day} : rien ce jour-là.${more ? " À venir :" : ""}`,
     previous: "Mois précédent",
     today: "aujourd’hui",
     weekdays: ["L", "M", "M", "J", "V", "S", "D"],
@@ -76,9 +79,6 @@ const SHORT = { day: "numeric", month: "short", weekday: "short" } as const;
 
 /** The weeks a month's grid always shows: enough for the longest month */
 const WEEKS = 6;
-
-/** How many festivals "coming up" lists when the day picked has none */
-const SOON = 3;
 
 const isGroup = (id: CalendarId): id is GroupId => id !== "moon";
 
@@ -291,7 +291,48 @@ const MonthGrid = ({
   );
 };
 
-/** What falls on the day picked; with nothing that day, what's coming up */
+/** How tall one line of the list is, and the gap between two, in pixels (see .cal-item) */
+const ITEM_H = 44;
+const ITEM_GAP = 6;
+
+/** How many list lines fit in the element's height, as it changes */
+const useLinesThatFit = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [lines, setLines] = useState(1);
+
+  useEffect(() => {
+    const element = ref.current;
+
+    if (!element) {
+      return;
+    }
+
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) {
+        setLines(
+          Math.max(
+            1,
+            Math.floor(
+              (entry.contentRect.height + ITEM_GAP) / (ITEM_H + ITEM_GAP)
+            )
+          )
+        );
+      }
+    });
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return { lines, ref };
+};
+
+/**
+ * What falls on the day picked and what's coming up after it, this month
+ * and next: as many as fit under the month, so the window stays the
+ * player's size.
+ */
 const DayList = ({
   chosen,
   day,
@@ -301,47 +342,32 @@ const DayList = ({
 }: {
   chosen: readonly CalendarId[];
   day: string;
-  moons: readonly MoonDay[] | null;
+  moons: readonly MoonDay[];
   occasions: readonly Occasion[];
   timeZone: string;
 }) => {
   const t = useCopy(COPY);
-  const on = occasions.filter(({ end, start }) => start <= day && day <= end);
-  const moon = moons?.find((m) => m.key === day && m.exact);
-  const quiet = !moon && on.length === 0;
-
-  const soon = quiet
-    ? occasions.filter(({ start }) => start > day).slice(0, SOON)
-    : [];
-
-  // On a quiet day, the Moon's next phase this month is coming up too
-  const nextMoon = quiet
-    ? moons?.find((m) => m.key > day && m.exact)
-    : undefined;
-
-  let hint: string | null = null;
-
-  if (chosen.length === 0) {
-    hint = t.empty;
-  } else if (quiet) {
-    hint = t.nothing(
-      formatDay(day, SHORT),
-      soon.length > 0 || Boolean(nextMoon)
-    );
-  }
+  const { lines, ref } = useLinesThatFit();
+  const entries = agendaFrom(day, occasions, moons).slice(0, lines);
 
   return (
-    <div aria-live="polite" className="cal-list">
-      {hint ? <p className="cal-hint">{hint}</p> : null}
+    <div aria-live="polite" className="cal-list" ref={ref}>
+      {chosen.length === 0 ? <p className="cal-hint">{t.empty}</p> : null}
       <ul className="cal-items">
-        {moon ? <PhaseRow day={moon} timeZone={timeZone} /> : null}
-        {nextMoon ? <PhaseRow day={nextMoon} timeZone={timeZone} /> : null}
-        {[...on, ...soon].map((occasion) => (
-          <OccasionRow
-            key={`${occasion.festival.id}|${occasion.start}`}
-            occasion={occasion}
-          />
-        ))}
+        {entries.map((entry) =>
+          entry.kind === "moon" ? (
+            <PhaseRow
+              day={entry.moon}
+              key={`moon|${entry.key}`}
+              timeZone={timeZone}
+            />
+          ) : (
+            <OccasionRow
+              key={`${entry.occasion.festival.id}|${entry.occasion.start}`}
+              occasion={entry.occasion}
+            />
+          )
+        )}
       </ul>
     </div>
   );
@@ -382,6 +408,20 @@ const Month = ({
   const moons = useMemo(
     () => (withMoon ? moonMonth(year, month, timeZone) : null),
     [year, month, withMoon, timeZone]
+  );
+
+  // What's coming up runs on into next month
+  const next =
+    month === 12 ? { month: 1, year: year + 1 } : { month: month + 1, year };
+
+  const ahead = useMemo(
+    () => ({
+      moons: withMoon
+        ? [...(moons ?? []), ...moonMonth(next.year, next.month, timeZone)]
+        : [],
+      occasions: [...occasions, ...occasionsIn(next.year, next.month, groups)],
+    }),
+    [moons, occasions, withMoon, next.year, next.month, timeZone, groups]
   );
 
   // The day the list is about: the one pressed in this month, else today
@@ -426,8 +466,8 @@ const Month = ({
       <DayList
         chosen={chosen}
         day={day}
-        moons={moons}
-        occasions={occasions}
+        moons={ahead.moons}
+        occasions={ahead.occasions}
         timeZone={timeZone}
       />
 
@@ -456,8 +496,8 @@ const Month = ({
 /**
  * The Festival Calendar, which came over from Mini Games: a month of moons
  * and the festivals of the calendars the visitor picked, in the slot beside
- * the apps. Pressing a day lists what falls on it; with nothing that day, it
- * lists what's coming up.
+ * the apps. Under the month, what falls on the day picked and what's coming
+ * up, as much as fits.
  */
 export const CalendarWindow = ({
   now,
