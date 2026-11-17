@@ -1,5 +1,6 @@
 "use client";
 
+import { useNowPlaying } from "@/hooks/use-now-playing";
 import { useStoredChoice } from "@/hooks/use-stored-choice";
 import { useCopy } from "@/lib/language";
 
@@ -63,10 +64,13 @@ export const WidgetSwitch = ({
  */
 export const SideWidget = ({ now }: { now: Date | null }) => {
   const [widget, saveWidget] = useStoredChoice("widget", WIDGETS, "calendar");
+  // Asked as the page opens, whichever widget shows, and kept here so the
+  // player never starts from nothing when switched to
+  const nowPlaying = useNowPlaying(widget === "music");
   const pick = <WidgetSwitch current={widget} onPick={saveWidget} />;
 
   return widget === "music" ? (
-    <Player now={now} pick={pick} />
+    <Player now={now} nowPlaying={nowPlaying} pick={pick} />
   ) : (
     <CalendarWindow now={now} pick={pick} />
   );

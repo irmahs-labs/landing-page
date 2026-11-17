@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 
-import { useNowPlaying } from "@/hooks/use-now-playing";
+import type { NowPlayingState } from "@/hooks/use-now-playing";
 import { fmtSeconds } from "@/lib/format";
 import { useLanguage } from "@/lib/language";
 import type { Anim } from "@/lib/tokkae";
@@ -159,12 +159,19 @@ const Cover = ({
   image,
   song,
   url,
+  waiting,
 }: {
   image: string | null;
   song: Anim;
   url: string | null;
+  /** Spotify hasn't answered yet: nothing drawn, so nothing changes when it does */
+  waiting: boolean;
 }) => {
-  let art = url ? <Record /> : <TokkaeEmote anim={song} />;
+  let art: ReactNode = url ? <Record /> : <TokkaeEmote anim={song} />;
+
+  if (waiting) {
+    art = null;
+  }
 
   if (image) {
     // Spotify's image host is remote and the cover is small, so a plain img
@@ -219,19 +226,37 @@ const useTokkaeSong = (quiet: boolean) => {
   return { song: SONGS[index] ?? SONGS[0], steps };
 };
 
+/** The window's state class: waiting for Spotify, idle, paused or playing */
+const stateClass = (waiting: boolean, playing: boolean | null) => {
+  if (waiting) {
+    return " is-waiting";
+  }
+
+  if (playing === null) {
+    return " is-idle";
+  }
+
+  return playing ? "" : " is-paused";
+};
+
 /**
- * What's playing on Spotify right now; `now` drives the progress between
- * polls. The cover and the title open the song on Spotify in a new tab.
+ * What's playing on Spotify right now, from `nowPlaying`; `now` drives the
+ * progress between polls. The cover and the title open the song on Spotify in a new tab.
  */
 export const Player = ({
   now,
+  nowPlaying,
   pick,
 }: {
   now: Date | null;
+  /** Spotify's last answer, kept by the slot so switching back is instant */
+  nowPlaying: NowPlayingState;
   /** The switch to the calendar, at the top of the window */
   pick?: ReactNode;
 }) => {
-  const { data, fetchedAt } = useNowPlaying();
+  const { data, fetchedAt } = nowPlaying;
+  // Until Spotify first answers, an empty cover: not Tokkae for a blink
+  const waiting = fetchedAt === 0;
   const language = useLanguage();
   const t = COPY[language];
   const track = data && "title" in data ? data : null;
@@ -248,11 +273,7 @@ export const Player = ({
     pos = Math.min(dur, Math.floor((track.progressMs + sincePoll) / 1000));
   }
 
-  let state = " is-idle";
-
-  if (track) {
-    state = playing ? "" : " is-paused";
-  }
+  const state = stateClass(waiting, track ? playing : null);
 
   return (
     <Window
@@ -262,7 +283,12 @@ export const Player = ({
     >
       <div className="player-body">
         {pick}
-        <Cover image={track?.image ?? null} song={song.anim} url={url} />
+        <Cover
+          image={track?.image ?? null}
+          song={song.anim}
+          url={url}
+          waiting={waiting}
+        />
 
         <div className="track-row">
           {track && url ? (

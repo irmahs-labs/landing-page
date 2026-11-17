@@ -7,6 +7,21 @@ import { SideWidget } from "./side-widget";
 const NOW = new Date("2026-11-08T12:00:00");
 
 beforeEach(() => {
+  // jsdom lays nothing out: the calendar's list gets room for four lines
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      listener: (entries: { contentRect: { height: number } }[]) => void;
+      constructor(
+        listener: (entries: { contentRect: { height: number } }[]) => void
+      ) {
+        this.listener = listener;
+      }
+      disconnect = vi.fn();
+      observe = () => this.listener([{ contentRect: { height: 200 } }]);
+    }
+  );
+
   // Nothing playing, as Spotify would say when quiet
   vi.stubGlobal(
     "fetch",
