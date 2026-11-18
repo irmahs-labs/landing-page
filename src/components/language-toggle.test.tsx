@@ -19,10 +19,10 @@ const pressed = (name: string) =>
 describe("LanguageToggle", () => {
   it("shows English pressed until French is picked", () => {
     render(<LanguageToggle />);
-    expect(pressed("English")).toEqual(["true"]);
-    fireEvent.click(screen.getByRole("button", { name: "Français" }));
-    expect(pressed("Français")).toEqual(["true"]);
-    expect(pressed("English")).toEqual(["false"]);
+    expect(pressed("EN, English")).toEqual(["true"]);
+    fireEvent.click(screen.getByRole("button", { name: "FR, Français" }));
+    expect(pressed("FR, Français")).toEqual(["true"]);
+    expect(pressed("EN, English")).toEqual(["false"]);
     expect(screen.getByRole("group", { name: "Langue" })).toBeDefined();
   });
 
@@ -34,12 +34,12 @@ describe("LanguageToggle", () => {
       </>
     );
     // The profile's French pill puts the page, the header included, in French
-    fireEvent.click(screen.getByRole("button", { name: "French" }));
-    expect(pressed("Français")).toEqual(["true", "true"]);
+    fireEvent.click(screen.getByRole("button", { name: "FR, French" }));
+    expect(pressed("FR, Français")).toEqual(["true", "true"]);
     expect(screen.getByText("Développeuse fullstack")).toBeDefined();
     // And the header's English button brings the profile back to English
-    fireEvent.click(screen.getByRole("button", { name: "English" }));
-    expect(pressed("English")).toEqual(["true", "true"]);
+    fireEvent.click(screen.getByRole("button", { name: "EN, English" }));
+    expect(pressed("EN, English")).toEqual(["true", "true"]);
     expect(screen.getByText("Fullstack Software Engineer")).toBeDefined();
   });
 });

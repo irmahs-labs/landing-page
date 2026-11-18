@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 
 import type { NowPlayingState } from "@/hooks/use-now-playing";
+import { coverSrc } from "@/lib/cover";
 import { fmtSeconds } from "@/lib/format";
 import { useLanguage } from "@/lib/language";
 import type { Anim } from "@/lib/tokkae";
@@ -173,10 +174,14 @@ const Cover = ({
     art = null;
   }
 
-  if (image) {
-    // Spotify's image host is remote and the cover is small, so a plain img
-    // oxlint-disable-next-line next/no-img-element -- remote album cover, sized by CSS
-    art = <img alt="" src={image} />;
+  const cover = image ? coverSrc(image) : null;
+
+  if (cover) {
+    // Through irmahs.dev, so the visitor's browser never contacts Spotify.
+    // Empty alt: the cover is hidden from screen readers, and the song's
+    // title beside it is the link
+    // oxlint-disable-next-line next/no-img-element -- small album cover, sized by CSS
+    art = <img alt="" src={cover} />;
   }
 
   const inside = (

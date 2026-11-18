@@ -28,7 +28,7 @@ describe("Player", () => {
       album: "Album",
       artist: "Someone",
       durationMs: 200_000,
-      image: "https://i.scdn.co/cover.jpg",
+      image: "https://i.scdn.co/image/ab67616d0000b2733bc0a1f2d4e5f6a7b8c9d0e1",
       playing: true,
       progressMs: 65_000,
       title: "A song",
@@ -38,8 +38,9 @@ describe("Player", () => {
     const link = await screen.findByRole("link", { name: /A song/u });
     expect(link.getAttribute("href")).toBe("https://open.spotify.com/track/1");
     expect(link.getAttribute("target")).toBe("_blank");
+    // Through irmahs.dev, so the browser never contacts Spotify
     expect(container.querySelector(".cover img")?.getAttribute("src")).toBe(
-      "https://i.scdn.co/cover.jpg"
+      "/api/now-playing/cover?id=ab67616d0000b2733bc0a1f2d4e5f6a7b8c9d0e1"
     );
     expect(screen.getByText("1:05")).toBeDefined();
     expect(screen.getByText("3:20")).toBeDefined();

@@ -84,7 +84,7 @@ export const ProfileWindow = () => {
               return (
                 <li key={code}>
                   <button
-                    aria-label={name}
+                    aria-label={`${CODES[code]}, ${name}`}
                     aria-pressed={code === current}
                     className={code === current ? "lang is-current" : "lang"}
                     onClick={() => chooseLanguage(code)}
