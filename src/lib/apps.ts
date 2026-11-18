@@ -45,20 +45,6 @@ const hosted = (
 });
 
 export const APPS: readonly AppLink[] = [
-  // Private: only the two people it is for get past the sign-in, everyone
-  // else sees "This app is private" (irmahs-labs/auth). So no screenshot,
-  // and no deploy date: its repo is private too.
-  {
-    desc: {
-      en: "A Paris love story, private: only the two of us get in",
-      fr: "Une histoire d’amour à Paris, privée : nous deux seulement",
-    },
-    href: "https://alma-housila.irmahs.dev",
-    // The app's own logo: our story as a book, with a heart on the cover
-    icon: "M6 3 H18 A1 1 0 0 1 19 4 V21 H7 A2 2 0 0 1 5 19 V4 A1 1 0 0 1 6 3 Z M5 19 A2 2 0 0 1 7 17 H19 M12 13.5 L9.2 10.7 A1.9 1.9 0 0 1 12 8.2 A1.9 1.9 0 0 1 14.8 10.7 Z",
-    name: "Alma",
-    private: true,
-  },
   hosted("irma-in-paris", {
     desc: {
       en: "Paris right now: the weather, the next train, and where I've eaten",
@@ -128,5 +114,19 @@ export const APPS: readonly AppLink[] = [
     icon: "M4 5 A2 2 0 0 1 6 3 H20 V19 H6 A2 2 0 0 0 4 21 Z M4 19 A2 2 0 0 1 6 17 H20",
     name: "Portfolio",
     shot: "/apps/portfolio.jpg",
+  },
+  // Private: only the two people it is for get past the sign-in, everyone
+  // else sees "This app is private" (irmahs-labs/auth). So no screenshot,
+  // and no deploy date: its repo is private too.
+  {
+    desc: {
+      en: "A Paris love story, private: only the two of us get in",
+      fr: "Une histoire d’amour à Paris, privée : nous deux seulement",
+    },
+    href: "https://alma-housila.irmahs.dev",
+    // The app's own logo: our story as a book, with a heart on the cover
+    icon: "M6 3 H18 A1 1 0 0 1 19 4 V21 H7 A2 2 0 0 1 5 19 V4 A1 1 0 0 1 6 3 Z M5 19 A2 2 0 0 1 7 17 H19 M12 13.5 L9.2 10.7 A1.9 1.9 0 0 1 12 8.2 A1.9 1.9 0 0 1 14.8 10.7 Z",
+    name: "Alma",
+    private: true,
   },
 ];

@@ -15,13 +15,13 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
-      "alma is in the launcher now, up front",
+      "alma is in the launcher now, last, after the portfolio",
       "it's private: only the two of us get in, everyone else gets a polite no",
     ],
     date: "2026-11-18",
     fr: {
       changes: [
-        "alma est dans le lanceur, en tête",
+        "alma est dans le lanceur, en dernier, après le portfolio",
         "elle est privée : nous deux seulement, les autres reçoivent un gentil non",
       ],
       title: "alma arrive",
