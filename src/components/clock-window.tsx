@@ -16,10 +16,10 @@ const COPY = {
   },
   fr: {
     label: "Date et météo",
+    // Short, so the line fits the window like the English one does
     moon: (rise: string, set: string) =>
-      `lever de lune ${rise} · coucher de lune ${set}`,
-    sun: (rise: string, set: string) =>
-      `lever du soleil ${rise} · coucher du soleil ${set}`,
+      `lune : lever ${rise} · coucher ${set}`,
+    sun: (rise: string, set: string) => `lever ${rise} · coucher ${set}`,
   },
 };
 
