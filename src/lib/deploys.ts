@@ -79,6 +79,10 @@ let cache: { at: number; deploys: Promise<Deploys> } | null = null;
 const refresh = async (previous: Deploys) => {
   const dates = await Promise.all(
     APPS.map(async (app) => {
+      if (!app.deploys) {
+        return null;
+      }
+
       try {
         return await lastDeploy(app.deploys);
       } catch (error) {

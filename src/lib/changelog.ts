@@ -15,6 +15,21 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "alma is in the launcher now, up front",
+      "it's private: only the two of us get in, everyone else gets a polite no",
+    ],
+    date: "2026-11-18",
+    fr: {
+      changes: [
+        "alma est dans le lanceur, en tête",
+        "elle est privée : nous deux seulement, les autres reçoivent un gentil non",
+      ],
+      title: "alma arrive",
+    },
+    title: "alma moves in",
+  },
+  {
+    changes: [
       "a festival calendar sits beside the apps now: moons and festivals from around the world",
       "prefer irma's music? the switch on top swaps it back to spotify",
       "two new apps up front: realms and tools",

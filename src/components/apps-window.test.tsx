@@ -17,11 +17,13 @@ const tiles = () => screen.getAllByRole("link");
 const label = () => screen.getByText(/\d+ \/ \d+/u).textContent;
 
 describe("AppsWindow", () => {
-  it("opens on one app, with a screenshot", () => {
+  it("opens on one app, with its screenshot if it has one", () => {
     render(<AppsWindow />);
     expect(tiles()).toHaveLength(1);
     expect(label()).toBe(`1 / ${APPS.length}`);
-    expect(tiles()[0]?.querySelector("img")).not.toBeNull();
+    expect(Boolean(tiles()[0]?.querySelector("img"))).toBe(
+      Boolean(APPS[0]?.shot)
+    );
   });
 
   it("flips through the apps one at a time, wrapping round", () => {
