@@ -38,8 +38,9 @@ describe("Player", () => {
     const link = await screen.findByRole("link", { name: /A song/u });
     expect(link.getAttribute("href")).toBe("https://open.spotify.com/track/1");
     expect(link.getAttribute("target")).toBe("_blank");
+    // Through irmahs.dev, so the browser never contacts Spotify
     expect(container.querySelector(".cover img")?.getAttribute("src")).toBe(
-      "https://i.scdn.co/cover.jpg"
+      "/api/now-playing/cover?src=https%3A%2F%2Fi.scdn.co%2Fcover.jpg"
     );
     expect(screen.getByText("1:05")).toBeDefined();
     expect(screen.getByText("3:20")).toBeDefined();

@@ -1,0 +1,25 @@
+# irmahs.dev
+
+> The home page of Irma HS, a full-stack developer in Paris, and the hub of her apps. Every app is free, in English and French, with an optional Google sign-in shared by all of them (auth.irmahs.dev). AI agents and crawlers are welcome to read every public page.
+
+## Apps
+
+- [Landing Page](https://irmahs.dev): a retro desktop with Irma's apps, profile, CV, a festival calendar, what she's listening to, and a chat bot that answers questions about her.
+- [Pantry Spinner](https://pantry-spinner.irmahs.dev): "What's in my pantry?", a slot machine that picks dinner from the food you have.
+- [Realms](https://realms.irmahs.dev): worlds to step into. The Book of Shadows (birth chart, numerology, lunar zodiac, moon and sabbats, tarot, Potion Brewing, Spell Creator, a compatibility calculator) and the Court of Draconia.
+- [Mini Games](https://minigames.irmahs.dev): small browser games: Wheel of Fortune, Super Tic-Tac-Toe (online), The Arena, the Magic 8 Ball, and quizzes.
+- [Tools](https://tools.irmahs.dev): little tools for making things: Album Cover Maker and Character Maker (a 5E-compatible level 1 character sheet).
+- [Irma in Paris](https://irma-in-paris.irmahs.dev): Paris right now: weather, trains, air quality, and a map of the restaurants Irma has tried.
+- [Alma](https://alma-housila.irmahs.dev): a private app, open only to the two people it is for.
+
+## Legal
+
+- [Legal notice](https://irmahs.dev/legal)
+- [Privacy policy](https://irmahs.dev/privacy)
+- [Terms of use](https://irmahs.dev/terms)
+- [Cookie policy](https://irmahs.dev/cookies)
+
+## Contact
+
+- Privacy and legal: privacy@irmahs.dev
+- [GitHub](https://github.com/irmahs-labs)
