@@ -77,7 +77,7 @@ const en: Record<LegalSlug, LegalPage> = {
             "Every app: your theme (light or dark) and your language.",
             "irmahs.dev: the city on the clock, the calendar or music switch, and whether Tokkae’s playmate is out.",
             "Realms, Book of Shadows: your profile and your soulmate’s, birth date, time and place included, and your card of the day.",
-            "Mini Games: your quiz results, your Arena cast, your Wheel of Fortune and Super Tic-Tac-Toe settings, and where the sticky notes sit on your screen.",
+            "Mini Games: your quiz results, your Arena cast, your Wheel of Fortune and Super Tic-Tac-Toe settings, your Ouk Chaktrang settings and the games you play against its bot or on one screen, and where the sticky notes sit on your screen.",
             "Tools: your Character Maker characters. Album Cover Maker keeps nothing: your photo stays in the page.",
             "Alma Housila: the page you were reading.",
           ],
@@ -171,7 +171,7 @@ const en: Record<LegalSlug, LegalPage> = {
           "When you are signed in, each app keeps only what you save in it, against your account ID, in its own database:",
           [
             "What’s in my pantry?: your ingredients, pantry, shopping list and the meals you cooked.",
-            "Mini Games: your online Super Tic-Tac-Toe games and your place on its leaderboard, shown with your first name and initial; the sticky notes you post (others never see who posted them, and they come down after a day) and the notes you vote for; and your witch-quiz result, when you choose to keep it on your account.",
+            "Mini Games: your online Super Tic-Tac-Toe and Ouk Chaktrang games and your place on their leaderboards, shown with your first name and initial; the sticky notes you post (others never see who posted them, and they come down after a day) and the notes you vote for; and your witch-quiz result, when you choose to keep it on your account.",
             "Realms: the potions you brew in Potion Brewing (in the shared grimoire, the first and last person to brew a potion are shown by first name and initial, such as “Irma H.”), your own grimoire, and your Court of Draconia draconoid, whose name others see.",
             "Irma in Paris: nothing about visitors; only its admins add places and photos.",
             "Alma Housila: private, open only to the two people it is for.",
@@ -243,7 +243,7 @@ const en: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "Some things you write can be seen by others: sticky notes on Mini Games, your draconoid’s name, and your first name and initial on the Super Tic-Tac-Toe leaderboard and in the Potion Brewing grimoire. Don’t post anything unlawful, hateful, harassing, or anyone’s personal information. Anything that breaks these rules can be removed, and the account that posted it closed.",
+          "Some things you write can be seen by others: sticky notes on Mini Games, your draconoid’s name, and your first name and initial on the Super Tic-Tac-Toe and Ouk Chaktrang leaderboards and in the Potion Brewing grimoire. Don’t post anything unlawful, hateful, harassing, or anyone’s personal information. Anything that breaks these rules can be removed, and the account that posted it closed.",
           `To report content, write to ${MAIL}.`,
         ],
         title: "What you post",
@@ -301,7 +301,7 @@ const fr: Record<LegalSlug, LegalPage> = {
             "Toutes les applications : votre thème (clair ou sombre) et votre langue.",
             "irmahs.dev : la ville de l’horloge, le choix entre calendrier et musique, et si le compagnon de Tokkae est sorti.",
             "Realms, Livre des ombres : votre profil et celui de votre âme sœur, date, heure et lieu de naissance compris, et votre carte du jour.",
-            "Mini Games : vos résultats aux quiz, les participants de l’Arène, vos réglages de la Roue de la fortune et de Super Tic-Tac-Toe, et la place des post-it sur votre écran.",
+            "Mini Games : vos résultats aux quiz, les participants de l’Arène, vos réglages de la Roue de la fortune et de Super Tic-Tac-Toe, vos réglages d’Ouk Chaktrang et les parties jouées contre son bot ou sur un même écran, et la place des post-it sur votre écran.",
             "Tools : vos personnages de Character Maker. Album Cover Maker ne garde rien : votre photo reste dans la page.",
             "Alma Housila : la page que vous lisiez.",
           ],
@@ -395,7 +395,7 @@ const fr: Record<LegalSlug, LegalPage> = {
           "Quand vous êtes connecté·e, chaque application ne garde que ce que vous y enregistrez, avec l’identifiant de votre compte, dans sa propre base de données :",
           [
             "What’s in my pantry? : vos ingrédients, votre garde-manger, votre liste de courses et les repas cuisinés.",
-            "Mini Games : vos parties de Super Tic-Tac-Toe en ligne et votre place au classement, affichée avec votre prénom et une initiale ; les post-it que vous publiez (les autres ne voient jamais qui les a publiés, et ils disparaissent au bout d’un jour) et ceux pour lesquels vous votez ; et votre résultat au quiz de sorcière, quand vous choisissez de le garder sur votre compte.",
+            "Mini Games : vos parties de Super Tic-Tac-Toe et d’Ouk Chaktrang en ligne et votre place à leurs classements, affichée avec votre prénom et une initiale ; les post-it que vous publiez (les autres ne voient jamais qui les a publiés, et ils disparaissent au bout d’un jour) et ceux pour lesquels vous votez ; et votre résultat au quiz de sorcière, quand vous choisissez de le garder sur votre compte.",
             "Realms : les potions que vous préparez dans Préparation de potions (dans le grimoire partagé, la première et la dernière personne à préparer une potion sont affichées par leur prénom et une initiale, comme « Irma H. »), votre propre grimoire, et votre draconoïde de la Cour de Draconia, dont le nom est visible par les autres.",
             "Irma in Paris : rien sur les visiteurs ; seules ses administratrices ajoutent des lieux et des photos.",
             "Alma Housila : privée, ouverte seulement aux deux personnes à qui elle est destinée.",
@@ -467,7 +467,7 @@ const fr: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "Certaines choses que vous écrivez sont visibles par d’autres : les post-it de Mini Games, le nom de votre draconoïde, et votre prénom et initiale au classement de Super Tic-Tac-Toe et dans le grimoire de Préparation de potions. Ne publiez rien d’illégal, de haineux ou de harcelant, ni les données personnelles de quiconque. Tout ce qui enfreint ces règles peut être retiré, et le compte qui l’a publié fermé.",
+          "Certaines choses que vous écrivez sont visibles par d’autres : les post-it de Mini Games, le nom de votre draconoïde, et votre prénom et initiale aux classements de Super Tic-Tac-Toe et d’Ouk Chaktrang et dans le grimoire de Préparation de potions. Ne publiez rien d’illégal, de haineux ou de harcelant, ni les données personnelles de quiconque. Tout ce qui enfreint ces règles peut être retiré, et le compte qui l’a publié fermé.",
           `Pour signaler un contenu, écrivez à ${MAIL}.`,
         ],
         title: "Ce que vous publiez",
