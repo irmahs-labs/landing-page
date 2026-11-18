@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import type { ReactNode } from "react";
 
 import { useCopy } from "@/lib/language";
-import { LEGAL, LEGAL_NAMES, LEGAL_SLUGS, UPDATED } from "@/lib/legal";
+import { LEGAL, UPDATED } from "@/lib/legal";
 import type { Block, LegalSlug } from "@/lib/legal";
 
 import { Footer } from "./footer";
@@ -14,14 +14,10 @@ import { Header } from "./header";
 const COPY = {
   en: {
     back: "← back to irmahs.dev",
-    names: LEGAL_NAMES.en,
-    others: "The other legal pages",
     updated: "Last updated",
   },
   fr: {
     back: "← retour à irmahs.dev",
-    names: LEGAL_NAMES.fr,
-    others: "Les autres pages juridiques",
     updated: "Dernière mise à jour",
   },
 };
@@ -74,8 +70,8 @@ const withLinks = (text: string): ReactNode[] => {
 
 /**
  * One of the legal pages every irmahs.dev app links to, in the visitor's
- * language: plain, readable text in a panel, with the other pages linked
- * at its end.
+ * language: plain, readable text in a panel. The footer under it links the
+ * other legal pages.
  */
 export const LegalPage = ({ slug }: { slug: LegalSlug }) => {
   const t = useCopy(COPY);
@@ -113,15 +109,6 @@ export const LegalPage = ({ slug }: { slug: LegalSlug }) => {
             </section>
           ))}
         </article>
-        <nav aria-label={t.others} className="legal__others">
-          <ul>
-            {LEGAL_SLUGS.filter((other) => other !== slug).map((other) => (
-              <li key={other}>
-                <Link href={`/${other}`}>{t.names[other]}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </main>
       <Footer />
     </div>

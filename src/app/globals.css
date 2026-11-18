@@ -2415,19 +2415,9 @@ button.lang.is-current {
 .legal__panel li + li {
   margin-top: 6px;
 }
-.legal__panel a,
-.legal__others a {
+.legal__panel a {
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-.legal__others ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  font: 700 14px/1.4 var(--font-text);
 }
 @media (max-width: 600px) {
   .legal__panel {
