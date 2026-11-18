@@ -30,31 +30,41 @@ const COPY = {
 const isList = (block: Block): block is readonly string[] =>
   Array.isArray(block);
 
-const LINK = /\[(?<label>[^\]]+)\]\((?<href>[^)]+)\)/gu;
+/** A link written `[text](url)`: where it starts and ends, its text and its address */
+const nextLink = (text: string, from: number) => {
+  const open = text.indexOf("[", from);
+  const middle = open === -1 ? -1 : text.indexOf("](", open);
+  const close = middle === -1 ? -1 : text.indexOf(")", middle);
+
+  return close === -1
+    ? null
+    : {
+        end: close + 1,
+        href: text.slice(middle + 2, close),
+        label: text.slice(open + 1, middle),
+        start: open,
+      };
+};
 
 /** A paragraph's text, with its `[text](url)` links made links */
 const withLinks = (text: string): ReactNode[] => {
   const parts: ReactNode[] = [];
   let last = 0;
 
-  for (const match of text.matchAll(LINK)) {
-    const [whole] = match;
-    const { href = "", label = "" } = match.groups ?? {};
-    const at = match.index ?? 0;
-
+  for (let link = nextLink(text, 0); link; link = nextLink(text, link.end)) {
     parts.push(
-      text.slice(last, at),
-      href.startsWith("/") ? (
-        <Link key={at} href={href}>
-          {label}
+      text.slice(last, link.start),
+      link.href.startsWith("/") ? (
+        <Link key={link.start} href={link.href}>
+          {link.label}
         </Link>
       ) : (
-        <a key={at} href={href} rel="noreferrer" target="_blank">
-          {label}
+        <a key={link.start} href={link.href} rel="noreferrer" target="_blank">
+          {link.label}
         </a>
       )
     );
-    last = at + whole.length;
+    last = link.end;
   }
 
   parts.push(text.slice(last));

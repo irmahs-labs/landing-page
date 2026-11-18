@@ -174,12 +174,14 @@ const Cover = ({
     art = null;
   }
 
-  if (image) {
+  const cover = image ? coverSrc(image) : null;
+
+  if (cover) {
     // Through irmahs.dev, so the visitor's browser never contacts Spotify.
     // Empty alt: the cover is hidden from screen readers, and the song's
     // title beside it is the link
     // oxlint-disable-next-line next/no-img-element -- small album cover, sized by CSS
-    art = <img alt="" src={coverSrc(image)} />;
+    art = <img alt="" src={cover} />;
   }
 
   const inside = (

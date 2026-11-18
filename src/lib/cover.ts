@@ -2,20 +2,34 @@
  * Album covers come from Spotify's image host. The page asks irmahs.dev for
  * them instead, and the server fetches them, so a visitor's browser never
  * contacts Spotify (see the privacy policy, src/lib/legal.ts).
+ *
+ * Only a cover's id travels: the server rebuilds the address on Spotify's
+ * host itself, so the route can fetch nothing else.
  */
-const COVER_HOST = "i.scdn.co";
+const COVER_PREFIX = "https://i.scdn.co/image/";
 
-/** Whether a URL is a Spotify cover, the only kind the server will fetch */
-export const isSpotifyCover = (src: string) => {
-  try {
-    const url = new URL(src);
+/** A Spotify image id: letters and digits only */
+const COVER_ID = /^[0-9a-z]{16,64}$/iu;
 
-    return url.protocol === "https:" && url.hostname === COVER_HOST;
-  } catch {
-    return false;
+export const isCoverId = (id: string) => COVER_ID.test(id);
+
+/** The cover's id, when the address is one of Spotify's covers */
+export const coverIdOf = (src: string): string | null => {
+  if (!src.startsWith(COVER_PREFIX)) {
+    return null;
   }
+
+  const id = src.slice(COVER_PREFIX.length);
+
+  return isCoverId(id) ? id : null;
 };
 
-/** Where the page loads a cover from: through irmahs.dev */
-export const coverSrc = (src: string) =>
-  `/api/now-playing/cover?src=${encodeURIComponent(src)}`;
+/** Spotify's address for a cover, from its id */
+export const coverUrl = (id: string) => `${COVER_PREFIX}${id}`;
+
+/** Where the page loads a cover from: through irmahs.dev, or nowhere */
+export const coverSrc = (src: string): string | null => {
+  const id = coverIdOf(src);
+
+  return id ? `/api/now-playing/cover?id=${id}` : null;
+};
