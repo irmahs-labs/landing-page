@@ -11,26 +11,20 @@ describe("Footer", () => {
     ).toBe(" Landing Page by Irma HS");
   });
 
-  it("links every app and the legal pages", () => {
+  it("links the legal pages", () => {
     render(<Footer />);
-    const apps = screen.getByRole("navigation", { name: "Irma HS’s apps" });
+    const legal = screen.getByRole("navigation", { name: "Legal" });
     expect(
-      [...apps.querySelectorAll("a")].map((link) => link.textContent)
+      [...legal.querySelectorAll("a")].map((link) => [
+        link.textContent,
+        link.getAttribute("href"),
+      ])
     ).toEqual([
-      "Landing Page",
-      "Pantry Spinner",
-      "Realms",
-      "Mini Games",
-      "Tools",
-      "Alma",
-      "Irma in Paris",
+      ["Legal notice", "/legal"],
+      ["Privacy", "/privacy"],
+      ["Terms of use", "/terms"],
+      ["Cookies", "/cookies"],
     ]);
-    expect(
-      screen.getByRole("link", { name: "Privacy" }).getAttribute("href")
-    ).toBe("/privacy");
-    expect(
-      screen.getByRole("link", { name: "Legal notice" }).getAttribute("href")
-    ).toBe("/legal");
   });
 
   it("says how many are on the page, once the server has", () => {

@@ -25,7 +25,7 @@ interface FooterProps {
 
 /**
  * The page's end, as the apps end: the icon, who made it, and who's here,
- * then every app and the legal pages
+ * then the legal pages
  */
 export const Footer = ({ online = null }: FooterProps) => {
   const t = useCopy(COPY);

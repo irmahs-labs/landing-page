@@ -4,7 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 18 November 2026
 
-- **Legal pages, every app in the footer, and fewer requests to others:** the legal notice, privacy policy, terms of use and cookie policy, in English and French, at `/legal`, `/privacy`, `/terms` and `/cookies` (`src/lib/legal.ts`), checked against the CNIL's guidance and French law. Every app links to them. Under the footer, two rows of links: every irmahs.dev app, then the legal pages. Spotify's album covers now come through irmahs.dev (`/api/now-playing/cover`), so a visitor's browser never contacts Spotify. `robots.txt`, `sitemap.xml` and `llms.txt` describe the site to search engines and AI agents. The EN/FR pills, the social links and the CV link have accessible names that start with what they show.
+- **Legal pages in the footer, and fewer requests to others:** the legal notice, privacy policy, terms of use and cookie policy, in English and French, at `/legal`, `/privacy`, `/terms` and `/cookies` (`src/lib/legal.ts`), checked against the CNIL's guidance and French law. Every app's footer links to them, and so does this page's. Spotify's album covers now come through irmahs.dev (`/api/now-playing/cover`), so a visitor's browser never contacts Spotify. `robots.txt`, `sitemap.xml` and `llms.txt` describe the site to search engines and AI agents. The EN/FR pills, the social links and the CV link have accessible names that start with what they show.
 
 ## 17 November 2026
 

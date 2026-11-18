@@ -2345,13 +2345,9 @@ button.lang.is-current {
   }
 }
 
-/* ---------- every app and the legal pages, under the footer ----------
-   Two quiet rows of links, the same under every irmahs.dev app */
+/* ---------- the legal pages, under the footer ----------
+   One quiet row of links, the same under every irmahs.dev app */
 .site-links {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
   font: 600 13px/1.4 var(--font-text);
 }
 .site-links ul {
