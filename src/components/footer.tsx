@@ -3,6 +3,7 @@
 import { useCopy } from "@/lib/language";
 
 import { EyeIcon, SiteIcon } from "./icons";
+import { SiteLinks } from "./site-links";
 
 const COPY = {
   en: {
@@ -22,18 +23,24 @@ interface FooterProps {
   online?: number | null;
 }
 
-/** The page's last line, as the apps end: the icon, who made it, and who's here */
+/**
+ * The page's end, as the apps end: the icon, who made it, and who's here,
+ * then the legal pages
+ */
 export const Footer = ({ online = null }: FooterProps) => {
   const t = useCopy(COPY);
 
   return (
-    <footer className="app-footer">
-      <SiteIcon size={20} /> {t.by}
-      {online === null ? null : (
-        <span className="app-footer__online" title={t.here}>
-          <EyeIcon /> {t.online(online)}
-        </span>
-      )}
+    <footer className="site-footer">
+      <p className="app-footer">
+        <SiteIcon size={20} /> {t.by}
+        {online === null ? null : (
+          <span className="app-footer__online" title={t.here}>
+            <EyeIcon /> {t.online(online)}
+          </span>
+        )}
+      </p>
+      <SiteLinks />
     </footer>
   );
 };

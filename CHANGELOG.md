@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 18 November 2026
+
+- **Legal pages in the footer, and fewer requests to others:** the legal notice, privacy policy, terms of use and cookie policy, in English and French, at `/legal`, `/privacy`, `/terms` and `/cookies` (`src/lib/legal.ts`), checked against the CNIL's guidance and French law. Every app's footer links to them, and so does this page's. Spotify's album covers now come through irmahs.dev (`/api/now-playing/cover`), so a visitor's browser never contacts Spotify. `robots.txt`, `sitemap.xml` and `llms.txt` describe the site to search engines and AI agents. The EN/FR pills, the social links and the CV link have accessible names that start with what they show.
+
 ## 17 November 2026
 
 - **Only what's coming up, and fresh screenshots:** `calendar.ics` drops the month and lists what's coming up in the calendars picked, from today, festivals and the Moon's phases in date order, as many as fit the player's size (looking three months ahead). The Realms, Mini Games and Tools tiles in `launcher.exe` show those apps as they are now, with their three-colour icons and the Court of Draconia's new crown.

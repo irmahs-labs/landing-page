@@ -17,9 +17,8 @@ const COPY = {
     cv: "My CV",
     download: (size: string) => `Download my CV (${size})`,
     label: "Socials",
-    link: (name: string, handle: string) =>
-      `${name}, ${handle} (opens in a new tab)`,
     newCv: "New CV, as a PDF",
+    newTab: "(opens in a new tab)",
     note: {
       done: "CV replaced",
       failed: "couldn't replace it: is it a PDF under 10 MB?",
@@ -32,9 +31,8 @@ const COPY = {
     cv: "Mon CV",
     download: (size: string) => `Télécharger mon CV (${size})`,
     label: "Réseaux",
-    link: (name: string, handle: string) =>
-      `${name}, ${handle} (s’ouvre dans un nouvel onglet)`,
     newCv: "Nouveau CV, en PDF",
+    newTab: "(s’ouvre dans un nouvel onglet)",
     note: {
       done: "CV remplacé",
       failed: "impossible de le remplacer : est-ce un PDF de moins de 10 Mo ?",
@@ -63,7 +61,6 @@ export const SocialsWindow = () => {
         {SOCIALS.map((s) => (
           <li key={s.href}>
             <a
-              aria-label={t.link(s.name, s.handle)}
               className="btn social"
               href={s.href}
               rel="noreferrer"
@@ -75,16 +72,17 @@ export const SocialsWindow = () => {
                 </svg>
               </span>
               <span className="social-text">
-                <span className="social-name">{s.name}</span>
+                <span className="social-name">{s.name}</span>{" "}
                 <span className="social-handle">{s.handle}</span>
+                <span className="sr-only"> {t.newTab}</span>
               </span>
             </a>
           </li>
         ))}
         <li>
           <a
-            aria-label={t.download(size)}
             className="btn social"
+            title={t.download(size)}
             download={mine.file}
             href={mine.href}
           >
@@ -94,7 +92,7 @@ export const SocialsWindow = () => {
               </svg>
             </span>
             <span className="social-text">
-              <span className="social-name">{t.cv}</span>
+              <span className="social-name">{t.cv}</span>{" "}
               <span className="social-handle">{size}</span>
             </span>
           </a>

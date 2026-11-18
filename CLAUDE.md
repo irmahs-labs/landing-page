@@ -55,3 +55,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Legal pages
+
+The legal notice, privacy policy, terms of use and cookie policy for every irmahs.dev app live here, at `/legal`, `/privacy`, `/terms` and `/cookies`, in English and French (`src/lib/legal.ts`, drawn by `src/components/legal-page.tsx`). Every app's footer links to them (`src/components/site-links.tsx` here, a copy in each app). They describe exactly what each app collects, sends and keeps in the browser: when a change in any app adds a cookie, a localStorage key, a database column about people, or a request to another service, update `src/lib/legal.ts` and its date (`UPDATED`) in the same change. Nothing may set a cookie or tracker that needs consent (CNIL guidelines 2020-091): there is no consent banner, and adding one is a sign something should not be collected. `public/llms.txt` describes the site to AI agents; keep its list of apps current.

@@ -52,7 +52,7 @@ describe("SocialsWindow", () => {
     render(<SocialsWindow />);
 
     const cv = await screen.findByRole("link", {
-      name: "Download my CV (PDF · 110 KB)",
+      name: "My CV PDF · 110 KB",
     });
 
     expect(cv.getAttribute("href")).toBe(CVS.en.href);
@@ -74,7 +74,7 @@ describe("SocialsWindow", () => {
     act(() => chooseLanguage("fr"));
 
     const cv = await screen.findByRole("link", {
-      name: "Télécharger mon CV (PDF · 106 KB)",
+      name: "Mon CV PDF · 106 KB",
     });
 
     expect(cv.getAttribute("href")).toBe(CVS.fr.href);
