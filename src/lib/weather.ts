@@ -18,7 +18,7 @@ const WEATHER_CODES: readonly [
 ][] = [
   [[0], { en: "Clear sky", fr: "Ciel dégagé" }, false],
   [[1], { en: "Mostly clear", fr: "Plutôt dégagé" }, false],
-  [[2], { en: "Partly cloudy", fr: "Partiellement nuageux" }, false],
+  [[2], { en: "Partly cloudy", fr: "Éclaircies" }, false],
   [[3], { en: "Overcast", fr: "Couvert" }, false],
   [[45, 48], { en: "Foggy", fr: "Brouillard" }, false],
   [[51, 53, 55, 56, 57], { en: "Drizzle", fr: "Bruine" }, true],
