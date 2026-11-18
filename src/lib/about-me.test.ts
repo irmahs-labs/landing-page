@@ -13,6 +13,9 @@ describe("SYSTEM_PROMPT", () => {
       "Achievement: internal incident-monitoring tool"
     );
     expect(SYSTEM_PROMPT).not.toContain("alma-housila");
+    // The apps are listed by their English description, never "[object Object]"
+    expect(SYSTEM_PROMPT).toContain("Paris right now");
+    expect(SYSTEM_PROMPT).not.toContain("[object Object]");
     // Kept for interviews and for me, not for visitors
     expect(SYSTEM_PROMPT).not.toContain("technical disagreement");
     expect(SYSTEM_PROMPT).not.toContain("Server and security");

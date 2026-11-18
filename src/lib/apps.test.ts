@@ -29,8 +29,13 @@ describe("APPS", () => {
     }
   });
 
-  it("says where on GitHub every app's deploys are recorded", () => {
+  it("says where on GitHub every public app's deploys are recorded", () => {
     for (const app of APPS) {
+      if (!app.deploys) {
+        expect(app.name).toBe("Alma");
+        continue;
+      }
+
       expect(app.deploys.repo).toMatch(/^[\w-]+\/[\w.-]+$/u);
       expect(
         "workflow" in app.deploys
@@ -71,8 +76,16 @@ describe("APPS", () => {
     }
   });
 
+  it("shows nothing of Alma, which is private, but its name and icon", () => {
+    const alma = APPS.find((app) => app.name === "Alma");
+    expect(alma?.href).toBe("https://alma-housila.irmahs.dev");
+    expect(alma?.shot).toBeUndefined();
+    expect(alma?.deploys).toBeUndefined();
+  });
+
   it("lists the apps in Irma's order", () => {
     expect(APPS.map((app) => app.name)).toEqual([
+      "Alma",
       "Irma in Paris",
       "Realms",
       "Mini Games",

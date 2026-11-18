@@ -42,7 +42,9 @@ This website, irmahs.dev, is her landing page: a little retro desktop in matcha 
 - Coq, a rooster, represents her French identity. It comes out to play with Tokkae when the playmate switch is on.
 
 Her apps:
-${APPS.map((a) => `- ${a.name} (${a.href}): ${a.desc}`).join("\n")}
+${APPS.filter((a) => !a.private)
+  .map((a) => `- ${a.name} (${a.href}): ${a.desc.en}`)
+  .join("\n")}
 
 How to contact her and where to find her:
 - Email: ${CONTACT_EMAIL} (the best way to reach her, for job opportunities too)

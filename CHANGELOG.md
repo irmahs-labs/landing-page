@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 18 November 2026
+
+- **Alma in the launcher:** `launcher.exe` opens on Alma, the private Paris love story at alma-housila.irmahs.dev. Only its two admins get past the sign-in, so its tile has no screenshot and no deploy date (its repo is private, and GitHub won't say); anyone else who opens it sees the account service's "This app is private". An app's `deploys` is optional now, and the page doesn't ask GitHub about one without it.
+
 ## 17 November 2026
 
 - **Only what's coming up, and fresh screenshots:** `calendar.ics` drops the month and lists what's coming up in the calendars picked, from today, festivals and the Moon's phases in date order, as many as fit the player's size (looking three months ahead). The Realms, Mini Games and Tools tiles in `launcher.exe` show those apps as they are now, with their three-colour icons and the Court of Draconia's new crown.

@@ -31,7 +31,9 @@ const load = () => {
   return import("./deploys");
 };
 
-const vercelApp = APPS.find((app) => "environment" in app.deploys);
+const vercelApp = APPS.find(
+  (app) => app.deploys && "environment" in app.deploys
+);
 
 beforeEach(() => {
   vi.useRealTimers();
@@ -40,16 +42,26 @@ beforeEach(() => {
 
 describe("getDeploys", () => {
   it("dates every app by its last successful deploy", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (url: string) => await Promise.resolve(github(url)))
+    const fetch = vi.fn(
+      async (url: string) => await Promise.resolve(github(url))
     );
+
+    vi.stubGlobal("fetch", fetch);
     const { getDeploys } = await load();
     const deploys = await getDeploys();
 
     for (const app of APPS) {
-      expect(deploys[app.href]).toBe(app === vercelApp ? VERCEL : RUN);
+      if (app.deploys) {
+        expect(deploys[app.href]).toBe(app === vercelApp ? VERCEL : RUN);
+      } else {
+        // A private repo: no date, and GitHub is never asked
+        expect(deploys[app.href]).toBeNull();
+      }
     }
+
+    expect(fetch.mock.calls.some(([url]) => url.includes("alma-housila"))).toBe(
+      false
+    );
   });
 
   it("asks GitHub again only after 15 minutes", async () => {
