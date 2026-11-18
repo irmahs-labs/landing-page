@@ -72,15 +72,7 @@ const en: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "Some apps keep things in your browser’s own storage (localStorage). It never leaves your device and is never sent to the server:",
-          [
-            "Every app: your theme (light or dark) and your language.",
-            "irmahs.dev: the city on the clock, the calendar or music switch, and whether Tokkae’s playmate is out.",
-            "Realms, Book of Shadows: your profile and your soulmate’s, birth date, time and place included, and your card of the day.",
-            "Mini Games: your quiz results, your Arena cast, your Wheel of Fortune and Super Tic-Tac-Toe settings, and where the sticky notes sit on your screen.",
-            "Tools: your Character Maker characters. Album Cover Maker keeps nothing: your photo stays in the page.",
-            "Alma Housila: the page you were reading.",
-          ],
+          "The apps keep some things in your browser’s own storage (localStorage): your settings, such as your theme, your language and each game’s options, and what you make or play on this device, such as games in progress, quiz answers and what you create in the tools. It never leaves your device and is never sent to the server.",
           "To erase it, clear this site’s data in your browser’s settings.",
         ],
         title: "Browser storage",
@@ -168,22 +160,16 @@ const en: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "When you are signed in, each app keeps only what you save in it, against your account ID, in its own database:",
-          [
-            "What’s in my pantry?: your ingredients, pantry, shopping list and the meals you cooked.",
-            "Mini Games: your online Super Tic-Tac-Toe games and your place on its leaderboard, shown with your first name and initial; the sticky notes you post (others never see who posted them, and they come down after a day) and the notes you vote for; and your witch-quiz result, when you choose to keep it on your account.",
-            "Realms: the potions you brew in Potion Brewing (in the shared grimoire, the first and last person to brew a potion are shown by first name and initial, such as “Irma H.”), your own grimoire, and your Court of Draconia draconoid, whose name others see.",
-            "Irma in Paris: nothing about visitors; only its admins add places and photos.",
-            "Alma Housila: private, open only to the two people it is for.",
-          ],
+          "When you are signed in, an app keeps only what you choose to save in it, against your account ID, in its own database: for example your lists, what you create, your online games and leaderboard results, and what you post.",
+          "Some of it is seen by others: on leaderboards and shared pages you appear by your first name and initial, such as “Irma H.”, and what you post, such as a note or a name you give, can be read by other visitors. A note never shows who posted it.",
           "Legal basis: performance of the service you ask for. Kept: until you delete it in the app, or ask for it to be deleted.",
         ],
         title: "What you save in the apps",
       },
       {
         blocks: [
-          "Some things are only ever kept in your own browser and never sent to the server: your theme and language, the Book of Shadows (your birth date, time and place included), your Character Maker characters and your quiz answers. The photo you put in Album Cover Maker never leaves the page. The full list is in the [cookie policy](/cookies).",
-          "When you search for your birthplace in the Book of Shadows, the letters you type are sent to Open-Meteo (Switzerland) to find the town; nothing else is. The weather on irmahs.dev’s clock is asked of Open-Meteo by your browser too, for the city shown, not for where you are.",
+          "What you use without signing in stays in your own browser and is never sent to the server, including personal details you type into a game, such as a birth date, time and place. A photo you open in a tool never leaves the page. More in the [cookie policy](/cookies).",
+          "Two features ask Open-Meteo (Switzerland) straight from your browser: a town search, which sends only the letters you type, and the weather, for the city shown, not for where you are.",
         ],
         title: "What stays in your browser",
       },
@@ -194,7 +180,7 @@ const en: Record<LegalSlug, LegalPage> = {
             "Cloudflare, Inc. (USA): carries every request to the server.",
             "Google LLC (USA): sign-in, and your profile picture.",
             "OpenRouter, Inc. (USA): the chat bot on irmahs.dev.",
-            "Open-Meteo (Switzerland): the birthplace search in the Book of Shadows, and the weather on irmahs.dev.",
+            "Open-Meteo (Switzerland): the town search and the weather.",
           ],
           "Cloudflare and Google are certified under the EU-U.S. Data Privacy Framework, which the European Commission found gives an adequate level of protection; Switzerland also has an adequacy decision. OpenRouter is in the USA; only what you type in the chat bot is sent to it.",
         ],
@@ -243,7 +229,7 @@ const en: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "Some things you write can be seen by others: sticky notes on Mini Games, your draconoid’s name, and your first name and initial on the Super Tic-Tac-Toe leaderboard and in the Potion Brewing grimoire. Don’t post anything unlawful, hateful, harassing, or anyone’s personal information. Anything that breaks these rules can be removed, and the account that posted it closed.",
+          "Some things you write or create can be seen by others, such as notes, the names you give, and your first name and initial on leaderboards. Don’t post anything unlawful, hateful, harassing, or anyone’s personal information. Anything that breaks these rules can be removed, and the account that posted it closed.",
           `To report content, write to ${MAIL}.`,
         ],
         title: "What you post",
@@ -296,15 +282,7 @@ const fr: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "Certaines applications gardent des choses dans le stockage de votre navigateur (localStorage). Elles ne quittent jamais votre appareil et ne sont jamais envoyées au serveur :",
-          [
-            "Toutes les applications : votre thème (clair ou sombre) et votre langue.",
-            "irmahs.dev : la ville de l’horloge, le choix entre calendrier et musique, et si le compagnon de Tokkae est sorti.",
-            "Realms, Livre des ombres : votre profil et celui de votre âme sœur, date, heure et lieu de naissance compris, et votre carte du jour.",
-            "Mini Games : vos résultats aux quiz, les participants de l’Arène, vos réglages de la Roue de la fortune et de Super Tic-Tac-Toe, et la place des post-it sur votre écran.",
-            "Tools : vos personnages de Character Maker. Album Cover Maker ne garde rien : votre photo reste dans la page.",
-            "Alma Housila : la page que vous lisiez.",
-          ],
+          "Les applications gardent certaines choses dans le stockage de votre navigateur (localStorage) : vos réglages, comme votre thème, votre langue et les options de chaque jeu, et ce que vous créez ou jouez sur cet appareil, comme les parties en cours, vos réponses aux quiz et ce que vous créez dans les outils. Rien de tout cela ne quitte votre appareil ni n’est envoyé au serveur.",
           "Pour l’effacer, supprimez les données de ce site dans les réglages de votre navigateur.",
         ],
         title: "Stockage du navigateur",
@@ -392,22 +370,16 @@ const fr: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "Quand vous êtes connecté·e, chaque application ne garde que ce que vous y enregistrez, avec l’identifiant de votre compte, dans sa propre base de données :",
-          [
-            "What’s in my pantry? : vos ingrédients, votre garde-manger, votre liste de courses et les repas cuisinés.",
-            "Mini Games : vos parties de Super Tic-Tac-Toe en ligne et votre place au classement, affichée avec votre prénom et une initiale ; les post-it que vous publiez (les autres ne voient jamais qui les a publiés, et ils disparaissent au bout d’un jour) et ceux pour lesquels vous votez ; et votre résultat au quiz de sorcière, quand vous choisissez de le garder sur votre compte.",
-            "Realms : les potions que vous préparez dans Préparation de potions (dans le grimoire partagé, la première et la dernière personne à préparer une potion sont affichées par leur prénom et une initiale, comme « Irma H. »), votre propre grimoire, et votre draconoïde de la Cour de Draconia, dont le nom est visible par les autres.",
-            "Irma in Paris : rien sur les visiteurs ; seules ses administratrices ajoutent des lieux et des photos.",
-            "Alma Housila : privée, ouverte seulement aux deux personnes à qui elle est destinée.",
-          ],
+          "Quand vous êtes connecté·e, une application ne garde que ce que vous choisissez d’y enregistrer, avec l’identifiant de votre compte, dans sa propre base de données : par exemple vos listes, ce que vous créez, vos parties en ligne et vos résultats aux classements, et ce que vous publiez.",
+          "Une partie est visible par d’autres : aux classements et sur les pages partagées, vous apparaissez par votre prénom et une initiale, comme « Irma H. », et ce que vous publiez, comme une note ou un nom que vous donnez, peut être lu par les autres visiteurs. Une note ne montre jamais qui l’a publiée.",
           "Base légale : l’exécution du service que vous demandez. Conservation : jusqu’à ce que vous le supprimiez dans l’application, ou que vous demandiez sa suppression.",
         ],
         title: "Ce que vous enregistrez dans les applications",
       },
       {
         blocks: [
-          "Certaines choses ne sont gardées que dans votre propre navigateur et ne sont jamais envoyées au serveur : votre thème et votre langue, le Livre des ombres (date, heure et lieu de naissance compris), vos personnages de Character Maker et vos réponses aux quiz. La photo mise dans Album Cover Maker ne quitte jamais la page. La liste complète est dans la [politique de cookies](/cookies).",
-          "Quand vous cherchez votre lieu de naissance dans le Livre des ombres, les lettres tapées sont envoyées à Open-Meteo (Suisse) pour trouver la ville ; rien d’autre. La météo de l’horloge d’irmahs.dev est aussi demandée à Open-Meteo par votre navigateur, pour la ville affichée, pas pour l’endroit où vous êtes.",
+          "Ce que vous utilisez sans vous connecter reste dans votre propre navigateur et n’est jamais envoyé au serveur, y compris les informations personnelles que vous tapez dans un jeu, comme une date, une heure et un lieu de naissance. Une photo ouverte dans un outil ne quitte jamais la page. Plus de détails dans la [politique de cookies](/cookies).",
+          "Deux fonctions interrogent Open-Meteo (Suisse) directement depuis votre navigateur : la recherche d’une ville, qui n’envoie que les lettres tapées, et la météo, pour la ville affichée, pas pour l’endroit où vous êtes.",
         ],
         title: "Ce qui reste dans votre navigateur",
       },
@@ -418,7 +390,7 @@ const fr: Record<LegalSlug, LegalPage> = {
             "Cloudflare, Inc. (États-Unis) : achemine chaque requête jusqu’au serveur.",
             "Google LLC (États-Unis) : la connexion, et votre photo de profil.",
             "OpenRouter, Inc. (États-Unis) : le chatbot d’irmahs.dev.",
-            "Open-Meteo (Suisse) : la recherche du lieu de naissance du Livre des ombres, et la météo d’irmahs.dev.",
+            "Open-Meteo (Suisse) : la recherche d’une ville et la météo.",
           ],
           "Cloudflare et Google sont certifiés au Data Privacy Framework UE-États-Unis, dont la Commission européenne a reconnu qu’il offre un niveau de protection adéquat ; la Suisse bénéficie aussi d’une décision d’adéquation. OpenRouter est aux États-Unis ; seul ce que vous écrivez au chatbot lui est envoyé.",
         ],
@@ -467,7 +439,7 @@ const fr: Record<LegalSlug, LegalPage> = {
       },
       {
         blocks: [
-          "Certaines choses que vous écrivez sont visibles par d’autres : les post-it de Mini Games, le nom de votre draconoïde, et votre prénom et initiale au classement de Super Tic-Tac-Toe et dans le grimoire de Préparation de potions. Ne publiez rien d’illégal, de haineux ou de harcelant, ni les données personnelles de quiconque. Tout ce qui enfreint ces règles peut être retiré, et le compte qui l’a publié fermé.",
+          "Certaines choses que vous écrivez ou créez sont visibles par d’autres, comme les notes, les noms que vous donnez, et votre prénom et initiale aux classements. Ne publiez rien d’illégal, de haineux ou de harcelant, ni les données personnelles de quiconque. Tout ce qui enfreint ces règles peut être retiré, et le compte qui l’a publié fermé.",
           `Pour signaler un contenu, écrivez à ${MAIL}.`,
         ],
         title: "Ce que vous publiez",
