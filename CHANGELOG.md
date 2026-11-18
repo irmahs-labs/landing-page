@@ -4,6 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 18 November 2026
 
+- **Alma last in the launcher:** Alma moves to the end of `launcher.exe`, after the portfolio.
 - **Alma in the launcher:** `launcher.exe` opens on Alma, the private Paris love story at alma-housila.irmahs.dev. Only its two admins get past the sign-in, so its tile has no screenshot and no deploy date (its repo is private, and GitHub won't say); anyone else who opens it sees the account service's "This app is private". An app's `deploys` is optional now, and the page doesn't ask GitHub about one without it.
 - **Legal pages in the footer, and fewer requests to others:** the legal notice, privacy policy, terms of use and cookie policy, in English and French, at `/legal`, `/privacy`, `/terms` and `/cookies` (`src/lib/legal.ts`), checked against the CNIL's guidance and French law. Every app's footer links to them, and so does this page's. Spotify's album covers now come through irmahs.dev (`/api/now-playing/cover`), so a visitor's browser never contacts Spotify. `robots.txt`, `sitemap.xml` and `llms.txt` describe the site to search engines and AI agents. The EN/FR pills, the social links and the CV link have accessible names that start with what they show.
 
