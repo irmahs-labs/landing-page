@@ -66,7 +66,7 @@ export const SocialsWindow = () => {
               rel="noreferrer"
               target="_blank"
             >
-              <span className="social-icon">
+              <span className={`social-icon social-icon--${s.tone}`}>
                 <svg aria-hidden="true" viewBox="0 0 24 24">
                   <path d={s.path} />
                 </svg>

@@ -18,8 +18,12 @@
   --on-pop: #2f3b34;
   --strong: #3b4a42;
   --on-strong: #fff3cf;
-  --selected: #afc584;
-  --on-selected: #2f3b34;
+  /* What is picked is dark green; what could be picked stays as it is */
+  --selected: #3b4a42;
+  --on-selected: #fff3cf;
+  --unselected: transparent;
+  --unselected-hover: var(--panel);
+  --on-unselected: var(--text);
   --grid: #4e6152;
   --focus: #4a7fc0;
   --danger: #f0675c;
@@ -81,8 +85,13 @@
   --on-pop: #0f1411;
   --strong: #1c2420;
   --on-strong: #f3f1c8;
-  --selected: #c9d68f;
-  --on-selected: #0f1411;
+  /* Inverted from Light Matcha: what could be picked is light green, what
+     is picked dark green */
+  --selected: #1c2420;
+  --on-selected: #f3f1c8;
+  --unselected: #c9d68f;
+  --unselected-hover: #b3c47c;
+  --on-unselected: #0f1411;
   --grid: #2f3b34;
   --focus: #c2d8f5;
   --danger: #f6a49d;
@@ -337,8 +346,14 @@ fieldset {
   cursor: pointer;
   transition: background-color 0.12s ease;
 }
-.lang-toggle__option:hover {
-  background-color: var(--panel);
+.lang-toggle__option:not([aria-pressed="true"]) {
+  background-color: var(--unselected);
+  color: var(--on-unselected);
+}
+.lang-toggle__option:not([aria-pressed="true"]):hover,
+.seg:not([aria-pressed="true"]):hover,
+.widget-switch__option:not([aria-pressed="true"]):hover {
+  background-color: var(--unselected-hover);
 }
 .lang-toggle__option[aria-pressed="true"] {
   border-color: var(--outline);
@@ -522,6 +537,46 @@ input:focus-visible {
   flex-shrink: 0;
 }
 /* Playmate on/off: a small outlined switch, dark like a selected pill when on */
+/* Light and dark: a light switch. On is Light Matcha, the yellow track with
+   the sun in the knob on the left; off is Dark Matcha, a dark track with the
+   moon in the knob on the right. As tall as the EN/FR pill beside it */
+.theme-switch {
+  position: relative;
+  flex: none;
+  width: 72px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background-color: var(--pop);
+  transition: background-color 0.2s ease;
+}
+.theme-switch[aria-checked="false"] {
+  background-color: var(--strong);
+}
+.theme-switch__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--outline);
+  border-radius: 50%;
+  background-color: var(--raised);
+  color: var(--text);
+  transition: transform 0.2s var(--ease);
+}
+.theme-switch[aria-checked="false"] .theme-switch__knob {
+  transform: translateX(32px);
+}
+.theme-switch:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .playmate-switch {
   height: 44px;
   padding: 0 4px;
@@ -553,6 +608,13 @@ input:focus-visible {
     transform 0.2s var(--ease),
     background-color 0.2s ease;
 }
+/* Dark Matcha: off is light green, as every choice not picked */
+:root[data-theme="dark"] .playmate-switch-track {
+  background-color: var(--unselected);
+}
+:root[data-theme="dark"] .playmate-switch-track::after {
+  background-color: var(--on-unselected);
+}
 /* Cute Matcha's Switch: raised when off, selected when on */
 .playmate-switch[aria-checked="true"] .playmate-switch-track {
   background-color: var(--selected);
@@ -580,6 +642,10 @@ input:focus-visible {
   gap: 8px;
   font-size: 16px;
   font-weight: 500;
+}
+.seg:not([aria-pressed="true"]) {
+  background-color: var(--unselected);
+  color: var(--on-unselected);
 }
 .seg[aria-pressed="true"] {
   background-color: var(--selected);
@@ -1396,6 +1462,10 @@ button.account {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+.widget-switch__option:not([aria-pressed="true"]) {
+  background-color: var(--unselected);
+  color: var(--on-unselected);
+}
 .widget-switch__option[aria-pressed="true"] {
   background-color: var(--selected);
   color: var(--on-selected);
@@ -1573,6 +1643,11 @@ button.account {
   text-align: left;
   cursor: pointer;
 }
+/* Dark Matcha: a calendar not picked is light green, as every choice is */
+:root[data-theme="dark"] .cal-chip:not([aria-pressed="true"]) {
+  background-color: var(--unselected);
+  color: var(--on-unselected);
+}
 .cal-chip[aria-pressed="true"] {
   background-color: var(--selected);
   color: var(--on-selected);
@@ -1730,6 +1805,14 @@ button.lang.is-current {
   border: 1.5px solid var(--line);
   border-radius: 6px;
   background-color: var(--pop);
+}
+/* The CV keeps the yellow accent; GitHub and LinkedIn have their own tile.
+   Artwork, so the same pastels in Dark Matcha */
+.social-icon--blue {
+  background-color: #9cc6f2;
+}
+.social-icon--purple {
+  background-color: #c7aef2;
 }
 .social-icon svg {
   width: 18px;
@@ -2304,6 +2387,15 @@ button.lang.is-current {
   }
   .profile-body {
     padding: 12px 14px;
+  }
+  /* Nothing playing: Tokkae on a short band, not a whole square cover */
+  .player-window.is-idle .cover,
+  .player-window.is-waiting .cover {
+    aspect-ratio: 5 / 2;
+  }
+  .player-window.is-idle .emote {
+    width: auto;
+    height: 82%;
   }
 
   .tokkae {

@@ -5,8 +5,10 @@ export interface Social {
   handle: string;
   href: string;
   name: string;
-  /** Its icon, a 24-grid path drawn at 2px on the yellow accent */
+  /** Its icon, a 24-grid path drawn at 2px on its tile */
   path: string;
+  /** Its tile's colour, a pastel of the site's own */
+  tone: "blue" | "purple";
 }
 
 export const SOCIALS: readonly Social[] = [
@@ -15,11 +17,13 @@ export const SOCIALS: readonly Social[] = [
     href: "https://github.com/irmahs",
     name: "GitHub",
     path: "M8 7 L3 12 L8 17 M16 7 L21 12 L16 17 M13.5 5 L10.5 19",
+    tone: "purple",
   },
   {
     handle: "in/irma-hs",
     href: "https://www.linkedin.com/in/irma-hs/",
     name: "LinkedIn",
+    tone: "blue",
     path: "M12 11.5 A3.5 3.5 0 1 0 12 4.5 A3.5 3.5 0 1 0 12 11.5 Z M5 20 C5 16 8 14 12 14 C16 14 19 16 19 20",
   },
 ];
