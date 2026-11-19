@@ -128,10 +128,6 @@ export const zonedToUtc = (wall: WallTime, timeZone: string): Date => {
   return new Date(reads(after) ? after : before);
 };
 
-/** Midnight on 1 January of `year`, on the clocks of `timeZone`. */
-export const startOfYear = (year: number, timeZone: string): Date =>
-  zonedToUtc({ day: 1, hour: 0, minute: 0, month: 1, year }, timeZone);
-
 export const pad = (n: number): string => String(n).padStart(2, "0");
 
 export const keyOf = (year: number, month: number, day: number): string =>

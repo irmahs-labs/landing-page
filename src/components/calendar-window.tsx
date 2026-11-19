@@ -80,16 +80,14 @@ const toggleSaved = (id: CalendarId) => {
 };
 
 /** The calendars the visitor picked, kept in this browser */
-const useCalendars = () => {
+const useChosenCalendars = () => {
   const saved = useSyncExternalStore(
     subscribeStored,
     () => store.get(CALENDARS_KEY),
     () => null
   );
 
-  const chosen = useMemo(() => calendarsFrom(saved), [saved]);
-
-  return { chosen, toggle: toggleSaved };
+  return useMemo(() => calendarsFrom(saved), [saved]);
 };
 
 /** A festival on the list: its mark, name, days, and a way to add it */
@@ -320,7 +318,7 @@ export const CalendarWindow = ({
   pick: ReactNode;
 }) => {
   const t = useCopy(COPY);
-  const { chosen, toggle } = useCalendars();
+  const chosen = useChosenCalendars();
   const timeZone = useMemo(() => localTimeZone(), []);
   const [picking, setPicking] = useState(false);
 
@@ -331,7 +329,7 @@ export const CalendarWindow = ({
       <Picker
         chosen={chosen}
         onDone={() => setPicking(false)}
-        onToggle={toggle}
+        onToggle={toggleSaved}
       />
     );
   } else if (now) {

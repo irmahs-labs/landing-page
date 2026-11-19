@@ -63,12 +63,20 @@ export const cvInfo = async (language: Language): Promise<CvInfo> => {
   return { bytes: stats.size, updatedAt: stats.mtime.toISOString() };
 };
 
-/** The CV to download */
-export const readCv = async (language: Language) => {
+/** The CV to download: the one uploaded from the page, else the built-in one */
+export const cvDownload = async (language: Language) => {
   const { file } = await current(language);
 
   // oxlint-disable-next-line no-inline-comments -- Turbopack reads its hint only inline
-  return readFile(/* turbopackIgnore: true */ file);
+  const bytes = await readFile(/* turbopackIgnore: true */ file);
+
+  return new Response(new Uint8Array(bytes), {
+    headers: {
+      // Checked again on every download, so a new upload shows at once
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/pdf",
+    },
+  });
 };
 
 /** Whether these bytes are a PDF, from the signature every PDF opens with */
