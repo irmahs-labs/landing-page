@@ -40,15 +40,6 @@ export const formatDay = (key: string, options = SHORT_DAY): string => {
     : key;
 };
 
-export const formatMoment = (date: Date, timeZone: string): string =>
-  date.toLocaleString(locale(), {
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    month: "short",
-    timeZone,
-  });
-
 export const formatClock = (date: Date, timeZone: string): string =>
   date.toLocaleTimeString(locale(), {
     hour: "2-digit",
@@ -62,18 +53,3 @@ export const formatMonth = (year: number, month: number): string =>
     timeZone: "UTC",
     year: "numeric",
   });
-
-/** 0 → "today", 1 → "tomorrow", 5 → "in 5 days" ("dans 5 jours"). */
-export const inDays = (days: number): string => {
-  const french = currentLanguage() === "fr";
-
-  if (days === 0) {
-    return french ? "aujourd’hui" : "today";
-  }
-
-  if (days === 1) {
-    return french ? "demain" : "tomorrow";
-  }
-
-  return french ? `dans ${days} jours` : `in ${days} days`;
-};

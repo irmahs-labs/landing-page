@@ -46,24 +46,6 @@ export const inBetweenPhase = (angle: number): PhaseName => {
   return angle < 270 ? "Waning Gibbous" : "Waning Crescent";
 };
 
-export const PHASE_LORE: Record<PhaseName, string> = {
-  "First Quarter":
-    "A push. Act on your intention, solve what is in the way, keep going.",
-  "Full Moon":
-    "Power at its peak. Charge crystals and moon water, give thanks, celebrate.",
-  "Last Quarter":
-    "Clear out. Forgive, finish, and let go of what did not work.",
-  "New Moon":
-    "A blank page. Set intentions, plant seeds, start something quietly.",
-  "Waning Crescent":
-    "Rest. Sleep, banish, cleanse your space, and dream before it begins again.",
-  "Waning Gibbous":
-    "Share. Teach what you learned, journal, and start to unwind.",
-  "Waxing Crescent":
-    "Gather. Make plans, collect what you need, and take a first step.",
-  "Waxing Gibbous": "Refine. Adjust, edit, be patient; it is almost ripe.",
-};
-
 export interface Quarter {
   phase: PhaseName;
   time: Date;
