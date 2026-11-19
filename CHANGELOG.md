@@ -4,7 +4,7 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 19 November 2026
 
-- **Dark green for what's picked, colours for the socials, a shorter player:** every choice on the page (EN/FR, Paris/Phnom Penh, calendar/music, the calendars, Playmate) is dark green when picked. In Dark Matcha the choices not picked are light green. In `socials.lnk`, GitHub's tile is purple and LinkedIn's blue. The calendars button in `calendar.ics` no longer lists their emojis. On a phone, `now_playing.mp3` with nothing playing shows Tokkae on a short band instead of a whole square cover.
+- **Dark green for what's picked, a light switch, colours for the socials, a shorter player:** The light/dark pill in the header is a light switch: on is Light Matcha, the sun in the knob on the left of a yellow track; off is Dark Matcha, the moon on the right of a dark track. every choice on the page (EN/FR, Paris/Phnom Penh, calendar/music, the calendars, Playmate) is dark green when picked. In Dark Matcha the choices not picked are light green. In `socials.lnk`, GitHub's tile is purple and LinkedIn's blue. The calendars button in `calendar.ics` no longer lists their emojis. On a phone, `now_playing.mp3` with nothing playing shows Tokkae on a short band instead of a whole square cover.
 
 ## 18 November 2026
 

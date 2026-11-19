@@ -42,18 +42,17 @@ describe("Header", () => {
 });
 
 describe("ThemeToggle", () => {
-  it("switches between Light and Dark Matcha, naming the one it goes to", () => {
+  it("is a light switch: on for Light Matcha, off for Dark Matcha", () => {
     document.documentElement.dataset.theme = "light";
     render(<Header />);
 
-    const toggle = screen.getByRole("button", { name: "Switch to dark mode" });
-    expect(toggle.textContent).toBe("dark");
+    const toggle = screen.getByRole("switch", { name: "Light mode" });
+    expect(toggle.getAttribute("aria-checked")).toBe("true");
 
     fireEvent.click(toggle);
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(localStorage.getItem("theme")).toBe("dark");
-    expect(toggle.getAttribute("aria-label")).toBe("Switch to light mode");
-    expect(toggle.textContent).toBe("light");
+    expect(toggle.getAttribute("aria-checked")).toBe("false");
 
     fireEvent.click(toggle);
     expect(document.documentElement.dataset.theme).toBe("light");
@@ -63,7 +62,9 @@ describe("ThemeToggle", () => {
     document.documentElement.dataset.theme = "dark";
     render(<Header />);
     expect(
-      screen.getByRole("button", { name: "Switch to light mode" })
-    ).toBeDefined();
+      screen
+        .getByRole("switch", { name: "Light mode" })
+        .getAttribute("aria-checked")
+    ).toBe("false");
   });
 });

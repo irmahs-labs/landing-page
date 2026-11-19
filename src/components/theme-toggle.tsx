@@ -6,19 +6,11 @@ import { useCopy } from "@/lib/language";
 import { chooseTheme, restoreTheme, useTheme } from "@/lib/theme";
 
 const COPY = {
-  en: {
-    dark: "dark",
-    light: "light",
-    switchTo: (name: string) => `Switch to ${name} mode`,
-  },
-  fr: {
-    dark: "sombre",
-    light: "clair",
-    switchTo: (name: string) => `Passer en mode ${name}`,
-  },
+  en: { label: "Light mode" },
+  fr: { label: "Mode clair" },
 };
 
-// Line glyphs on a 24 × 24 grid, drawn in the pill's text colour
+// Line glyphs on a 24 × 24 grid, drawn in the knob's colour
 const GLYPHS = {
   dark: ["M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"],
   light: [
@@ -27,37 +19,48 @@ const GLYPHS = {
   ],
 } as const;
 
-/** The header's sun/moon pill: names and shows the theme it switches to */
+const Glyph = ({ name }: { name: keyof typeof GLYPHS }) => (
+  <svg
+    aria-hidden="true"
+    className={`theme-switch__glyph theme-switch__glyph--${name}`}
+    fill="none"
+    height="16"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2.4"
+    viewBox="0 0 24 24"
+    width="16"
+  >
+    {GLYPHS[name].map((d) => (
+      <path d={d} key={d} />
+    ))}
+  </svg>
+);
+
+/**
+ * The header's light switch: on is light mode, the knob on the left with the
+ * sun in it; off is dark mode, the knob on the right with the moon
+ */
 export const ThemeToggle = () => {
   const theme = useTheme();
-  const next = theme === "dark" ? "light" : "dark";
+  const on = theme !== "dark";
   const t = useCopy(COPY);
 
   useLayoutEffect(restoreTheme, []);
 
   return (
     <button
-      aria-label={t.switchTo(t[next])}
-      className="btn btn--pill"
-      onClick={() => chooseTheme(next)}
+      aria-checked={on}
+      aria-label={t.label}
+      className="theme-switch"
+      onClick={() => chooseTheme(on ? "dark" : "light")}
+      role="switch"
       type="button"
     >
-      <svg
-        aria-hidden="true"
-        fill="none"
-        height="16"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2.4"
-        viewBox="0 0 24 24"
-        width="16"
-      >
-        {GLYPHS[next].map((d) => (
-          <path d={d} key={d} />
-        ))}
-      </svg>
-      {t[next]}
+      <span className="theme-switch__knob">
+        <Glyph name={on ? "light" : "dark"} />
+      </span>
     </button>
   );
 };
