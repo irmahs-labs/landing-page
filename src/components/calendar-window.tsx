@@ -299,9 +299,6 @@ const Upcoming = ({
       </div>
       <div className="cal-foot">
         <button className="btn cal-choose" onClick={onChoose} type="button">
-          {CALENDARS.filter((c) => chosen.includes(c.id))
-            .map((c) => c.emoji)
-            .join("")}{" "}
           {t.calendars}
         </button>
       </div>
