@@ -17,7 +17,7 @@ jobs:
   # Lint and format, Type-check, Tests, Build and Docker build, shared by every
   # irmahs-labs repo (irmahs-labs/workflows); only what differs here is passed.
   app:
-    uses: irmahs-labs/workflows/.github/workflows/app-ci.yml@feat/build-smoke-input
+    uses: irmahs-labs/workflows/.github/workflows/app-ci.yml@main
     with:
       node-version: "22"
       compose-check: docker compose config --quiet --no-interpolate
