@@ -2,6 +2,10 @@
 
 Every change to irmahs.dev, newest first, one entry per pull request. The release notes Tokkae announces on the page live in [`src/lib/changelog.ts`](src/lib/changelog.ts).
 
+## 23 November 2026
+
+- **The smoke test runs in the shared Build job:** the built server is started and checked in `app / Build` from irmahs-labs/workflows (its new `smoke` input), like every other repo's Build, instead of in a "Build and smoke test" job of this repo's own next to a skipped `app / Build`. The checks themselves are the same.
+
 ## 19 November 2026
 
 - **Simpler code, nothing new to see:** the festival calendar loses code nothing called (`formatMoment`, `inDays`, `startOfYear`, the Moon's phase lore and its French). The two CV downloads share one `cvDownload` in `src/lib/cv-store.ts` instead of two copies of the same response, and `calendar.ics` hands its toggle straight to the picker instead of passing it through a hook.
