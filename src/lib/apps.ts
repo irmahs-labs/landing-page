@@ -77,8 +77,9 @@ export const APPS: readonly AppLink[] = [
       en: "Handy little makers, starting with album covers in 3000 × 3000",
       fr: "De petits outils pratiques, à commencer par des pochettes en 3000 × 3000",
     },
-    // The app's own logo: a toolbox, its handle on top and its latch in front
-    icon: "M9 7 V5.5 A1.5 1.5 0 0 1 10.5 4 H13.5 A1.5 1.5 0 0 1 15 5.5 V7 M6 7 H18 A2 2 0 0 1 20 9 V18 A2 2 0 0 1 18 20 H6 A2 2 0 0 1 4 18 V9 A2 2 0 0 1 6 7 Z M4 12 H20 M10.5 11 H13.5 V14 H10.5 Z",
+    // The app's own logo: a wrench and a hammer crossed, the wrench's open
+    // jaw top left and the hammer's head top right
+    icon: "M4.95 7.95 L6.63 9.62 L8.32 7.93 L6.65 6.25 A3.2 3.2 0 1 1 4.95 7.95 Z M10.16 11.46 L18.72 20.02 M15.18 10.12 L5.28 20.02 M14.83 4.81 L20.49 10.47 L18.01 12.95 L12.35 7.29 Z",
     name: "Tools",
   }),
   hosted("pantry-spinner", {

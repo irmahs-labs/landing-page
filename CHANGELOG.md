@@ -4,6 +4,8 @@ Every change to irmahs.dev, newest first, one entry per pull request. The releas
 
 ## 23 November 2026
 
+- **A wrench and a hammer for Tools, and a fresh screenshot:** the Tools tile in `launcher.exe` swaps its toolbox for the app's new logo, a wrench and a hammer crossed (irmahs-labs/tools#21), and its screenshot shows Tools as it is now in Dark Matcha, with Anime & Game Food beside the Character Maker and the Album Cover Maker.
+
 - **The smoke test runs in the shared Build job:** the built server is started and checked in `app / Build` from irmahs-labs/workflows (its new `smoke` input), like every other repo's Build, instead of in a "Build and smoke test" job of this repo's own next to a skipped `app / Build`. The checks themselves are the same.
 
 ## 19 November 2026
