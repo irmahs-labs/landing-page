@@ -15,6 +15,21 @@ export interface ChangelogEntry {
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
     changes: [
+      "tools has a new icon in the launcher: a wrench and a hammer",
+      "and a fresh picture, with anime & game food in it",
+    ],
+    date: "2026-11-23",
+    fr: {
+      changes: [
+        "tools a une nouvelle icône dans le lanceur : une clé et un marteau",
+        "et une nouvelle image, avec anime & game food dedans",
+      ],
+      title: "tools se refait une beauté",
+    },
+    title: "tools gets a makeover",
+  },
+  {
+    changes: [
       "alma is in the launcher now, last, after the portfolio",
       "it's private: only the two of us get in, everyone else gets a polite no",
     ],
