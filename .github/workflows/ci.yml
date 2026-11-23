@@ -14,59 +14,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Lint and format, Type-check, Tests and Docker build, shared by every
+  # Lint and format, Type-check, Tests, Build and Docker build, shared by every
   # irmahs-labs repo (irmahs-labs/workflows); only what differs here is passed.
   app:
     uses: irmahs-labs/workflows/.github/workflows/app-ci.yml@main
     with:
       node-version: "22"
-      build: ""
       compose-check: docker compose config --quiet --no-interpolate
-
-  build:
-    name: Build and smoke test
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --ignore-scripts
-
-      - name: Build
-        run: npm run build
-
-      - name: Smoke test
-        env:
-          SPOTIFY_CLIENT_ID: dummy
-          SPOTIFY_CLIENT_SECRET: dummy
-          SPOTIFY_REFRESH_TOKEN: dummy
-          PORT: 3000
-        run: |
-          cp -r public .next/standalone/
-          cp -r .next/static .next/standalone/.next/
-          node .next/standalone/server.js &
-          for _ in $(seq 30); do curl -s localhost:3000 >/dev/null && break; sleep 0.5; done
-          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/)" = 200
-          curl -s localhost:3000/ | grep -q "Irma Houver Sing"
-          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/apps/portfolio.jpg)" = 200
-          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/cv/Irma_Houver_Sing_CV.pdf)" = 200
-          # signed out, nobody may replace the CV
-          curl -s localhost:3000/api/cv | grep -q '"canReplace":false'
-          test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H 'Origin: http://localhost:3000' --data-binary '%PDF-' localhost:3000/api/cv)" = 403
-          # dummy credentials can't reach Spotify, so expect the 502 fallback
-          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
-          test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'
-          # a malformed question is turned away before OpenRouter is called
-          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{"messages":[]}' localhost:3000/api/chat)" = 400
+      # Run in the Build job, right after `npm run build`
+      smoke: |
+        export SPOTIFY_CLIENT_ID=dummy SPOTIFY_CLIENT_SECRET=dummy SPOTIFY_REFRESH_TOKEN=dummy PORT=3000
+        cp -r public .next/standalone/
+        cp -r .next/static .next/standalone/.next/
+        node .next/standalone/server.js &
+        for _ in $(seq 30); do curl -s localhost:3000 >/dev/null && break; sleep 0.5; done
+        test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/)" = 200
+        curl -s localhost:3000/ | grep -q "Irma Houver Sing"
+        test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/apps/portfolio.jpg)" = 200
+        test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/cv/Irma_Houver_Sing_CV.pdf)" = 200
+        # signed out, nobody may replace the CV
+        curl -s localhost:3000/api/cv | grep -q '"canReplace":false'
+        test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H 'Origin: http://localhost:3000' --data-binary '%PDF-' localhost:3000/api/cv)" = 403
+        # dummy credentials can't reach Spotify, so expect the 502 fallback
+        test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/now-playing)" = 502
+        test "$(curl -s localhost:3000/api/now-playing)" = '{"playing":false}'
+        # a malformed question is turned away before OpenRouter is called
+        test "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{"messages":[]}' localhost:3000/api/chat)" = 400
 
   # The branch rules require a check named "checks". It fails if any job
   # above failed, was cancelled or skipped; list new jobs in needs.
   checks:
     name: checks
     if: always()
-    needs: [app, build]
+    needs: [app]
     runs-on: ubuntu-24.04
     steps:
       - name: A job did not pass
